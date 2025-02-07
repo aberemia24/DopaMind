@@ -1,0 +1,8 @@
+Work incrementally: break down large tasks into small steps, ensuring each change is complete and tested before moving to the next step.
+Maintain complete project context: don't modify or delete existing code without providing a clear summary of changes and requesting confirmation.
+Make frequent commits and backups to be able to revert to stable versions in case of errors.
+Clearly specify library versions and their compatibility in any prompt involving dependency updates.
+For any modification, generate corresponding unit tests to ensure functionality without side effects.
+Before integrating changes, provide a recap of what will change and request clarifications if needed.
+Use Chat Mode for discussions and clarifications before implementation and Write Mode for step-by-step coding.
+Flow: Use these instructions as a permanent guide in the dopamind project to maintain consistency, code integrity, and to ensure that all functionalities are implemented according to the detailed plan (including Task Management, Time Blindness Support, Time Sink Protection, and Crisis Button).

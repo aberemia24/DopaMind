@@ -1,0 +1,16 @@
+Pentru moment, vom folosi imagini placeholder simple pentru dezvoltare.
+
+În directorul assets ar trebui să avem următoarele fișiere:
+1. icon.png (1024x1024px)
+2. adaptive-icon.png (1024x1024px)
+3. splash.png (2048x2048px)
+4. notification-icon.png (96x96px)
+
+Aceste imagini vor fi înlocuite mai târziu cu design-ul final al aplicației.
+
+Pentru acum, puteți descărca niște imagini simple de pe:
+https://www.flaticon.com/ (pentru iconițe)
+sau
+https://placeholder.com/ (pentru splash screen)
+
+Sau putem continua fără imagini și le vom adăuga mai târziu când vom avea design-ul final.

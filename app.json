@@ -1,0 +1,54 @@
+{
+  "expo": {
+    "name": "DopaMind",
+    "slug": "dopamind",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#6495ED"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "package": "com.alexandrueremia24.DopaMind_new",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#6495ED"
+      },
+      "permissions": [
+        "NOTIFICATIONS",
+        "READ_CALENDAR",
+        "WRITE_CALENDAR"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/icon.png"
+    },
+    "notification": {
+      "icon": "./assets/notification-icon.png",
+      "color": "#6495ED",
+      "androidMode": "default",
+      "androidCollapsedTitle": "DopaMind"
+    },
+    "plugins": [
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/notification-icon.png",
+          "color": "#6495ED"
+        }
+      ]
+    ],
+    "experiments": {
+      "newArchEnabled": false
+    }
+  }
+}
