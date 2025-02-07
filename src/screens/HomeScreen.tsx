@@ -1,14 +1,21 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Button } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { signOut } from '../config/firebase';
 
 export function HomeScreen() {
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
+  };
+
   return (
-    <SafeAreaView style={styles.container} testID="home-screen">
-      <View style={styles.content}>
-        <Text style={styles.title}>Welcome to DopaMind</Text>
-        <Text style={styles.subtitle}>Your ADHD-friendly task manager</Text>
-      </View>
+    <SafeAreaView style={styles.container}>
+      <Text>Welcome to DopaMind!</Text>
+      <Button title="Sign Out" onPress={handleSignOut} />
     </SafeAreaView>
   );
 }
@@ -17,22 +24,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-  },
-  content: {
-    flex: 1,
-    alignItems: 'center',
     justifyContent: 'center',
-    padding: 20,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#6495ED',
-    marginBottom: 10,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: '#666',
-    textAlign: 'center',
+    alignItems: 'center',
   },
 });

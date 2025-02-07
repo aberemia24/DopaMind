@@ -40,7 +40,7 @@ export function LoginScreen({ navigation }: Props) {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.container}
     >
-      <View style={styles.form} testID="login-screen">
+      <View style={styles.form}>
         <Text style={styles.title}>Welcome Back</Text>
         
         <TextInput

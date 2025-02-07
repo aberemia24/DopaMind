@@ -25,7 +25,7 @@ export function Navigation() {
   if (loading) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator testID="loading-indicator" size="large" color="#6495ED" />
+        <ActivityIndicator size="large" color="#6495ED" />
       </View>
     );
   }
@@ -44,7 +44,7 @@ export function Navigation() {
         }}
       >
         {!isAuthenticated ? (
-          <Stack.Group testID="auth-stack">
+          <Stack.Group>
             <Stack.Screen 
               name="Login" 
               component={LoginScreen}
@@ -61,7 +61,7 @@ export function Navigation() {
             />
           </Stack.Group>
         ) : (
-          <Stack.Group testID="app-stack">
+          <Stack.Group>
             <Stack.Screen 
               name="Home" 
               component={HomeScreen}

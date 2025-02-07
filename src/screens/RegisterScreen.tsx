@@ -53,7 +53,6 @@ export function RegisterScreen({ navigation }: Props) {
     <KeyboardAvoidingView 
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.container}
-      testID="register-screen"
     >
       <View style={styles.form}>
         <Text style={styles.title}>Create Account</Text>

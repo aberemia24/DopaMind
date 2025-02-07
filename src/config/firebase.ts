@@ -111,54 +111,67 @@ export function getFirebaseFirestore(): Firestore {
 export const signInWithEmail = async (
   email: string,
   password: string
-): Promise<UserCredential | FirebaseAuthError> => {
+): Promise<UserCredential | AuthError> => {
   try {
-    const authInstance = getFirebaseAuth();
-    return await signInWithEmailAndPassword(authInstance, email, password);
-  } catch (error) {
-    const firebaseError = error as FirebaseAuthError;
-    return {
-      code: firebaseError.code,
-      message: firebaseError.message
+    const auth = initializeFirebaseAuth();
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    return userCredential;
+  } catch (error: any) {
+    console.error('Error signing in:', error);
+    const authError: AuthError = {
+      name: error.name || 'AuthError',
+      code: error.code || 'auth/unknown',
+      message: error.message || 'An unknown error occurred',
+      customData: error.customData || {}
     };
+    return authError;
   }
 };
 
 export const signUpWithEmail = async (
   email: string,
   password: string
-): Promise<UserCredential | FirebaseAuthError> => {
+): Promise<UserCredential | AuthError> => {
   try {
-    const authInstance = getFirebaseAuth();
-    return await createUserWithEmailAndPassword(authInstance, email, password);
-  } catch (error) {
-    const firebaseError = error as FirebaseAuthError;
-    return {
-      code: firebaseError.code,
-      message: firebaseError.message
+    const auth = initializeFirebaseAuth();
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    return userCredential;
+  } catch (error: any) {
+    console.error('Error signing up:', error);
+    const authError: AuthError = {
+      name: error.name || 'AuthError',
+      code: error.code || 'auth/unknown',
+      message: error.message || 'An unknown error occurred',
+      customData: error.customData || {}
     };
+    return authError;
   }
 };
 
-export const signOut = async (): Promise<void | FirebaseAuthError> => {
+export const signOut = async (): Promise<void | AuthError> => {
   try {
-    const authInstance = getFirebaseAuth();
-    await firebaseSignOut(authInstance);
-  } catch (error) {
-    const firebaseError = error as FirebaseAuthError;
-    return {
-      code: firebaseError.code,
-      message: firebaseError.message
+    const auth = initializeFirebaseAuth();
+    await auth.signOut();
+  } catch (error: any) {
+    console.error('Error signing out:', error);
+    const authError: AuthError = {
+      name: error.name || 'AuthError',
+      code: error.code || 'auth/unknown',
+      message: error.message || 'An unknown error occurred',
+      customData: error.customData || {}
     };
+    return authError;
   }
 };
 
 // Tipuri pentru autentificare
 export interface AuthError {
+  name: string;
   code: string;
   message: string;
+  customData: any;
 }
 
 export const isAuthError = (result: any): result is AuthError => {
-  return result && 'code' in result && 'message' in result;
+  return result && 'name' in result && 'code' in result && 'message' in result && 'customData' in result;
 };
