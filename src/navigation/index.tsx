@@ -5,11 +5,13 @@ import { HomeScreen } from '../screens/HomeScreen';
 import { LoginScreen } from '../screens/LoginScreen';
 import { RegisterScreen } from '../screens/RegisterScreen';
 import TaskManagementScreen from '../screens/TaskManagementScreen';
+import { WelcomeScreen } from '../screens/WelcomeScreen';
 import { useAuth } from '../hooks/useAuth';
 import { ActivityIndicator, View } from 'react-native';
 
 export type RootStackParamList = {
   Home: undefined;
+  Welcome: undefined;
   Login: undefined;
   Register: undefined;
   TaskManagement: undefined;
@@ -18,11 +20,11 @@ export type RootStackParamList = {
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export function Navigation() {
-  const { isAuthenticated, loading, error } = useAuth();
+  const { isAuthenticated, loading } = useAuth();
 
   useEffect(() => {
-    console.log('Navigation state:', { loading, isAuthenticated, error });
-  }, [loading, isAuthenticated, error]);
+    console.log('Navigation state:', { loading, isAuthenticated });
+  }, [loading, isAuthenticated]);
 
   if (loading) {
     return (
@@ -46,19 +48,25 @@ export function Navigation() {
         }}
       >
         {!isAuthenticated ? (
-          <Stack.Group>
+          <Stack.Group screenOptions={{ headerShown: false }}>
+            <Stack.Screen 
+              name="Welcome" 
+              component={WelcomeScreen}
+            />
             <Stack.Screen 
               name="Login" 
               component={LoginScreen}
               options={{
-                title: 'Login',
+                headerShown: true,
+                title: 'Conectare'
               }}
             />
             <Stack.Screen 
               name="Register" 
               component={RegisterScreen}
               options={{
-                title: 'Register',
+                headerShown: true,
+                title: 'Înregistrare'
               }}
             />
           </Stack.Group>
@@ -76,7 +84,7 @@ export function Navigation() {
               name="Home" 
               component={HomeScreen}
               options={{
-                title: 'DopaMind',
+                title: 'DopaMind'
               }}
             />
           </Stack.Group>
