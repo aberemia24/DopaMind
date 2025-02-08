@@ -4,9 +4,10 @@ import {
   StyleSheet,
   TouchableOpacity,
   Text,
-  Image,
   SafeAreaView,
 } from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
+import { FontAwesome } from '@expo/vector-icons';
 import { OnboardingSlides } from '../components/Onboarding/OnboardingSlides';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation';
@@ -34,24 +35,18 @@ export function WelcomeScreen({ navigation }: Props) {
           style={styles.emailButton}
           onPress={handleEmailLogin}
         >
-          <Image
-            source={require('../assets/icons/email.png')}
-            style={styles.buttonIcon}
-          />
+          <MaterialIcons name="email" size={24} color="#2E2E2E" style={styles.buttonIcon} />
           <Text style={styles.emailButtonText}>
             Conectați-vă cu adresa de e-mail
           </Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={styles.googleButton}
+          style={[styles.googleButton, { backgroundColor: '#4285F4' }]}
           onPress={handleGoogleLogin}
         >
-          <Image
-            source={require('../assets/icons/google.png')}
-            style={styles.buttonIcon}
-          />
-          <Text style={styles.googleButtonText}>
+          <FontAwesome name="google" size={24} color="#fff" style={styles.buttonIcon} />
+          <Text style={[styles.googleButtonText, { color: '#fff' }]}>
             Conectează-te cu Google
           </Text>
         </TouchableOpacity>
@@ -80,18 +75,32 @@ const styles = StyleSheet.create({
     padding: 16,
     marginBottom: 12,
     minHeight: 54,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.41,
   },
   googleButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#4285F4',
     borderRadius: 8,
     padding: 16,
     minHeight: 54,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.41,
   },
   buttonIcon: {
-    width: 24,
-    height: 24,
     marginRight: 12,
   },
   emailButtonText: {
