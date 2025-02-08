@@ -368,6 +368,23 @@ Aplicația are ca scop să ofere suport persoanelor cu ADHD în gestionarea prov
 - [ ] Adăugare validări suplimentare pentru formularele de autentificare
 - [ ] Implementare profil utilizator
 
+### 9 Februarie 2025
+#### Îmbunătățiri Autentificare și Onboarding
+- Am creat un nou ecran de welcome cu slideshow pentru onboarding
+- Am implementat un slideshow animat cu 3 slide-uri specifice pentru ADHD:
+  - "Depășește Overwhelm-ul" - ajută utilizatorii să gestioneze sarcinile copleșitoare
+  - "Sistem Adaptat pentru ADHD" - evidențiază tehnicile specializate
+  - "Sprijin în Momente Dificile" - prezintă funcțiile de suport
+- Am adăugat auto-scroll la slideshow (3 secunde per slide) cu tranziții smooth
+- Am stilizat butoanele de autentificare folosind MaterialIcons și FontAwesome
+- Am personalizat butonul de Google cu culorile oficiale pentru un aspect profesionist
+- Am actualizat navigarea pentru a afișa WelcomeScreen ca primul ecran pentru utilizatorii neautentificați
+
+#### Next Steps:
+- [ ] Implementare autentificare cu Google
+- [ ] Testare completă a fluxului de autentificare
+- [ ] Adăugare animații de tranziție între ecrane
+
 ## Feature Toggle System
 
 ```javascript
