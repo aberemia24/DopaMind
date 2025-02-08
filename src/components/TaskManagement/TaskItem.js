@@ -3,7 +3,13 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Animated, Interact
 import PropTypes from 'prop-types';
 import { TASK_STATUS } from '../../constants/taskTypes';
 
-const TaskItem = ({ task, onToggle, onDelete, onUpdate }) => {
+const TaskItem = ({ 
+  task, 
+  onToggle, 
+  onDelete, 
+  onUpdate, 
+  isPriority = false 
+}) => {
   const [title, setTitle] = useState(task.title);
   const [isEditing, setIsEditing] = useState(!task.title);
   const fadeAnim = useRef(new Animated.Value(1)).current;
@@ -23,7 +29,6 @@ const TaskItem = ({ task, onToggle, onDelete, onUpdate }) => {
 
   useEffect(() => {
     if (isEditing && inputRef.current) {
-      console.log('TaskItem: Se intră în modul de editare, focus pe TextInput');
       InteractionManager.runAfterInteractions(() => {
         inputRef.current.focus();
       });
@@ -48,182 +53,173 @@ const TaskItem = ({ task, onToggle, onDelete, onUpdate }) => {
   };
 
   return (
-    <Animated.View style={[styles.taskItem, { opacity: fadeAnim }]}>
-      {isEditing ? (
-        <View style={styles.editContainer}>
+    <Animated.View style={[
+      styles.taskItem,
+      isPriority && styles.priorityTask,
+      { opacity: fadeAnim }
+    ]}>
+      <TouchableOpacity
+        style={styles.checkbox}
+        onPress={onToggle}
+        accessibilityRole="checkbox"
+        accessibilityState={{ checked: task.completed }}
+        accessibilityLabel={`Marchează task-ul ${title} ca ${task.completed ? 'neterminat' : 'terminat'}`}
+      >
+        <View style={[
+          styles.checkboxInner,
+          task.completed && styles.checkboxChecked,
+          isPriority && styles.priorityCheckbox
+        ]}>
+          {task.completed && <Text style={styles.checkmark}>✓</Text>}
+        </View>
+      </TouchableOpacity>
+
+      <View style={styles.contentContainer}>
+        {isEditing ? (
           <TextInput
             ref={inputRef}
-            style={styles.input}
+            style={[styles.input, isPriority && styles.priorityInput]}
             value={title}
             onChangeText={setTitle}
-            placeholder="Descrie task-ul tău..."
+            onBlur={handleSubmit}
             onSubmitEditing={handleSubmit}
-            autoFocus
-            onFocus={() => console.log('TaskItem: Input a primit focus')}
-            onBlur={() => console.log('TaskItem: Input a pierdut focus')}
+            placeholder="Descrie task-ul..."
+            placeholderTextColor="#9CA3AF"
+            returnKeyType="done"
           />
-          <View style={styles.editButtons}>
-            <TouchableOpacity
-              onPress={handleSubmit}
-              style={styles.editButton}
-              activeOpacity={0.7}
-            >
-              <Text style={styles.editButtonText}>✓</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={handleCancel}
-              style={[styles.editButton, styles.cancelButton]}
-              activeOpacity={0.7}
-            >
-              <Text style={styles.cancelButtonText}>✕</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      ) : (
-        <>
-          <TouchableOpacity 
-            onPress={onToggle}
-            style={styles.checkbox}
-            activeOpacity={0.7}
-          >
-            <View style={[styles.checkboxInner, task.completed && styles.checkboxChecked]}>
-              {task.completed && <Text style={styles.checkmark}>✓</Text>}
-            </View>
-          </TouchableOpacity>
-          
-          <TouchableOpacity 
-            onPress={() => setIsEditing(true)}
+        ) : (
+          <TouchableOpacity
             style={styles.titleContainer}
-            activeOpacity={0.7}
+            onPress={() => setIsEditing(true)}
+            accessibilityRole="button"
+            accessibilityLabel="Editează titlul task-ului"
           >
             <Text style={[
               styles.title,
-              task.completed && styles.titleCompleted
-            ]}>{title}</Text>
+              task.completed && styles.titleCompleted,
+              isPriority && styles.priorityTitle
+            ]}>
+              {title}
+            </Text>
           </TouchableOpacity>
+        )}
 
+        {!isEditing && (
           <TouchableOpacity
-            onPress={onDelete}
             style={styles.deleteButton}
-            activeOpacity={0.7}
+            onPress={onDelete}
+            accessibilityRole="button"
+            accessibilityLabel="Șterge task-ul"
           >
             <Text style={styles.deleteButtonText}>×</Text>
           </TouchableOpacity>
-        </>
-      )}
+        )}
+      </View>
     </Animated.View>
   );
+};
+
+TaskItem.propTypes = {
+  task: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+    completed: PropTypes.bool.isRequired
+  }).isRequired,
+  onToggle: PropTypes.func.isRequired,
+  onDelete: PropTypes.func.isRequired,
+  onUpdate: PropTypes.func.isRequired,
+  isPriority: PropTypes.bool
 };
 
 const styles = StyleSheet.create({
   taskItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 16,
-    backgroundColor: '#fff',
-    borderRadius: 12,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 8,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
     shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
-    marginVertical: 6,
+    shadowRadius: 1,
+    elevation: 1
   },
-  editContainer: {
+  priorityTask: {
+    borderLeftWidth: 4,
+    borderLeftColor: '#4F46E5',
+    backgroundColor: '#F5F3FF'
+  },
+  checkbox: {
+    marginRight: 12,
+    height: 24,
+    width: 24,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  checkboxInner: {
+    width: 20,
+    height: 20,
+    borderRadius: 4,
+    borderWidth: 2,
+    borderColor: '#9CA3AF',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  checkboxChecked: {
+    backgroundColor: '#10B981',
+    borderColor: '#10B981'
+  },
+  priorityCheckbox: {
+    borderColor: '#4F46E5'
+  },
+  checkmark: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: 'bold'
+  },
+  contentContainer: {
     flex: 1,
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'center'
+  },
+  titleContainer: {
+    flex: 1,
+    paddingVertical: 4
+  },
+  title: {
+    fontSize: 16,
+    color: '#1F2937'
+  },
+  titleCompleted: {
+    textDecorationLine: 'line-through',
+    color: '#9CA3AF'
+  },
+  priorityTitle: {
+    color: '#4F46E5',
+    fontWeight: '500'
   },
   input: {
     flex: 1,
     fontSize: 16,
     color: '#1F2937',
-    padding: 12,
-    borderWidth: 1,
-    borderColor: '#7C3AED',
-    borderRadius: 8,
-    marginRight: 8,
+    padding: 0
   },
-  editButtons: {
-    flexDirection: 'row',
-  },
-  editButton: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: '#7C3AED',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginLeft: 8,
-  },
-  editButtonText: {
-    color: '#fff',
-    fontSize: 24,
-  },
-  cancelButton: {
-    backgroundColor: '#EF4444',
-  },
-  cancelButtonText: {
-    color: '#fff',
-    fontSize: 20,
-  },
-  checkbox: {
-    padding: 8,
-  },
-  checkboxInner: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    borderWidth: 2,
-    borderColor: '#7C3AED',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  checkboxChecked: {
-    backgroundColor: '#7C3AED',
-  },
-  checkmark: {
-    color: '#fff',
-    fontSize: 18,
-  },
-  titleContainer: {
-    flex: 1,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-  },
-  title: {
-    fontSize: 16,
-    color: '#1F2937',
-  },
-  titleCompleted: {
-    textDecorationLine: 'line-through',
-    color: '#9CA3AF',
+  priorityInput: {
+    color: '#4F46E5'
   },
   deleteButton: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: '#FEE2E2',
-    justifyContent: 'center',
-    alignItems: 'center',
+    padding: 8,
+    marginLeft: 8
   },
   deleteButtonText: {
-    color: '#EF4444',
-    fontSize: 24,
-    fontWeight: 'bold',
-  },
+    fontSize: 20,
+    color: '#9CA3AF',
+    fontWeight: 'bold'
+  }
 });
-
-TaskItem.propTypes = {
-  task: PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    title: PropTypes.string.isRequired,
-    completed: PropTypes.bool.isRequired,
-    status: PropTypes.oneOf(Object.values(TASK_STATUS)).isRequired,
-  }).isRequired,
-  onToggle: PropTypes.func.isRequired,
-  onDelete: PropTypes.func.isRequired,
-  onUpdate: PropTypes.func.isRequired,
-};
 
 export default TaskItem;
