@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   View,
   Text,
@@ -22,21 +22,21 @@ interface Slide {
 const slides: Slide[] = [
   {
     id: '1',
-    title: 'Organizează-ți sarcinile',
-    description: 'Utilizați Matricea Eisenhower pentru a prioritiza sarcinile.',
-    image: require('../../assets/onboarding/task-organization.png'),
+    title: 'Depășește Overwhelm-ul',
+    description: 'Te ajutăm să transformi lista copleșitoare de sarcini într-un plan clar și realizabil.',
+    image: require('./Multitasking-bro.png'),
   },
   {
     id: '2',
-    title: 'Focus pe ce contează',
-    description: 'Concentrează-te pe sarcinile importante și urgente pentru o productivitate mai bună.',
-    image: require('../../assets/onboarding/focus.png'),
+    title: 'Sistem Adaptat pentru ADHD',
+    description: 'Folosim tehnici dovedite științific pentru a gestiona mai ușor timpul și sarcinile cu ADHD.',
+    image: require('./Task-bro.png'),
   },
   {
     id: '3',
-    title: 'Timp sub control',
-    description: 'Gestionează-ți mai bine timpul cu ajutorul funcțiilor noastre specializate pentru ADHD.',
-    image: require('../../assets/onboarding/time-management.png'),
+    title: 'Sprijin în Momente Dificile',
+    description: 'Ai acces instant la tehnici de calmare și focus când te simți copleșit sau blocat.',
+    image: require('./Mental health-bro.png'),
   },
 ];
 
@@ -44,12 +44,48 @@ export function OnboardingSlides() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const scrollX = useRef(new Animated.Value(0)).current;
   const slidesRef = useRef<FlatList>(null);
+  const autoScrollTimer = useRef<NodeJS.Timeout>();
 
   const viewableItemsChanged = useRef(({ viewableItems }: any) => {
     setCurrentIndex(viewableItems[0]?.index || 0);
   }).current;
 
   const viewConfig = useRef({ viewAreaCoveragePercentThreshold: 50 }).current;
+
+  const scrollToNextSlide = () => {
+    if (currentIndex < slides.length - 1) {
+      slidesRef.current?.scrollToIndex({
+        index: currentIndex + 1,
+        animated: true
+      });
+    } else {
+      // Revenim la primul slide
+      slidesRef.current?.scrollToIndex({
+        index: 0,
+        animated: true
+      });
+    }
+  };
+
+  useEffect(() => {
+    // Pornim auto-scroll
+    autoScrollTimer.current = setInterval(scrollToNextSlide, 3000);
+
+    // Cleanup la unmount
+    return () => {
+      if (autoScrollTimer.current) {
+        clearInterval(autoScrollTimer.current);
+      }
+    };
+  }, [currentIndex]);
+
+  const handleMomentumScrollEnd = () => {
+    // Resetăm timer-ul când utilizatorul face scroll manual
+    if (autoScrollTimer.current) {
+      clearInterval(autoScrollTimer.current);
+    }
+    autoScrollTimer.current = setInterval(scrollToNextSlide, 3000);
+  };
 
   const renderItem = ({ item }: { item: Slide }) => {
     return (
@@ -120,6 +156,7 @@ export function OnboardingSlides() {
         onViewableItemsChanged={viewableItemsChanged}
         viewabilityConfig={viewConfig}
         ref={slidesRef}
+        onMomentumScrollEnd={handleMomentumScrollEnd}
       />
       <Paginator />
     </View>
