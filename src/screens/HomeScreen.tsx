@@ -1,12 +1,14 @@
 import React from 'react';
 import { View, Text, StyleSheet, Button } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { signOut } from '../config/firebase';
+import { useAuth } from '../hooks/useAuth';
 
 export function HomeScreen() {
+  const { logout } = useAuth();
+
   const handleSignOut = async () => {
     try {
-      await signOut();
+      await logout();
     } catch (error) {
       console.error('Error signing out:', error);
     }

@@ -337,6 +337,37 @@ Aplicația are ca scop să ofere suport persoanelor cu ADHD în gestionarea prov
 - Testare mai ușoară
 - Deployment simplificat
 
+## Development Log
+
+### 2025-02-08: Implementare Persistență Login și Îmbunătățiri Autentificare
+
+#### Modificări Implementate:
+1. **Persistență Login**
+   - Implementat salvarea credențialelor în AsyncStorage
+   - Adăugat reautentificare automată la repornirea aplicației
+   - Actualizat logica de logout pentru a curăța credențialele salvate
+
+2. **Îmbunătățiri Autentificare**
+   - Refactorizat funcționalitatea de signOut pentru a folosi instanța corectă de Firebase Auth
+   - Standardizat numele funcțiilor de autentificare (register -> signUp)
+   - Actualizat RegisterScreen pentru a folosi noile denumiri
+
+3. **Bugfix-uri**
+   - Rezolvat problema cu logout-ul care nu funcționa corect
+   - Eliminat proprietatea newArchEnabled din app.json
+   - Rezolvat conflictul între package-lock.json și yarn.lock
+
+#### Testing:
+- ✅ Login persistă după force stop
+- ✅ Logout funcționează corect și curăță credențialele
+- ✅ Înregistrare nouă funcționează
+- ✅ Navigare între ecrane funcționează corespunzător
+
+#### Next Steps:
+- [ ] Implementare recuperare parolă
+- [ ] Adăugare validări suplimentare pentru formularele de autentificare
+- [ ] Implementare profil utilizator
+
 ## Feature Toggle System
 
 ```javascript

@@ -1,18 +1,21 @@
 import { initializeApp, getApps, FirebaseApp } from 'firebase/app';
 import { 
   initializeAuth,
-  browserLocalPersistence,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signOut as firebaseSignOut,
   Auth,
   UserCredential,
-  AuthError as FirebaseAuthError
+  AuthError as FirebaseAuthError,
+  getAuth,
+  setPersistence,
+  inMemoryPersistence
 } from 'firebase/auth';
 import {
   getFirestore,
   Firestore
 } from 'firebase/firestore';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Verificăm dacă toate variabilele de mediu necesare sunt definite
 const requiredEnvVars = [
@@ -70,12 +73,19 @@ export function initializeFirebaseApp(): FirebaseApp {
 export function initializeFirebaseAuth(): Auth {
   console.log('Inițializare Firebase Auth...');
   if (!auth) {
-    const firebaseApp = initializeFirebaseApp();
-    console.log('Got Firebase App instance, initializing Auth with memory persistence');
-    auth = initializeAuth(firebaseApp, {
-      persistence: browserLocalPersistence
-    });
-    console.log('Firebase Auth initialized successfully');
+    const app = initializeFirebaseApp();
+    console.log('Got Firebase App instance, initializing Auth...');
+    
+    auth = initializeAuth(app);
+    
+    // Setăm persistența pentru React Native
+    setPersistence(auth, inMemoryPersistence)
+      .then(() => {
+        console.log('Firebase Auth persistence set to inMemory');
+      })
+      .catch((error) => {
+        console.error('Error setting persistence:', error);
+      });
   }
   return auth;
 }
@@ -150,8 +160,8 @@ export const signUpWithEmail = async (
 
 export const signOut = async (): Promise<void | AuthError> => {
   try {
-    const auth = initializeFirebaseAuth();
-    await auth.signOut();
+    const auth = getFirebaseAuth();
+    await firebaseSignOut(auth);
   } catch (error: any) {
     console.error('Error signing out:', error);
     const authError: AuthError = {
