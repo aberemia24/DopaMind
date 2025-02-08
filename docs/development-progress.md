@@ -24,8 +24,9 @@ Task Management este o componentă centrală a aplicației DopaMind, proiectată
   - Sprijin în momente dificile
 - [x] Auto-scroll pentru slideshow (3s/slide)
 - [x] Butoane de autentificare stilizate (Email + Google)
-- [ ] Implementare autentificare cu Google
-- [ ] Profil utilizator și preferințe
+- [x] Implementare autentificare cu Google
+- [x] Profil utilizator și preferințe
+- [x] Localizare completă
 
 ### Următoarele Features Planificate
 1. Time Blindness Support

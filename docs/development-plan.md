@@ -52,6 +52,42 @@ Aplicația are ca scop să ofere suport persoanelor cu ADHD în gestionarea prov
 - [ ] Testare completă a fluxului de autentificare
 - [ ] Adăugare animații de tranziție între ecrane
 
+### 09.02.2025: Implementare Localizare
+
+#### Modificări Principale:
+1. **Sistem de Traduceri**
+   - Implementat sistem complet de localizare folosind i18next și expo-localization
+   - Adăugate fișiere de traducere pentru română (default) și engleză
+   - Configurare pentru detecție automată a limbii dispozitivului
+
+2. **Refactorizare Componente**
+   - WelcomeScreen: 
+     - Butoane de login localizate
+     - Slideshow cu texte din traduceri
+   - LoginScreen:
+     - Titlu, placeholdere și mesaje de eroare localizate
+     - Îmbunătățit type safety pentru returnKeyType
+   - RegisterScreen:
+     - Titlu și placeholdere localizate
+     - Adăugat container pentru input-uri
+   - Navigation:
+     - Titluri de screen-uri localizate
+
+3. **Îmbunătățiri TypeScript**
+   - Adăugat type safety pentru resursele i18n
+   - Implementat type guards pentru limbi suportate
+   - Refactorizat getDeviceLanguage pentru type safety
+
+4. **Best Practices**
+   - Creat ghid de best practices în `docs/best-practices.md`
+   - Adăugat memory pentru dezvoltare viitoare
+   - Standardizat modul de organizare a cheilor de traducere
+
+#### Următorii Pași:
+1. Testare completă a sistemului de localizare
+2. Adăugarea de teste pentru verificarea traducerilor
+3. Implementarea unui sistem de schimbare dinamică a limbii
+
 ## Stiva Tehnologică
 
 ### Frontend
