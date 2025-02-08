@@ -242,3 +242,31 @@ enum taskStatus {
   "TasksEmptyState": "Nu există task-uri"
 }
 ```
+
+## TypeScript vs JavaScript
+
+### Reguli de Utilizare
+- Tot codul nou **TREBUIE** scris în TypeScript
+- Codul existent în JavaScript poate rămâne așa până la modificări majore
+- La modificări majore ale unui fișier JavaScript, acesta **TREBUIE** convertit la TypeScript
+- Fișierele JavaScript existente **TREBUIE** să folosească PropTypes pentru validarea tipurilor
+
+```typescript
+// ✅ Corect - Cod nou în TypeScript
+interface TaskProps {
+  id: string;
+  title: string;
+  completed: boolean;
+}
+
+// ✅ Acceptabil - Cod existent în JavaScript cu PropTypes
+TaskItem.propTypes = {
+  id: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,
+  completed: PropTypes.bool.isRequired
+};
+
+// ❌ Incorect - Cod nou în JavaScript
+export function NewComponent(props) {
+  // ...
+}
