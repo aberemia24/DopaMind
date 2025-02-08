@@ -21,7 +21,7 @@ export function RegisterScreen({ navigation }: Props) {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [localError, setLocalError] = useState<string | null>(null);
-  const { register, error: authError } = useAuth();
+  const { signUp, error: authError } = useAuth();
 
   const handleRegister = async () => {
     if (!email || !password || !confirmPassword) {
@@ -36,7 +36,7 @@ export function RegisterScreen({ navigation }: Props) {
 
     setLocalError(null);
     setIsLoading(true);
-    const success = await register(email, password);
+    const success = await signUp(email, password);
     setIsLoading(false);
 
     if (success) {
