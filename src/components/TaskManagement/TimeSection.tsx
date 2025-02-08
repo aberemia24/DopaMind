@@ -1,10 +1,34 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Animated } from 'react-native';
-import PropTypes from 'prop-types';
 import TaskItem from './TaskItem';
-import { TIME_PERIODS } from '../../constants/taskTypes';
+import { TIME_PERIODS, type TimePeriodKey } from '../../constants/taskTypes';
+import type { Task } from '../../services/taskService';
 
-const TimeSection = ({ timePeriod, tasks, onAddTask, onToggleTask, onDeleteTask, onUpdateTask }) => {
+interface TimePeriod {
+  id: TimePeriodKey;
+  label: string;
+  icon: string;
+  timeFrame: string;
+  description: string;
+}
+
+interface TimeSectionProps {
+  timePeriod: TimePeriod;
+  tasks: Task[];
+  onAddTask: () => void;
+  onToggleTask: (taskId: string) => void;
+  onDeleteTask: (taskId: string) => void;
+  onUpdateTask: (taskId: string, task: Task) => void;
+}
+
+const TimeSection: React.FC<TimeSectionProps> = ({ 
+  timePeriod, 
+  tasks, 
+  onAddTask, 
+  onToggleTask, 
+  onDeleteTask, 
+  onUpdateTask 
+}) => {
   const isCurrentPeriod = () => {
     const now = new Date();
     const [startHour] = timePeriod.timeFrame.split(' - ')[0].split(':').map(Number);
@@ -84,32 +108,17 @@ const TimeSection = ({ timePeriod, tasks, onAddTask, onToggleTask, onDeleteTask,
   );
 };
 
-TimeSection.propTypes = {
-  timePeriod: PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    label: PropTypes.string.isRequired,
-    icon: PropTypes.string.isRequired,
-    timeFrame: PropTypes.string.isRequired,
-    description: PropTypes.string.isRequired
-  }).isRequired,
-  tasks: PropTypes.arrayOf(PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    title: PropTypes.string.isRequired,
-    completed: PropTypes.bool.isRequired,
-    isPriority: PropTypes.bool.isRequired
-  })).isRequired,
-  onAddTask: PropTypes.func.isRequired,
-  onToggleTask: PropTypes.func.isRequired,
-  onDeleteTask: PropTypes.func.isRequired,
-  onUpdateTask: PropTypes.func.isRequired
-};
-
 const styles = StyleSheet.create({
   timeSection: {
-    marginBottom: 24,
     backgroundColor: '#F9FAFB',
     borderRadius: 12,
-    padding: 16
+    padding: 16,
+    marginBottom: 24,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
   currentTimeSection: {
     borderWidth: 2,

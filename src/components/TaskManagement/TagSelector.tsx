@@ -1,9 +1,22 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, TextInput } from 'react-native';
-import PropTypes from 'prop-types';
 import { TASK_TAGS } from '../../constants/taskTags';
+import type { TaskTagKey } from '../../constants/taskTags';
 
-const TagSelector = ({ selectedTags, onTagToggle, onAddCustomTag }) => {
+interface CustomTag {
+  id: string;
+  label: string;
+  color: string;
+  isCustom: boolean;
+}
+
+interface TagSelectorProps {
+  selectedTags: string[];
+  onTagToggle: (tagId: string) => void;
+  onAddCustomTag: (tag: CustomTag) => void;
+}
+
+const TagSelector: React.FC<TagSelectorProps> = ({ selectedTags, onTagToggle, onAddCustomTag }) => {
   const [newTagText, setNewTagText] = useState('');
   const [showCustomInput, setShowCustomInput] = useState(false);
 
@@ -11,7 +24,7 @@ const TagSelector = ({ selectedTags, onTagToggle, onAddCustomTag }) => {
     if (newTagText.trim()) {
       const customTagId = `custom_${Date.now()}`;
       
-      const newTag = {
+      const newTag: CustomTag = {
         id: customTagId,
         label: newTagText.trim(),
         color: '#333333', // Culoare neutră pentru text
@@ -25,7 +38,7 @@ const TagSelector = ({ selectedTags, onTagToggle, onAddCustomTag }) => {
     }
   };
 
-  const handleTagPress = (tagId) => {
+  const handleTagPress = (tagId: TaskTagKey | string) => {
     onTagToggle(tagId);
     setShowCustomInput(false);
   };
@@ -42,7 +55,7 @@ const TagSelector = ({ selectedTags, onTagToggle, onAddCustomTag }) => {
               selectedTags.includes(tag.id) && styles.tagSelected,
               selectedTags.includes(tag.id) && { backgroundColor: tag.color + '40' }
             ]}
-            onPress={() => onTagToggle(tag.id)}
+            onPress={() => handleTagPress(tag.id)}
           >
             <Text
               style={[
@@ -103,95 +116,79 @@ const TagSelector = ({ selectedTags, onTagToggle, onAddCustomTag }) => {
   );
 };
 
-TagSelector.propTypes = {
-  selectedTags: PropTypes.arrayOf(PropTypes.string).isRequired,
-  onTagToggle: PropTypes.func.isRequired,
-  onAddCustomTag: PropTypes.func.isRequired
-};
-
 const styles = StyleSheet.create({
   container: {
-    marginTop: 8,
-    paddingTop: 8,
-    borderTopWidth: 1,
-    borderTopColor: '#eee'
+    marginVertical: 8,
   },
   tagsContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    paddingHorizontal: 12,
-    gap: 8
+    marginBottom: 8,
   },
   tag: {
+    borderRadius: 16,
     paddingHorizontal: 12,
     paddingVertical: 6,
-    borderRadius: 16,
-    flexDirection: 'row',
-    alignItems: 'center'
+    marginRight: 8,
+    marginBottom: 8,
+    minWidth: 60,
+    alignItems: 'center',
   },
   tagSelected: {
     borderWidth: 1,
-    borderColor: 'transparent'
+    borderColor: 'rgba(0,0,0,0.1)',
   },
   tagText: {
     fontSize: 14,
-    fontWeight: '500'
+    fontWeight: '500',
   },
   tagTextSelected: {
-    fontWeight: '600'
+    fontWeight: '600',
   },
   addCustomButton: {
-    marginTop: 8,
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    alignItems: 'center'
+    paddingVertical: 8,
   },
   addCustomButtonText: {
     color: '#666',
     fontSize: 14,
-    fontWeight: '500'
   },
   customTagInput: {
     marginTop: 8,
-    paddingHorizontal: 12
   },
   input: {
-    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: '#ddd',
     borderRadius: 8,
     paddingHorizontal: 12,
     paddingVertical: 8,
     fontSize: 14,
-    borderWidth: 1,
-    borderColor: '#eee'
   },
   customTagButtons: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
     marginTop: 8,
-    gap: 8
   },
   customTagButton: {
     paddingHorizontal: 16,
     paddingVertical: 8,
-    borderRadius: 8
+    borderRadius: 8,
+    marginLeft: 8,
   },
   cancelButton: {
-    backgroundColor: '#f0f0f0'
-  },
-  addButton: {
-    backgroundColor: '#4CAF50'
+    backgroundColor: '#f5f5f5',
   },
   cancelButtonText: {
     color: '#666',
-    fontWeight: '500'
+  },
+  addButton: {
+    backgroundColor: '#4CAF50',
   },
   addButtonText: {
     color: '#fff',
-    fontWeight: '500'
   },
   addButtonTextDisabled: {
-    opacity: 0.5
-  }
+    opacity: 0.5,
+  },
 });
 
 export default TagSelector;
