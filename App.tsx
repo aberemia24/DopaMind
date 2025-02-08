@@ -4,6 +4,7 @@ import { initializeFirebaseApp, initializeFirebaseAuth, initializeFirestore } fr
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Navigation } from './src/navigation';
+import './src/i18n';  // Import i18n configuration
 
 export default function App() {
   const [isInitializing, setIsInitializing] = useState(true);

@@ -11,10 +11,13 @@ import { FontAwesome } from '@expo/vector-icons';
 import { OnboardingSlides } from '../components/Onboarding/OnboardingSlides';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation';
+import { useTranslation } from 'react-i18next';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Welcome'>;
 
 export function WelcomeScreen({ navigation }: Props) {
+  const { t } = useTranslation();
+  
   const handleEmailLogin = () => {
     navigation.navigate('Login');
   };
@@ -37,7 +40,7 @@ export function WelcomeScreen({ navigation }: Props) {
         >
           <MaterialIcons name="email" size={24} color="#2E2E2E" style={styles.buttonIcon} />
           <Text style={styles.emailButtonText}>
-            Conectați-vă cu adresa de e-mail
+            {t('welcome.buttons.emailLogin')}
           </Text>
         </TouchableOpacity>
 
@@ -47,7 +50,7 @@ export function WelcomeScreen({ navigation }: Props) {
         >
           <FontAwesome name="google" size={24} color="#fff" style={styles.buttonIcon} />
           <Text style={[styles.googleButtonText, { color: '#fff' }]}>
-            Conectează-te cu Google
+            {t('welcome.buttons.googleLogin')}
           </Text>
         </TouchableOpacity>
       </View>

@@ -1,49 +1,55 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   Dimensions,
   Image,
-  FlatList,
-  TouchableOpacity,
   Animated,
+  TouchableOpacity,
+  FlatList,
+  ViewToken,
+  ListRenderItem,
 } from 'react-native';
+import { useTranslation } from 'react-i18next';
+
+const AnimatedFlatList = Animated.createAnimatedComponent(FlatList<Slide>);
 
 const { width } = Dimensions.get('window');
 
 interface Slide {
   id: string;
-  title: string;
-  description: string;
+  titleKey: string;
+  descriptionKey: string;
   image: any;
 }
 
 const slides: Slide[] = [
   {
     id: '1',
-    title: 'Depășește Overwhelm-ul',
-    description: 'Te ajutăm să transformi lista copleșitoare de sarcini într-un plan clar și realizabil.',
+    titleKey: 'onboarding.slides.slide1.title',
+    descriptionKey: 'onboarding.slides.slide1.description',
     image: require('./Multitasking-bro.png'),
   },
   {
     id: '2',
-    title: 'Sistem Adaptat pentru ADHD',
-    description: 'Folosim tehnici dovedite științific pentru a gestiona mai ușor timpul și sarcinile cu ADHD.',
+    titleKey: 'onboarding.slides.slide2.title',
+    descriptionKey: 'onboarding.slides.slide2.description',
     image: require('./Task-bro.png'),
   },
   {
     id: '3',
-    title: 'Sprijin în Momente Dificile',
-    description: 'Ai acces instant la tehnici de calmare și focus când te simți copleșit sau blocat.',
+    titleKey: 'onboarding.slides.slide3.title',
+    descriptionKey: 'onboarding.slides.slide3.description',
     image: require('./Mental health-bro.png'),
   },
 ];
 
 export function OnboardingSlides() {
+  const { t } = useTranslation();
   const [currentIndex, setCurrentIndex] = useState(0);
   const scrollX = useRef(new Animated.Value(0)).current;
-  const slidesRef = useRef<FlatList>(null);
+  const slidesRef = useRef<FlatList<Slide>>(null);
   const autoScrollTimer = useRef<NodeJS.Timeout>();
 
   const viewableItemsChanged = useRef(({ viewableItems }: any) => {
@@ -87,7 +93,7 @@ export function OnboardingSlides() {
     autoScrollTimer.current = setInterval(scrollToNextSlide, 3000);
   };
 
-  const renderItem = ({ item }: { item: Slide }) => {
+  const renderItem: ListRenderItem<Slide> = ({ item }) => {
     return (
       <View style={styles.slide}>
         <Image 
@@ -96,51 +102,16 @@ export function OnboardingSlides() {
           resizeMode="contain"
         />
         <View style={styles.textContainer}>
-          <Text style={styles.title}>{item.title}</Text>
-          <Text style={styles.description}>{item.description}</Text>
+          <Text style={styles.title}>{t(item.titleKey)}</Text>
+          <Text style={styles.description}>{t(item.descriptionKey)}</Text>
         </View>
-      </View>
-    );
-  };
-
-  const Paginator = () => {
-    return (
-      <View style={styles.paginationContainer}>
-        {slides.map((_, i) => {
-          const inputRange = [(i - 1) * width, i * width, (i + 1) * width];
-          
-          const dotWidth = scrollX.interpolate({
-            inputRange,
-            outputRange: [8, 16, 8],
-            extrapolate: 'clamp',
-          });
-
-          const opacity = scrollX.interpolate({
-            inputRange,
-            outputRange: [0.3, 1, 0.3],
-            extrapolate: 'clamp',
-          });
-
-          return (
-            <Animated.View
-              key={i.toString()}
-              style={[
-                styles.dot,
-                {
-                  width: dotWidth,
-                  opacity,
-                },
-              ]}
-            />
-          );
-        })}
       </View>
     );
   };
 
   return (
     <View style={styles.container}>
-      <FlatList
+      <AnimatedFlatList
         data={slides}
         renderItem={renderItem}
         horizontal
@@ -150,15 +121,28 @@ export function OnboardingSlides() {
         keyExtractor={(item) => item.id}
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { x: scrollX } } }],
-          { useNativeDriver: false }
+          { useNativeDriver: true }
         )}
+        onMomentumScrollEnd={handleMomentumScrollEnd}
         scrollEventThrottle={32}
         onViewableItemsChanged={viewableItemsChanged}
         viewabilityConfig={viewConfig}
         ref={slidesRef}
-        onMomentumScrollEnd={handleMomentumScrollEnd}
       />
-      <Paginator />
+      
+      <View style={styles.dotsContainer}>
+        {slides.map((_, index) => (
+          <View
+            key={index}
+            style={[
+              styles.dot,
+              {
+                backgroundColor: currentIndex === index ? '#6495ED' : '#E0E0E0',
+              },
+            ]}
+          />
+        ))}
+      </View>
     </View>
   );
 }
@@ -199,7 +183,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     paddingHorizontal: 20,
   },
-  paginationContainer: {
+  dotsContainer: {
     flexDirection: 'row',
     height: 40,
     justifyContent: 'center',
@@ -208,7 +192,7 @@ const styles = StyleSheet.create({
   dot: {
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#6495ED',
+    backgroundColor: '#E0E0E0',
     marginHorizontal: 4,
   },
 });

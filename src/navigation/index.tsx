@@ -8,6 +8,7 @@ import TaskManagementScreen from '../screens/TaskManagementScreen';
 import { WelcomeScreen } from '../screens/WelcomeScreen';
 import { useAuth } from '../hooks/useAuth';
 import { ActivityIndicator, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 export type RootStackParamList = {
   Home: undefined;
@@ -21,6 +22,7 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export function Navigation() {
   const { isAuthenticated, loading } = useAuth();
+  const { t } = useTranslation();
 
   useEffect(() => {
     console.log('Navigation state:', { loading, isAuthenticated });
@@ -58,7 +60,7 @@ export function Navigation() {
               component={LoginScreen}
               options={{
                 headerShown: true,
-                title: 'Conectare'
+                title: t('navigation.titles.login')
               }}
             />
             <Stack.Screen 
@@ -66,7 +68,7 @@ export function Navigation() {
               component={RegisterScreen}
               options={{
                 headerShown: true,
-                title: 'Înregistrare'
+                title: t('navigation.titles.register')
               }}
             />
           </Stack.Group>
@@ -76,7 +78,7 @@ export function Navigation() {
               name="TaskManagement" 
               component={TaskManagementScreen}
               options={{
-                title: 'DopaMind - Tasks',
+                title: t('navigation.titles.taskManagement'),
                 headerBackVisible: false,
               }}
             />
@@ -84,7 +86,7 @@ export function Navigation() {
               name="Home" 
               component={HomeScreen}
               options={{
-                title: 'DopaMind'
+                title: t('navigation.titles.home')
               }}
             />
           </Stack.Group>
