@@ -8,16 +8,11 @@ import {
   ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
-  InteractionManager,
   Keyboard,
 } from 'react-native';
 import { useAuth } from '../hooks/useAuth';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation';
-
-if (Platform.OS === 'android' && InteractionManager.setLayoutAnimationEnabledExperimental) {
-  InteractionManager.setLayoutAnimationEnabledExperimental(true);
-}
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
@@ -32,9 +27,7 @@ export function LoginScreen({ navigation }: Props) {
 
   useEffect(() => {
     console.log('LoginScreen: Se încearcă focusarea email input-ului');
-    InteractionManager.runAfterInteractions(() => {
-      emailInputRef.current?.focus();
-    });
+    emailInputRef.current?.focus();
   }, []);
 
   const handleLogin = async () => {
