@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import {
+import React, { useState, useEffect } from 'react';
+import { 
   View,
   ScrollView,
   StyleSheet,
@@ -11,29 +11,20 @@ import {
   Text,
 } from 'react-native';
 import TimeSection from '../components/TaskManagement/TimeSection';
-import { TIME_PERIODS } from '../constants/taskTypes';
+import { TIME_PERIODS, type TimePeriodKey } from '../constants/taskTypes';
 import { useAuth } from '../hooks/useAuth';
 import { useTranslation } from 'react-i18next';
 import { MaterialIcons } from '@expo/vector-icons';
-
-interface Task {
-  id: string;
-  title: string;
-  completed: boolean;
-  status: 'not_started' | 'in_progress' | 'completed';
-  isPriority: boolean;
-}
+import type { Task } from '../services/taskService';
 
 interface TasksByPeriod {
-  morning: Task[];
-  afternoon: Task[];
-  evening: Task[];
+  MORNING: Task[];
+  AFTERNOON: Task[];
+  EVENING: Task[];
 }
 
-type TimePeriodId = 'morning' | 'afternoon' | 'evening';
-
 interface TimePeriod {
-  id: TimePeriodId;
+  id: TimePeriodKey;
   label: string;
   icon: string;
   timeFrame: string;
@@ -44,27 +35,27 @@ const TaskManagementScreen: React.FC = () => {
   const { signOut } = useAuth();
   const { t } = useTranslation();
   const [tasks, setTasks] = useState<TasksByPeriod>({
-    morning: [],
-    afternoon: [],
-    evening: []
+    MORNING: [],
+    AFTERNOON: [],
+    EVENING: []
   });
 
   const getTotalTaskCount = (): number => {
-    return tasks.morning.length + tasks.afternoon.length + tasks.evening.length;
+    return tasks.MORNING.length + tasks.AFTERNOON.length + tasks.EVENING.length;
   };
 
-  const showSoftLimitWarning = (periodId: TimePeriodId, onConfirm: () => void): void => {
+  const showSoftLimitWarning = (periodId: TimePeriodKey, onConfirm: () => void): void => {
     if (getTotalTaskCount() >= 3) {
       Alert.alert(
         "Ești sigur?",
-        "Ești sigur că nu e prea mult? Încearcă să te concentrezi pe maximum 3 sarcini prioritare.",
+        "Ai deja 3 sau mai multe task-uri. Este recomandat să nu ai prea multe task-uri simultan pentru a evita supraîncărcarea. Vrei să continui?",
         [
           {
-            text: "Renunț",
+            text: "Nu, renunț",
             style: "cancel"
           },
-          { 
-            text: "Adaug oricum", 
+          {
+            text: "Da, adaug task",
             onPress: onConfirm
           }
         ]
@@ -74,14 +65,16 @@ const TaskManagementScreen: React.FC = () => {
     }
   };
 
-  const handleAddTask = (periodId: TimePeriodId): void => {
+  const handleAddTask = (periodId: TimePeriodKey): void => {
     const addNewTask = () => {
       const newTask: Task = {
         id: Date.now().toString(),
         title: '',
         completed: false,
-        status: 'not_started',
-        isPriority: getTotalTaskCount() < 3
+        isPriority: false,
+        userId: 'current_user', // TODO: Get from auth context
+        periodId: periodId,
+        createdAt: new Date().toISOString()
       };
       setTasks(prev => ({
         ...prev,
@@ -92,46 +85,38 @@ const TaskManagementScreen: React.FC = () => {
     showSoftLimitWarning(periodId, addNewTask);
   };
 
-  const handleToggleTask = (periodId: TimePeriodId, taskId: string): void => {
-    setTasks(prev => ({
-      ...prev,
-      [periodId]: prev[periodId].map(task => 
-        task.id === taskId ? { ...task, completed: !task.completed } : task
-      )
-    }));
-  };
-
-  const handleDeleteTask = (periodId: TimePeriodId, taskId: string): void => {
+  const handleToggleTask = (taskId: string): void => {
     setTasks(prev => {
-      const newTasks = {
-        ...prev,
-        [periodId]: prev[periodId].filter(task => task.id !== taskId)
-      };
-      
-      const allTasks = [
-        ...newTasks.morning,
-        ...newTasks.afternoon,
-        ...newTasks.evening
-      ];
-      
-      ['morning', 'afternoon', 'evening'].forEach(period => {
-        newTasks[period as TimePeriodId] = newTasks[period as TimePeriodId].map((task, index) => ({
-          ...task,
-          isPriority: allTasks.indexOf(task) < 3
-        }));
+      const newTasks = { ...prev };
+      Object.keys(newTasks).forEach((periodId) => {
+        newTasks[periodId as TimePeriodKey] = newTasks[periodId as TimePeriodKey].map(task =>
+          task.id === taskId ? { ...task, completed: !task.completed } : task
+        );
       });
-      
       return newTasks;
     });
   };
 
-  const handleUpdateTask = (periodId: TimePeriodId, taskId: string, updatedTask: Task): void => {
-    setTasks(prev => ({
-      ...prev,
-      [periodId]: prev[periodId].map(task => 
-        task.id === taskId ? { ...updatedTask, isPriority: task.isPriority } : task
-      )
-    }));
+  const handleDeleteTask = (taskId: string): void => {
+    setTasks(prev => {
+      const newTasks = { ...prev };
+      Object.keys(newTasks).forEach((periodId) => {
+        newTasks[periodId as TimePeriodKey] = newTasks[periodId as TimePeriodKey].filter(task => task.id !== taskId);
+      });
+      return newTasks;
+    });
+  };
+
+  const handleUpdateTask = (taskId: string, updatedTask: Task): void => {
+    setTasks(prev => {
+      const newTasks = { ...prev };
+      Object.keys(newTasks).forEach((periodId) => {
+        newTasks[periodId as TimePeriodKey] = newTasks[periodId as TimePeriodKey].map(task =>
+          task.id === taskId ? { ...updatedTask } : task
+        );
+      });
+      return newTasks;
+    });
   };
 
   return (
@@ -153,15 +138,21 @@ const TaskManagementScreen: React.FC = () => {
           contentContainerStyle={styles.scrollContent}
           keyboardShouldPersistTaps="handled"
         >
-          {(Object.values(TIME_PERIODS) as Array<{ id: TimePeriodId, label: string, icon: string, timeFrame: string, description: string }>).map((period) => (
+          {Object.values(TIME_PERIODS).map((period) => (
             <TimeSection
               key={period.id}
-              timePeriod={period}
-              tasks={tasks[period.id]}
-              onAddTask={() => handleAddTask(period.id)}
-              onToggleTask={(taskId) => handleToggleTask(period.id, taskId)}
-              onDeleteTask={(taskId) => handleDeleteTask(period.id, taskId)}
-              onUpdateTask={(taskId, task) => handleUpdateTask(period.id, taskId, task)}
+              timePeriod={{
+                id: period.id.toUpperCase() as TimePeriodKey,
+                label: period.label,
+                icon: period.icon,
+                timeFrame: period.timeFrame,
+                description: period.description
+              }}
+              tasks={tasks[period.id.toUpperCase() as TimePeriodKey] || []}
+              onAddTask={() => handleAddTask(period.id.toUpperCase() as TimePeriodKey)}
+              onToggleTask={handleToggleTask}
+              onDeleteTask={handleDeleteTask}
+              onUpdateTask={handleUpdateTask}
             />
           ))}
         </ScrollView>
@@ -173,7 +164,7 @@ const TaskManagementScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff'
+    backgroundColor: '#F9FAFB',
   },
   header: {
     flexDirection: 'row',

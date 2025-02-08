@@ -1,9 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Animated, InteractionManager } from 'react-native';
-import PropTypes from 'prop-types';
-import { TASK_STATUS } from '../../constants/taskTypes';
+import type { Task } from '../../services/taskService';
 
-const TaskItem = ({ 
+interface TaskItemProps {
+  task: Task;
+  onToggle: (taskId: string) => void;
+  onDelete: (taskId: string) => void;
+  onUpdate: (task: Task) => void;
+  isPriority?: boolean;
+}
+
+const TaskItem: React.FC<TaskItemProps> = ({ 
   task, 
   onToggle, 
   onDelete, 
@@ -13,7 +20,7 @@ const TaskItem = ({
   const [title, setTitle] = useState(task.title);
   const [isEditing, setIsEditing] = useState(!task.title);
   const fadeAnim = useRef(new Animated.Value(1)).current;
-  const inputRef = useRef(null);
+  const inputRef = useRef<TextInput>(null);
 
   useEffect(() => {
     if (task.completed) {
@@ -30,7 +37,7 @@ const TaskItem = ({
   useEffect(() => {
     if (isEditing && inputRef.current) {
       InteractionManager.runAfterInteractions(() => {
-        inputRef.current.focus();
+        inputRef.current?.focus();
       });
     }
   }, [isEditing]);
@@ -48,7 +55,7 @@ const TaskItem = ({
       setTitle(task.title);
       setIsEditing(false);
     } else {
-      onDelete();
+      onDelete(task.id);
     }
   };
 
@@ -60,7 +67,7 @@ const TaskItem = ({
     ]}>
       <TouchableOpacity
         style={styles.checkbox}
-        onPress={onToggle}
+        onPress={() => onToggle(task.id)}
         accessibilityRole="checkbox"
         accessibilityState={{ checked: task.completed }}
         accessibilityLabel={`Marchează task-ul ${title} ca ${task.completed ? 'neterminat' : 'terminat'}`}
@@ -107,7 +114,7 @@ const TaskItem = ({
         {!isEditing && (
           <TouchableOpacity
             style={styles.deleteButton}
-            onPress={onDelete}
+            onPress={() => onDelete(task.id)}
             accessibilityRole="button"
             accessibilityLabel="Șterge task-ul"
           >
@@ -117,18 +124,6 @@ const TaskItem = ({
       </View>
     </Animated.View>
   );
-};
-
-TaskItem.propTypes = {
-  task: PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    title: PropTypes.string.isRequired,
-    completed: PropTypes.bool.isRequired
-  }).isRequired,
-  onToggle: PropTypes.func.isRequired,
-  onDelete: PropTypes.func.isRequired,
-  onUpdate: PropTypes.func.isRequired,
-  isPriority: PropTypes.bool
 };
 
 const styles = StyleSheet.create({
