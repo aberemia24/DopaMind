@@ -1,48 +1,99 @@
 import React, { useState } from 'react';
-import { View, ScrollView, StyleSheet, SafeAreaView, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, ScrollView, StyleSheet, SafeAreaView, KeyboardAvoidingView, Platform, Alert } from 'react-native';
 import TimeSection from '../components/TaskManagement/TimeSection';
 import { TIME_PERIODS } from '../constants/taskTypes';
 
 const TaskManagementScreen = () => {
   const [tasks, setTasks] = useState({
-    morning: null,
-    afternoon: null,
-    evening: null
+    morning: [],
+    afternoon: [],
+    evening: []
   });
 
+  const getTotalTaskCount = () => {
+    return tasks.morning.length + tasks.afternoon.length + tasks.evening.length;
+  };
+
+  const showSoftLimitWarning = (periodId, onConfirm) => {
+    if (getTotalTaskCount() >= 3) {
+      Alert.alert(
+        "Ești sigur?",
+        "Ești sigur că nu e prea mult? Încearcă să te concentrezi pe maximum 3 sarcini prioritare.",
+        [
+          {
+            text: "Renunț",
+            style: "cancel"
+          },
+          { 
+            text: "Adaug oricum", 
+            onPress: onConfirm
+          }
+        ]
+      );
+    } else {
+      onConfirm();
+    }
+  };
+
   const handleAddTask = (periodId) => {
-    setTasks(prev => ({
-      ...prev,
-      [periodId]: {
+    const addNewTask = () => {
+      const newTask = {
         id: Date.now().toString(),
         title: '',
         completed: false,
-        status: 'not_started'
-      }
+        status: 'not_started',
+        isPriority: getTotalTaskCount() < 3 // Primele 3 task-uri overall sunt prioritare
+      };
+      setTasks(prev => ({
+        ...prev,
+        [periodId]: [...prev[periodId], newTask]
+      }));
+    };
+
+    showSoftLimitWarning(periodId, addNewTask);
+  };
+
+  const handleToggleTask = (periodId, taskId) => {
+    setTasks(prev => ({
+      ...prev,
+      [periodId]: prev[periodId].map(task => 
+        task.id === taskId ? { ...task, completed: !task.completed } : task
+      )
     }));
   };
 
-  const handleToggleTask = (periodId) => {
-    setTasks(prev => ({
-      ...prev,
-      [periodId]: {
-        ...prev[periodId],
-        completed: !prev[periodId].completed
-      }
-    }));
+  const handleDeleteTask = (periodId, taskId) => {
+    setTasks(prev => {
+      const newTasks = {
+        ...prev,
+        [periodId]: prev[periodId].filter(task => task.id !== taskId)
+      };
+      
+      // Recalculăm prioritățile după ștergere
+      const allTasks = [
+        ...newTasks.morning,
+        ...newTasks.afternoon,
+        ...newTasks.evening
+      ];
+      
+      // Actualizăm isPriority pentru toate task-urile rămase
+      ['morning', 'afternoon', 'evening'].forEach(period => {
+        newTasks[period] = newTasks[period].map((task, index) => ({
+          ...task,
+          isPriority: allTasks.indexOf(task) < 3
+        }));
+      });
+      
+      return newTasks;
+    });
   };
 
-  const handleDeleteTask = (periodId) => {
+  const handleUpdateTask = (periodId, taskId, updatedTask) => {
     setTasks(prev => ({
       ...prev,
-      [periodId]: null
-    }));
-  };
-
-  const handleUpdateTask = (periodId, updatedTask) => {
-    setTasks(prev => ({
-      ...prev,
-      [periodId]: updatedTask
+      [periodId]: prev[periodId].map(task => 
+        task.id === taskId ? { ...updatedTask, isPriority: task.isPriority } : task
+      )
     }));
   };
 
@@ -50,39 +101,35 @@ const TaskManagementScreen = () => {
     <KeyboardAvoidingView 
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.container}
-      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
     >
-      <SafeAreaView style={styles.safeArea}>
-        <ScrollView 
-          style={styles.scrollView}
-          contentContainerStyle={styles.content}
-          showsVerticalScrollIndicator={false}
+      <SafeAreaView style={styles.container}>
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
           keyboardShouldPersistTaps="handled"
-          keyboardDismissMode="interactive"
         >
           <TimeSection
             timePeriod={TIME_PERIODS.MORNING}
-            task={tasks.morning}
+            tasks={tasks.morning}
             onAddTask={() => handleAddTask('morning')}
-            onToggleTask={() => handleToggleTask('morning')}
-            onDeleteTask={() => handleDeleteTask('morning')}
-            onUpdateTask={(task) => handleUpdateTask('morning', task)}
+            onToggleTask={(taskId) => handleToggleTask('morning', taskId)}
+            onDeleteTask={(taskId) => handleDeleteTask('morning', taskId)}
+            onUpdateTask={(taskId, task) => handleUpdateTask('morning', taskId, task)}
           />
           <TimeSection
             timePeriod={TIME_PERIODS.AFTERNOON}
-            task={tasks.afternoon}
+            tasks={tasks.afternoon}
             onAddTask={() => handleAddTask('afternoon')}
-            onToggleTask={() => handleToggleTask('afternoon')}
-            onDeleteTask={() => handleDeleteTask('afternoon')}
-            onUpdateTask={(task) => handleUpdateTask('afternoon', task)}
+            onToggleTask={(taskId) => handleToggleTask('afternoon', taskId)}
+            onDeleteTask={(taskId) => handleDeleteTask('afternoon', taskId)}
+            onUpdateTask={(taskId, task) => handleUpdateTask('afternoon', taskId, task)}
           />
           <TimeSection
             timePeriod={TIME_PERIODS.EVENING}
-            task={tasks.evening}
+            tasks={tasks.evening}
             onAddTask={() => handleAddTask('evening')}
-            onToggleTask={() => handleToggleTask('evening')}
-            onDeleteTask={() => handleDeleteTask('evening')}
-            onUpdateTask={(task) => handleUpdateTask('evening', task)}
+            onToggleTask={(taskId) => handleToggleTask('evening', taskId)}
+            onDeleteTask={(taskId) => handleDeleteTask('evening', taskId)}
+            onUpdateTask={(taskId, task) => handleUpdateTask('evening', taskId, task)}
           />
         </ScrollView>
       </SafeAreaView>
@@ -95,15 +142,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff'
   },
-  safeArea: {
-    flex: 1
-  },
-  scrollView: {
-    flex: 1
-  },
-  content: {
-    padding: 16,
-    paddingBottom: 32 // Extra padding at bottom for keyboard
+  scrollContent: {
+    padding: 16
   }
 });
 
