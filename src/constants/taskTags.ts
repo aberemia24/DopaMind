@@ -1,3 +1,9 @@
+interface TaskTag {
+  id: string;
+  label: string;
+  color: string;
+}
+
 export const TASK_TAGS = {
   URGENT: {
     id: 'urgent',
@@ -24,4 +30,6 @@ export const TASK_TAGS = {
     label: 'Maybe Later',
     color: '#9E9E9E'
   }
-};
+} as const;
+
+export type TaskTagKey = keyof typeof TASK_TAGS;
