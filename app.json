@@ -46,9 +46,6 @@
           "color": "#6495ED"
         }
       ]
-    ],
-    "experiments": {
-      "newArchEnabled": false
-    }
+    ]
   }
 }
