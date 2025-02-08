@@ -176,3 +176,258 @@ Pentru întrebări sau clarificări:
 - Tech Lead: [Nume]
 - UI/UX Lead: [Nume]
 - Project Manager: [Nume]
+
+## Lessons Learned & Best Practices
+
+### 1. Keyboard Handling
+- **NU** folosiți multiple încercări de focus:
+  ```javascript
+  // ❌ EVITAȚI
+  attempts.forEach(delay => {
+    setTimeout(() => {
+      inputRef.current?.focus();
+    }, delay);
+  });
+
+  // ✅ FOLOSIȚI
+  useEffect(() => {
+    if (isEditing && inputRef.current) {
+      InteractionManager.runAfterInteractions(() => {
+        inputRef.current.focus();
+      });
+    }
+  }, [isEditing]);
+  ```
+
+- **NU** folosiți state-uri complexe pentru focus management:
+  ```javascript
+  // ❌ EVITAȚI
+  const [shouldFocusInput, setShouldFocusInput] = useState(true);
+  const [hasFocused, setHasFocused] = useState(false);
+
+  // ✅ FOLOSIȚI
+  useEffect(() => {
+    if (isEditing) {
+      inputRef.current?.focus();
+    }
+  }, [isEditing]);
+  ```
+
+### 2. Performance Optimization
+- **ÎNTOTDEAUNA** folosiți `useCallback` pentru funcții pasate ca props:
+  ```javascript
+  // ❌ EVITAȚI
+  const handleSubmit = () => {
+    onUpdate(task);
+  };
+
+  // ✅ FOLOSIȚI
+  const handleSubmit = useCallback(() => {
+    onUpdate(task);
+  }, [task, onUpdate]);
+  ```
+
+- **EVITAȚI** re-render-uri inutile:
+  ```javascript
+  // ❌ EVITAȚI
+  const styles = StyleSheet.create({ ... }); // în render
+
+  // ✅ FOLOSIȚI
+  const styles = StyleSheet.create({ ... }); // în afara componentei
+  ```
+
+### 3. State Management
+- **FOLOSIȚI** reducere pentru state complex:
+  ```javascript
+  // ❌ EVITAȚI
+  const [tasks, setTasks] = useState([]);
+  const [completedTasks, setCompletedTasks] = useState([]);
+  const [activeTask, setActiveTask] = useState(null);
+
+  // ✅ FOLOSIȚI
+  const [taskState, dispatch] = useReducer(taskReducer, initialState);
+  ```
+
+### 4. Animation Best Practices
+- **FOLOSIȚI** `useNativeDriver` când e posibil:
+  ```javascript
+  // ❌ EVITAȚI
+  Animated.timing(fadeAnim, {
+    toValue: 1,
+    duration: 200
+  })
+
+  // ✅ FOLOSIȚI
+  Animated.timing(fadeAnim, {
+    toValue: 1,
+    duration: 200,
+    useNativeDriver: true
+  })
+  ```
+
+### 5. Error Handling
+- **ÎNTOTDEAUNA** validați input-ul utilizatorului:
+  ```javascript
+  // ❌ EVITAȚI
+  const handleSubmit = () => {
+    onUpdate({ ...task, title });
+  };
+
+  // ✅ FOLOSIȚI
+  const handleSubmit = () => {
+    const trimmedTitle = title.trim();
+    if (trimmedTitle.length < 3) {
+      setError('Titlul trebuie să aibă cel puțin 3 caractere');
+      return;
+    }
+    onUpdate({ ...task, title: trimmedTitle });
+  };
+  ```
+
+### 6. Component Structure
+- **SEPARAȚI** logica de rendering:
+  ```javascript
+  // ❌ EVITAȚI
+  const TaskItem = ({ task }) => {
+    // Toată logica și rendering-ul într-o singură componentă
+  };
+
+  // ✅ FOLOSIȚI
+  const useTaskLogic = (task) => {
+    // Hook custom pentru logică
+  };
+
+  const TaskItem = ({ task }) => {
+    const { state, handlers } = useTaskLogic(task);
+    return <TaskItemView {...state} {...handlers} />;
+  };
+  ```
+
+### 7. Platform Specific Code
+- **FOLOSIȚI** Platform.select pentru cod specific platformei:
+  ```javascript
+  // ❌ EVITAȚI
+  const styles = StyleSheet.create({
+    container: Platform.OS === 'ios' ? {
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
+    } : {
+      elevation: 5,
+    }
+  });
+
+  // ✅ FOLOSIȚI
+  const styles = StyleSheet.create({
+    container: Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+      },
+      android: {
+        elevation: 5,
+      }
+    })
+  });
+  ```
+
+### 8. Testing Considerations
+- **ADĂUGAȚI** test IDs pentru componentele importante:
+  ```javascript
+  // ❌ EVITAȚI
+  <TouchableOpacity onPress={onSubmit}>
+
+  // ✅ FOLOSIȚI
+  <TouchableOpacity 
+    onPress={onSubmit}
+    testID="task-submit-button"
+  >
+  ```
+
+### 9. Accessibility
+- **FOLOSIȚI** props de accesibilitate:
+  ```javascript
+  // ❌ EVITAȚI
+  <TouchableOpacity onPress={onToggle}>
+    <Text>{completed ? '✓' : '○'}</Text>
+  </TouchableOpacity>
+
+  // ✅ FOLOSIȚI
+  <TouchableOpacity 
+    onPress={onToggle}
+    accessible={true}
+    accessibilityLabel={completed ? 'Mark task as incomplete' : 'Mark task as complete'}
+    accessibilityRole="checkbox"
+    accessibilityState={{ checked: completed }}
+  >
+    <Text>{completed ? '✓' : '○'}</Text>
+  </TouchableOpacity>
+  ```
+
+### 10. Code Organization
+- **FOLOSIȚI** o structură clară pentru imports:
+  ```javascript
+  // ❌ EVITAȚI
+  import { useState, useEffect, useCallback, useRef } from 'react';
+  import { View, Text, TouchableOpacity } from 'react-native';
+  import styles from './styles';
+  import { someUtil } from '../../utils';
+
+  // ✅ FOLOSIȚI
+  // React & React Native
+  import { useState, useEffect, useCallback, useRef } from 'react';
+  import { View, Text, TouchableOpacity } from 'react-native';
+
+  // Components & Styles
+  import styles from './styles';
+
+  // Utils & Constants
+  import { someUtil } from '../../utils';
+  ```
+
+## Probleme Întâlnite și Soluții
+
+### 1. Keyboard Flickering pe Android
+- **Problema**: Tastatura apărea și dispărea rapid pe Android
+- **Soluție**: Am folosit `InteractionManager` pentru a gestiona mai bine timing-ul focus-ului
+
+### 2. Re-render-uri Multiple
+- **Problema**: Componenta se re-renda prea des la editare
+- **Soluție**: Am implementat `useCallback` și `useMemo` pentru optimizare
+
+### 3. Memory Leaks
+- **Problema**: Memory leaks la unmounting în timpul animațiilor
+- **Soluție**: Am adăugat cleanup corect în `useEffect`
+
+### 4. Cross-Platform Inconsistencies
+- **Problema**: Comportament diferit al tastaturii pe iOS vs Android
+- **Soluție**: Am folosit `Platform.select` și configurări specifice platformei
+
+## Îmbunătățiri Viitoare
+
+### 1. Performance
+- Implementare virtualizare pentru liste lungi
+- Lazy loading pentru componente grele
+- Optimizare imagini și assets
+
+### 2. UX
+- Adăugare haptic feedback
+- Îmbunătățire animații
+- Gesture handling mai avansat
+
+### 3. Arhitectură
+- Migrare spre o arhitectură mai modulară
+- Implementare sistem de caching
+- Îmbunătățire state management
+
+## Tips pentru Dezvoltare
+
+1. **ÎNTOTDEAUNA** testați pe ambele platforme (iOS și Android)
+2. **FOLOSIȚI** React Native Debugger pentru investigarea problemelor
+3. **MONITORIZAȚI** performanța cu React Native Performance Monitor
+4. **TESTAȚI** cu diferite dimensiuni de ecran
+5. **VERIFICAȚI** comportamentul cu tastatură hardware/software
+6. **RULAȚI** testele înainte de fiecare commit
