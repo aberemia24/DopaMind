@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { HomeScreen } from '../screens/HomeScreen';
 import { LoginScreen } from '../screens/LoginScreen';
 import { RegisterScreen } from '../screens/RegisterScreen';
+import TaskManagementScreen from '../screens/TaskManagementScreen';
 import { useAuth } from '../hooks/useAuth';
 import { ActivityIndicator, View } from 'react-native';
 
@@ -11,6 +12,7 @@ export type RootStackParamList = {
   Home: undefined;
   Login: undefined;
   Register: undefined;
+  TaskManagement: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -62,6 +64,14 @@ export function Navigation() {
           </Stack.Group>
         ) : (
           <Stack.Group>
+            <Stack.Screen 
+              name="TaskManagement" 
+              component={TaskManagementScreen}
+              options={{
+                title: 'DopaMind - Tasks',
+                headerBackVisible: false,
+              }}
+            />
             <Stack.Screen 
               name="Home" 
               component={HomeScreen}
