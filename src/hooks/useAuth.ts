@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { User, onAuthStateChanged } from 'firebase/auth';
-import { getFirebaseAuth, signInWithEmail, signUpWithEmail, signOut, isAuthError, initializeFirebaseAuth } from '../config/firebase';
+import { getFirebaseAuth, signInWithEmail, signUpWithEmail, signOut as firebaseSignOut, isAuthError, initializeFirebaseAuth } from '../config/firebase';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const AUTH_STATE_KEY = '@auth_state';
@@ -128,13 +128,22 @@ export function useAuth() {
   const logout = async () => {
     try {
       setError(null);
-      await signOut();
-      // Ștergem credențialele la logout
+      await firebaseSignOut();
       await AsyncStorage.removeItem(AUTH_CREDENTIALS_KEY);
       return true;
     } catch (error) {
       setError(error instanceof Error ? error.message : 'Logout failed');
       return false;
+    }
+  };
+
+  const signOut = async () => {
+    try {
+      await firebaseSignOut();
+      setUser(null);
+    } catch (error) {
+      console.error('Error signing out:', error);
+      throw error;
     }
   };
 
@@ -145,6 +154,7 @@ export function useAuth() {
     isAuthenticated,
     login,
     logout,
-    signUp: signUpWithEmail
+    signUp: signUpWithEmail,
+    signOut,
   };
 }

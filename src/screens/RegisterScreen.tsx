@@ -12,6 +12,7 @@ import {
 import { useAuth } from '../hooks/useAuth';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation';
+import { useTranslation } from 'react-i18next';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Register'>;
 
@@ -22,6 +23,7 @@ export function RegisterScreen({ navigation }: Props) {
   const [isLoading, setIsLoading] = useState(false);
   const [localError, setLocalError] = useState<string | null>(null);
   const { signUp, error: authError } = useAuth();
+  const { t } = useTranslation();
 
   const handleRegister = async () => {
     if (!email || !password || !confirmPassword) {
@@ -55,32 +57,38 @@ export function RegisterScreen({ navigation }: Props) {
       style={styles.container}
     >
       <View style={styles.form}>
-        <Text style={styles.title}>Create Account</Text>
+        <Text style={styles.title}>{t('auth.register.createAccount')}</Text>
         
-        <TextInput
-          style={styles.input}
-          placeholder="Email"
-          value={email}
-          onChangeText={setEmail}
-          autoCapitalize="none"
-          keyboardType="email-address"
-        />
-        
-        <TextInput
-          style={styles.input}
-          placeholder="Password"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-        />
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.input}
+            value={email}
+            onChangeText={setEmail}
+            placeholder={t('inputs.placeholders.email')}
+            autoCapitalize="none"
+            keyboardType="email-address"
+          />
+        </View>
 
-        <TextInput
-          style={styles.input}
-          placeholder="Confirm Password"
-          value={confirmPassword}
-          onChangeText={setConfirmPassword}
-          secureTextEntry
-        />
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.input}
+            value={password}
+            onChangeText={setPassword}
+            placeholder={t('inputs.placeholders.password')}
+            secureTextEntry
+          />
+        </View>
+
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.input}
+            value={confirmPassword}
+            onChangeText={setConfirmPassword}
+            placeholder={t('inputs.placeholders.confirmPassword')}
+            secureTextEntry
+          />
+        </View>
         
         {error && <Text style={styles.error}>{error}</Text>}
         
@@ -126,11 +134,13 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     textAlign: 'center',
   },
+  inputContainer: {
+    marginBottom: 15,
+  },
   input: {
     backgroundColor: '#f5f5f5',
     padding: 15,
     borderRadius: 8,
-    marginBottom: 15,
     fontSize: 16,
   },
   button: {

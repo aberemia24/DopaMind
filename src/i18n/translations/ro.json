@@ -1,0 +1,146 @@
+{
+  "common": {
+    "loading": "Se încarcă...",
+    "error": "A apărut o eroare",
+    "success": "Succes",
+    "cancel": "Anulează",
+    "save": "Salvează",
+    "delete": "Șterge",
+    "edit": "Editează",
+    "unknownError": "Eroare necunoscută",
+    "firebase": {
+      "initializationStart": "Se inițializează Firebase...",
+      "initializationSuccess": "Firebase a fost inițializat cu succes",
+      "initializationError": "Eroare la inițializarea Firebase:"
+    }
+  },
+  "auth": {
+    "signIn": "Conectare",
+    "signUp": "Înregistrare",
+    "signOut": "Deconectare",
+    "email": "Email",
+    "password": "Parolă",
+    "forgotPassword": "Ai uitat parola?",
+    "fields": {
+      "email": "Email",
+      "password": "Parolă",
+      "confirmPassword": "Confirmă Parola"
+    },
+    "login": {
+      "welcome": "Bine ai revenit",
+      "submit": "Conectare",
+      "noAccount": "Nu ai cont? Înregistrează-te",
+      "focusEmail": "Se focusează câmpul de email",
+      "focusPassword": "Se încearcă focusarea câmpului de parolă",
+      "focusPasswordSuccess": "Câmpul de parolă a fost focusat",
+      "emailFocus": "Câmpul de email a primit focus",
+      "emailBlur": "Câmpul de email a pierdut focus",
+      "passwordFocus": "Câmpul de parolă a primit focus",
+      "passwordBlur": "Câmpul de parolă a pierdut focus"
+    },
+    "register": {
+      "title": "Creează Cont",
+      "createAccount": "Creează cont",
+      "submit": "Înregistrare",
+      "haveAccount": "Ai deja cont? Conectează-te",
+      "errors": {
+        "fillAllFields": "Te rugăm să completezi toate câmpurile",
+        "passwordsNotMatch": "Parolele nu coincid"
+      }
+    },
+    "errors": {
+      "signOutError": "Eroare la deconectare:"
+    }
+  },
+  "welcome": {
+    "buttons": {
+      "emailLogin": "Conectează-te cu email",
+      "googleLogin": "Conectează-te cu Google",
+      "facebookLogin": "Conectează-te cu Facebook",
+      "appleLogin": "Conectează-te cu Apple"
+    },
+    "slides": {
+      "slide1": {
+        "title": "Depășește Overwhelm-ul",
+        "description": "Te ajutăm să transformi lista copleșitoare de sarcini într-un plan clar și realizabil."
+      },
+      "slide2": {
+        "title": "Sistem Adaptat pentru ADHD",
+        "description": "Folosim tehnici dovedite științific pentru a gestiona mai ușor timpul și sarcinile cu ADHD."
+      },
+      "slide3": {
+        "title": "Sprijin în Momente Dificile",
+        "description": "Ai acces instant la tehnici de calmare și focus când te simți copleșit sau blocat."
+      }
+    }
+  },
+  "onboarding": {
+    "slides": {
+      "slide1": {
+        "title": "Depășește Overwhelm-ul",
+        "description": "Te ajutăm să transformi lista copleșitoare de sarcini într-un plan clar și realizabil."
+      },
+      "slide2": {
+        "title": "Sistem Adaptat pentru ADHD",
+        "description": "Folosim tehnici dovedite științific pentru a gestiona mai ușor timpul și sarcinile cu ADHD."
+      },
+      "slide3": {
+        "title": "Sprijin în Momente Dificile",
+        "description": "Ai acces instant la tehnici de calmare și focus când te simți copleșit sau blocat."
+      }
+    }
+  },
+  "home": {
+    "welcome": "Bine ai venit la DopaMind!",
+    "slideshow": {
+      "slide1": {
+        "title": "Depășește Overwhelm-ul",
+        "description": "Împarte sarcinile în pași gestionabili și menține focusul"
+      },
+      "slide2": {
+        "title": "Sistem Adaptat pentru ADHD",
+        "description": "Instrumente și tehnici concepute special pentru mințile cu ADHD"
+      },
+      "slide3": {
+        "title": "Sprijin în Momente Dificile",
+        "description": "Primește ajutor și îndrumare când ai mai mare nevoie"
+      }
+    }
+  },
+  "taskManagement": {
+    "title": "Sarcini",
+    "addTask": "Adaugă Sarcină",
+    "editTask": "Editează Sarcina",
+    "deleteTask": "Șterge Sarcina",
+    "taskName": "Numele Sarcinii",
+    "priority": "Prioritate",
+    "dueDate": "Data Scadentă",
+    "status": "Status",
+    "timeSlots": {
+      "morning": "Dimineață",
+      "afternoon": "După-amiază",
+      "evening": "Seară"
+    },
+    "addPriorityTask": "Adaugă un task prioritar"
+  },
+  "navigation": {
+    "titles": {
+      "welcome": "Bine ai venit",
+      "login": "Conectare",
+      "register": "Înregistrare",
+      "home": "Acasă",
+      "taskManagement": "Gestionare Sarcini"
+    }
+  },
+  "inputs": {
+    "placeholders": {
+      "email": "Adresa de email",
+      "password": "Parola",
+      "confirmPassword": "Confirmă parola"
+    },
+    "returnKeyTypes": {
+      "next": "next",
+      "done": "done"
+    }
+  }
+}

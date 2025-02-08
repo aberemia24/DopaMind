@@ -4,6 +4,90 @@
 
 Aplicația are ca scop să ofere suport persoanelor cu ADHD în gestionarea provocărilor zilnice, concentrându-se pe probleme specifice precum time blindness, hyperfocus, și task management. Abordarea este minimalistă, non-judgmental și focusată pe awareness și suport în loc de restricții.
 
+## Development Log
+
+### 2025-02-08: Implementare Persistență Login și Îmbunătățiri Autentificare
+
+#### Modificări Implementate:
+1. **Persistență Login**
+   - Implementat salvarea credențialelor în AsyncStorage
+   - Adăugat reautentificare automată la repornirea aplicației
+   - Actualizat logica de logout pentru a curăța credențialele salvate
+
+2. **Îmbunătățiri Autentificare**
+   - Refactorizat funcționalitatea de signOut pentru a folosi instanța corectă de Firebase Auth
+   - Standardizat numele funcțiilor de autentificare (register -> signUp)
+   - Actualizat RegisterScreen pentru a folosi noile denumiri
+
+3. **Bugfix-uri**
+   - Rezolvat problema cu logout-ul care nu funcționa corect
+   - Eliminat proprietatea newArchEnabled din app.json
+   - Rezolvat conflictul între package-lock.json și yarn.lock
+
+#### Testing:
+- ✅ Login persistă după force stop
+- ✅ Logout funcționează corect și curăță credențialele
+- ✅ Înregistrare nouă funcționează
+- ✅ Navigare între ecrane funcționează corespunzător
+
+#### Next Steps:
+- [ ] Implementare recuperare parolă
+- [ ] Adăugare validări suplimentare pentru formularele de autentificare
+- [ ] Implementare profil utilizator
+
+### 9 Februarie 2025
+#### Îmbunătățiri Autentificare și Onboarding
+- Am creat un nou ecran de welcome cu slideshow pentru onboarding
+- Am implementat un slideshow animat cu 3 slide-uri specifice pentru ADHD:
+  - "Depășește Overwhelm-ul" - ajută utilizatorii să gestioneze sarcinile copleșitoare
+  - "Sistem Adaptat pentru ADHD" - evidențiază tehnicile specializate
+  - "Sprijin în Momente Dificile" - prezintă funcțiile de suport
+- Am adăugat auto-scroll la slideshow (3 secunde per slide) cu tranziții smooth
+- Am stilizat butoanele de autentificare folosind MaterialIcons și FontAwesome
+- Am personalizat butonul de Google cu culorile oficiale pentru un aspect profesionist
+- Am actualizat navigarea pentru a afișa WelcomeScreen ca primul ecran pentru utilizatorii neautentificați
+
+#### Next Steps:
+- [ ] Implementare autentificare cu Google
+- [ ] Testare completă a fluxului de autentificare
+- [ ] Adăugare animații de tranziție între ecrane
+
+### 09.02.2025: Implementare Localizare
+
+#### Modificări Principale:
+1. **Sistem de Traduceri**
+   - Implementat sistem complet de localizare folosind i18next și expo-localization
+   - Adăugate fișiere de traducere pentru română (default) și engleză
+   - Configurare pentru detecție automată a limbii dispozitivului
+
+2. **Refactorizare Componente**
+   - WelcomeScreen: 
+     - Butoane de login localizate
+     - Slideshow cu texte din traduceri
+   - LoginScreen:
+     - Titlu, placeholdere și mesaje de eroare localizate
+     - Îmbunătățit type safety pentru returnKeyType
+   - RegisterScreen:
+     - Titlu și placeholdere localizate
+     - Adăugat container pentru input-uri
+   - Navigation:
+     - Titluri de screen-uri localizate
+
+3. **Îmbunătățiri TypeScript**
+   - Adăugat type safety pentru resursele i18n
+   - Implementat type guards pentru limbi suportate
+   - Refactorizat getDeviceLanguage pentru type safety
+
+4. **Best Practices**
+   - Creat ghid de best practices în `docs/best-practices.md`
+   - Adăugat memory pentru dezvoltare viitoare
+   - Standardizat modul de organizare a cheilor de traducere
+
+#### Următorii Pași:
+1. Testare completă a sistemului de localizare
+2. Adăugarea de teste pentru verificarea traducerilor
+3. Implementarea unui sistem de schimbare dinamică a limbii
+
 ## Stiva Tehnologică
 
 ### Frontend
@@ -336,37 +420,6 @@ Aplicația are ca scop să ofere suport persoanelor cu ADHD în gestionarea prov
 - Development environment consistent
 - Testare mai ușoară
 - Deployment simplificat
-
-## Development Log
-
-### 2025-02-08: Implementare Persistență Login și Îmbunătățiri Autentificare
-
-#### Modificări Implementate:
-1. **Persistență Login**
-   - Implementat salvarea credențialelor în AsyncStorage
-   - Adăugat reautentificare automată la repornirea aplicației
-   - Actualizat logica de logout pentru a curăța credențialele salvate
-
-2. **Îmbunătățiri Autentificare**
-   - Refactorizat funcționalitatea de signOut pentru a folosi instanța corectă de Firebase Auth
-   - Standardizat numele funcțiilor de autentificare (register -> signUp)
-   - Actualizat RegisterScreen pentru a folosi noile denumiri
-
-3. **Bugfix-uri**
-   - Rezolvat problema cu logout-ul care nu funcționa corect
-   - Eliminat proprietatea newArchEnabled din app.json
-   - Rezolvat conflictul între package-lock.json și yarn.lock
-
-#### Testing:
-- ✅ Login persistă după force stop
-- ✅ Logout funcționează corect și curăță credențialele
-- ✅ Înregistrare nouă funcționează
-- ✅ Navigare între ecrane funcționează corespunzător
-
-#### Next Steps:
-- [ ] Implementare recuperare parolă
-- [ ] Adăugare validări suplimentare pentru formularele de autentificare
-- [ ] Implementare profil utilizator
 
 ## Feature Toggle System
 

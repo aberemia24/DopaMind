@@ -5,11 +5,14 @@ import { HomeScreen } from '../screens/HomeScreen';
 import { LoginScreen } from '../screens/LoginScreen';
 import { RegisterScreen } from '../screens/RegisterScreen';
 import TaskManagementScreen from '../screens/TaskManagementScreen';
+import { WelcomeScreen } from '../screens/WelcomeScreen';
 import { useAuth } from '../hooks/useAuth';
 import { ActivityIndicator, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 export type RootStackParamList = {
   Home: undefined;
+  Welcome: undefined;
   Login: undefined;
   Register: undefined;
   TaskManagement: undefined;
@@ -18,11 +21,12 @@ export type RootStackParamList = {
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export function Navigation() {
-  const { isAuthenticated, loading, error } = useAuth();
+  const { isAuthenticated, loading } = useAuth();
+  const { t } = useTranslation();
 
   useEffect(() => {
-    console.log('Navigation state:', { loading, isAuthenticated, error });
-  }, [loading, isAuthenticated, error]);
+    console.log('Navigation state:', { loading, isAuthenticated });
+  }, [loading, isAuthenticated]);
 
   if (loading) {
     return (
@@ -46,19 +50,25 @@ export function Navigation() {
         }}
       >
         {!isAuthenticated ? (
-          <Stack.Group>
+          <Stack.Group screenOptions={{ headerShown: false }}>
+            <Stack.Screen 
+              name="Welcome" 
+              component={WelcomeScreen}
+            />
             <Stack.Screen 
               name="Login" 
               component={LoginScreen}
               options={{
-                title: 'Login',
+                headerShown: true,
+                title: t('navigation.titles.login')
               }}
             />
             <Stack.Screen 
               name="Register" 
               component={RegisterScreen}
               options={{
-                title: 'Register',
+                headerShown: true,
+                title: t('navigation.titles.register')
               }}
             />
           </Stack.Group>
@@ -68,7 +78,7 @@ export function Navigation() {
               name="TaskManagement" 
               component={TaskManagementScreen}
               options={{
-                title: 'DopaMind - Tasks',
+                title: t('navigation.titles.taskManagement'),
                 headerBackVisible: false,
               }}
             />
@@ -76,7 +86,7 @@ export function Navigation() {
               name="Home" 
               component={HomeScreen}
               options={{
-                title: 'DopaMind',
+                title: t('navigation.titles.home')
               }}
             />
           </Stack.Group>
