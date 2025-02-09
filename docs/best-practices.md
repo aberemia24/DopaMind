@@ -1,95 +1,135 @@
 # DopaMind Best Practices
 
-## Localizare și Texte
-- **NU** folosiți texte hardcodate în componente
-- Adăugați toate textele în fișierele de traducere (`src/i18n/translations/`)
-- Organizați cheile de traducere ierarhic (ex: `auth.login.welcome`)
-- Folosiți hook-ul `useTranslation` în componente: `const { t } = useTranslation()`
+## Priorități Critice [HIGH PRIORITY]
 
-## Componente
-- Folosiți TypeScript pentru toate componentele noi
-- Definiți explicit tipurile pentru props
-- Adăugați comentarii pentru props complexe
-- Separați logica de UI folosind custom hooks
-- Folosiți `memo` pentru componente care primesc props care se schimbă rar
+### 1. Securitate
+- Nu expune variabile de mediu sensibile în bundle
+  ```typescript
+  // ❌ Evită
+  const apiKey = "1234567890";
+  
+  // ✅ Folosește
+  const apiKey = process.env.EXPO_PUBLIC_API_KEY;
+  ```
 
-## Stilizare
-- Folosiți `StyleSheet.create` pentru stiluri
-- Respectați spacing-ul consistent (multiplii de 8)
-- Folosiți culori din paleta ADHD-friendly
-- Asigurați-vă că butoanele au minim 44x44 pixeli pentru touch
-- Folosiți `SafeAreaView` pentru a gestiona notch-ul și alte zone speciale
+### 2. Type Safety
+- Evită `any` și folosește type guards
+  ```typescript
+  // ❌ Evită
+  const handleData = (data: any) => { ... }
+  
+  // ✅ Folosește
+  interface TaskData {
+    id: string;
+    title: string;
+  }
+  const handleData = (data: TaskData) => { ... }
+  ```
 
-## Forms și Input-uri
-- Folosiți `KeyboardAvoidingView` pentru forms
-- Implementați focus management cu `useRef`
-- Adăugați validări și feedback vizual pentru erori
-- Folosiți placeholdere traduse din i18n
-- Setați corect `returnKeyType` și `keyboardType`
+### 3. Error Handling
+- Implementează error boundaries și logging
+  ```typescript
+  // ✅ Error Boundary de bază
+  class ErrorBoundary extends React.Component {
+    componentDidCatch(error: Error) {
+      // Log error
+      console.error(error);
+    }
+  }
+  ```
 
-## Navigare
-- Definiți tipurile pentru stack parameters
-- Folosiți traduceri pentru titlurile de screen-uri
-- Implementați logica de autentificare în hooks separate
+## Arhitectură și Organizare
 
-## State Management
-- Folosiți hooks pentru logica de business
-- Implementați loading states pentru operații asincrone
-- Gestionați erorile consistent și afișați-le traduse
+### Structura Proiectului
+- Organizează codul în directoare logice
+- Păstrează o structură plată pentru componente reutilizabile
+- Grupează componentele specifice feature-urilor în subdirectoare
+  ```typescript
+  // ✅ Exemplu de barrel export
+  // features/tasks/index.ts
+  export * from './components';
+  export * from './hooks';
+  ```
 
-## Type Safety
-- Definiți interfețe pentru toate modelele de date
-- Folosiți type guards pentru verificări de tip
-- Evitați folosirea tipului `any`
-- Adăugați type assertions doar când este absolut necesar
+### Navigare [HIGH PRIORITY]
+- Folosește navigatoare separate pentru stări diferite
+- Gestionează starea de autentificare la nivel de RootNavigator
+  ```typescript
+  // ✅ Exemplu de type safety în navigare
+  type RootStackParamList = {
+    Home: undefined;
+    Task: { taskId: string };
+  };
+  ```
 
-## Testing
-- Scrieți teste pentru logica de business
-- Testați flow-urile de autentificare
-- Verificați că textele sunt corect traduse
+### State Management
+- Folosește Context pentru state global
+  ```typescript
+  // ✅ Exemplu de context
+  const TaskContext = createContext<TaskContextType | null>(null);
+  ```
+- Preferă state local pentru componente izolate
 
-## Performance
-- Folosiți `useMemo` și `useCallback` pentru optimizări
-- Evitați re-renderuri inutile
-- Implementați lazy loading pentru componente mari
+## Procese de Development
 
-## Accesibilitate și UX pentru ADHD
+### Code Review Process
+1. **Self-Review Checklist**
+   - Verifică type safety
+   - Testează pe iOS și Android
+   - Verifică accesibilitate
+   - Confirmă că toate textele sunt localizate
+   - Rulează suite-ul de teste
 
-### 1. Dimensiuni Touch Target
-- Toate elementele interactive trebuie să aibă minim 44x44px
-- Spațiere minimă între elemente interactive: 8px
-- Folosiți constantele din `ACCESSIBILITY.TOUCH_TARGET`
+2. **Pull Request Template**
+   ```markdown
+   ## Descriere
+   - Ce modificări introduce acest PR?
+   
+   ## Checklist
+   - [ ] Teste adăugate/actualizate
+   - [ ] Documentație actualizată
+   - [ ] Self-review completat
+   ```
 
-### 2. Contrast și Culori
-- Folosiți doar culorile definite în `ACCESSIBILITY.COLORS`
-- Text principal: contrast minim 16:1
-- Text secundar: contrast minim 9:1
-- Text dezactivat: contrast minim 7:1
-- Evitați culorile stridente sau care distrag atenția
+### Development Workflow
 
-### 3. Tipografie
-- Folosiți mărimile predefinite din `ACCESSIBILITY.TYPOGRAPHY`
-- Font size minim: 12px pentru text secundar
-- Font size standard: 16px pentru text principal
-- Line height: 1.5 pentru lizibilitate optimă
+1. **Feature Development**
+   - Dezvoltă un singur feature complet înainte de a trece la următorul
+   - Testează pe ambele platforme (iOS & Android)
+   - Păstrează branch-ul principal (main) funcțional
+   - Fă commit-uri mici și focusate
 
-### 4. Spațiere și Layout
-- Folosiți sistemul de spațiere din `ACCESSIBILITY.SPACING`
-- Mențineți consistența folosind multiplii de 8
-- Asigurați suficient spațiu alb între elemente
+2. **Code Review (Self)**
+   ```markdown
+   [ ] Type safety verificată
+   [ ] Texte localizate
+   [ ] Testat pe iOS
+   [ ] Testat pe Android
+   [ ] Verificată accesibilitatea de bază
+   [ ] Codul rulează în development
+   [ ] Console.log-uri curățate
+   ```
 
-### 5. Feedback și Interacțiune
-- Feedback vizual clar pentru toate acțiunile
-- Stări vizibile pentru hover/press/focus
-- Mesaje de eroare clare și acționabile
-- Confirmări vizibile pentru acțiuni completate
+3. **Commit Guidelines**
+   ```bash
+   # Format: <tip>: <descriere scurtă>
+   
+   # Features noi
+   feat: adaugă login screen
+   feat: implementează task creation
+   
+   # Bugfix-uri
+   fix: repară crash la task creation
+   fix: corectează afișare task list
+   
+   # Refactoring
+   refactor: reorganizează folder structure
+   refactor: mută logica în custom hook
+   ```
 
-## Accesibilitate
-- Adăugați `accessibilityLabel` și `accessibilityHint`
-- Asigurați contrast suficient pentru text
-- Testați cu VoiceOver/TalkBack
-
-## Git și Versionare
-- Faceți commit-uri atomice și descriptive
-- Testați modificările înainte de commit
-- Actualizați development log-ul după modificări importante
+4. **Development Best Practices**
+   - Rulează aplicația frecvent în development
+   - Testează schimbările imediat
+   - Menține consola curată de warning-uri
+   - Verifică performanța de bază
+   - Folosește git pentru tracking schimbări

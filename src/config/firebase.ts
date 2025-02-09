@@ -17,43 +17,78 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTranslation } from 'react-i18next';
 import { TFunction } from 'i18next';
-
-// Verificăm dacă toate variabilele de mediu necesare sunt definite
-const requiredEnvVars = [
-  'EXPO_PUBLIC_FIREBASE_API_KEY',
-  'EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN',
-  'EXPO_PUBLIC_FIREBASE_PROJECT_ID',
-  'EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET',
-  'EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID',
-  'EXPO_PUBLIC_FIREBASE_APP_ID',
-  'EXPO_PUBLIC_FIREBASE_MEASUREMENT_ID'
-];
-
-const missingEnvVars = requiredEnvVars.filter(
-  varName => !process.env[varName]
-);
-
-if (missingEnvVars.length > 0) {
-  throw new Error(
-    `Missing required environment variables: ${missingEnvVars.join(', ')}`
-  );
-}
+import { getValidatedEnv } from './environment';
+import { RateLimiter } from '../services/rateLimiter';
 
 // Variabile pentru singleton-uri
 let app: FirebaseApp | null = null;
 let auth: Auth | null = null;
 let firestore: Firestore | null = null;
 
-// Configurare Firebase
+// Configurare Firebase cu variabile de mediu validate
+const env = getValidatedEnv();
 const firebaseConfig = {
-  apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY,
-  authDomain: process.env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.EXPO_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.EXPO_PUBLIC_FIREBASE_APP_ID,
-  measurementId: process.env.EXPO_PUBLIC_FIREBASE_MEASUREMENT_ID
+  apiKey: env.EXPO_PUBLIC_FIREBASE_API_KEY,
+  authDomain: env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: env.EXPO_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: env.EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: env.EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: env.EXPO_PUBLIC_FIREBASE_APP_ID,
+  measurementId: env.EXPO_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
+
+// Helper pentru gestionarea erorilor de autentificare
+async function handleAuthOperation<T>(
+  email: string,
+  operation: () => Promise<T>,
+  t: TFunction
+): Promise<AuthResponse<T>> {
+  const rateLimiter = RateLimiter.getInstance();
+  
+  try {
+    // Verificăm rate limiting
+    if (!await rateLimiter.checkRateLimit(email)) {
+      return {
+        status: 'error',
+        error: {
+          name: 'RateLimitError',
+          code: 'auth/too-many-requests',
+          message: t('errors.auth.tooManyAttempts'),
+        },
+      };
+    }
+
+    // Executăm operația de autentificare
+    const result = await operation();
+    
+    // Resetăm rate limit după succes
+    await rateLimiter.resetLimit(email);
+    
+    return {
+      status: 'success',
+      data: result,
+    };
+  } catch (error) {
+    if (error instanceof FirebaseError) {
+      return {
+        status: 'error',
+        error: {
+          name: error.name,
+          code: error.code,
+          message: getFirebaseErrorMessage(error, t),
+        },
+      };
+    }
+    return {
+      status: 'error',
+      error: {
+        name: 'UnknownError',
+        code: 'auth/unknown',
+        message: t('errors.auth.unknown'),
+      },
+    };
+  }
+}
 
 // Inițializare Firebase App
 export function initializeFirebaseApp(): FirebaseApp {
@@ -161,33 +196,12 @@ export async function signInWithEmail(
   password: string,
   t: TFunction
 ): Promise<AuthResponse<UserCredential>> {
-  try {
-    const auth = getFirebaseAuth();
-    const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    return {
-      data: userCredential,
-      status: 'success'
-    };
-  } catch (error) {
-    if (error instanceof FirebaseError) {
-      return {
-        error: {
-          name: error.name,
-          code: error.code,
-          message: getFirebaseErrorMessage(error, t)
-        },
-        status: 'error'
-      };
-    }
-    return {
-      error: {
-        name: 'UnknownError',
-        code: 'unknown',
-        message: t('auth.errors.generic')
-      },
-      status: 'error'
-    };
-  }
+  const auth = getFirebaseAuth();
+  return handleAuthOperation(
+    email,
+    () => signInWithEmailAndPassword(auth, email, password),
+    t
+  );
 }
 
 export async function signUpWithEmail(
@@ -195,33 +209,12 @@ export async function signUpWithEmail(
   password: string,
   t: TFunction
 ): Promise<AuthResponse<UserCredential>> {
-  try {
-    const auth = getFirebaseAuth();
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    return {
-      data: userCredential,
-      status: 'success'
-    };
-  } catch (error) {
-    if (error instanceof FirebaseError) {
-      return {
-        error: {
-          name: error.name,
-          code: error.code,
-          message: getFirebaseErrorMessage(error, t)
-        },
-        status: 'error'
-      };
-    }
-    return {
-      error: {
-        name: 'UnknownError',
-        code: 'unknown',
-        message: t('auth.errors.generic')
-      },
-      status: 'error'
-    };
-  }
+  const auth = getFirebaseAuth();
+  return handleAuthOperation(
+    email,
+    () => createUserWithEmailAndPassword(auth, email, password),
+    t
+  );
 }
 
 export async function signOut(): Promise<AuthResponse<void>> {

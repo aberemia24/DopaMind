@@ -1,0 +1,114 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { AUTH_RATE_LIMIT } from '../config/environment';
+
+interface RateLimitData {
+  attempts: number;
+  timestamp: number;
+}
+
+const RATE_LIMIT_PREFIX = '@rate_limit:';
+
+export class RateLimiter {
+  private static instance: RateLimiter;
+  private cache: Map<string, RateLimitData>;
+
+  private constructor() {
+    this.cache = new Map();
+  }
+
+  public static getInstance(): RateLimiter {
+    if (!RateLimiter.instance) {
+      RateLimiter.instance = new RateLimiter();
+    }
+    return RateLimiter.instance;
+  }
+
+  private getStorageKey(key: string): string {
+    return `${RATE_LIMIT_PREFIX}${key}`;
+  }
+
+  private async loadFromStorage(key: string): Promise<RateLimitData | undefined> {
+    try {
+      const storedData = await AsyncStorage.getItem(this.getStorageKey(key));
+      if (storedData) {
+        return JSON.parse(storedData);
+      }
+    } catch (error) {
+      console.error('RateLimiter: Error loading from storage:', error);
+    }
+    return undefined;
+  }
+
+  private async saveToStorage(key: string, data: RateLimitData): Promise<void> {
+    try {
+      await AsyncStorage.setItem(
+        this.getStorageKey(key),
+        JSON.stringify(data)
+      );
+    } catch (error) {
+      console.error('RateLimiter: Error saving to storage:', error);
+    }
+  }
+
+  public async checkRateLimit(key: string): Promise<boolean> {
+    const now = Date.now();
+    
+    // Încercăm să încărcăm din cache
+    let data = this.cache.get(key);
+    
+    // Dacă nu există în cache, încărcăm din storage
+    if (!data) {
+      data = await this.loadFromStorage(key);
+    }
+
+    // Dacă nu există deloc, creăm prima încercare
+    if (!data) {
+      const newData: RateLimitData = { attempts: 1, timestamp: now };
+      this.cache.set(key, newData);
+      await this.saveToStorage(key, newData);
+      return true;
+    }
+
+    // Verificăm dacă a trecut perioada de rate limit
+    if (now - data.timestamp > AUTH_RATE_LIMIT.WINDOW_MS) {
+      const newData: RateLimitData = { attempts: 1, timestamp: now };
+      this.cache.set(key, newData);
+      await this.saveToStorage(key, newData);
+      return true;
+    }
+
+    // Verificăm dacă s-a depășit numărul maxim de încercări
+    if (data.attempts >= AUTH_RATE_LIMIT.MAX_ATTEMPTS) {
+      return false;
+    }
+
+    // Incrementăm numărul de încercări
+    const newData: RateLimitData = {
+      attempts: data.attempts + 1,
+      timestamp: data.timestamp
+    };
+    this.cache.set(key, newData);
+    await this.saveToStorage(key, newData);
+    return true;
+  }
+
+  public async resetLimit(key: string): Promise<void> {
+    this.cache.delete(key);
+    try {
+      await AsyncStorage.removeItem(this.getStorageKey(key));
+    } catch (error) {
+      console.error('RateLimiter: Error resetting limit:', error);
+    }
+  }
+
+  public async clearAllLimits(): Promise<void> {
+    this.cache.clear();
+    try {
+      const keys = await AsyncStorage.getAllKeys();
+      const rateLimitKeys = keys.filter(key => key.startsWith(RATE_LIMIT_PREFIX));
+      await AsyncStorage.multiRemove(rateLimitKeys);
+    } catch (error) {
+      console.error('RateLimiter: Error clearing all limits:', error);
+    }
+  }
+}
