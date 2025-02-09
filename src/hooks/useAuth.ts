@@ -13,6 +13,7 @@ import { useTranslation } from 'react-i18next';
 import { useSessionManager } from './useSessionManager';
 import { TFunction } from 'i18next';
 import { secureStorage } from '../utils/secureStorage';
+import { AUTH_TRANSLATIONS } from '../i18n/keys';
 
 const AUTH_STATE_KEY = '@auth_state';
 const AUTH_CREDENTIALS_KEY = 'AUTH_CREDENTIALS_KEY';
@@ -261,7 +262,7 @@ export function useAuth(): UseAuthReturn {
       const result = await firebaseSignOut();
 
       if (result.status === 'error' && result.error) {
-        setError(t('auth.errors.logout'));
+        setError(t(AUTH_TRANSLATIONS.ERRORS.LOGOUT));
         return false;
       }
 
@@ -269,7 +270,7 @@ export function useAuth(): UseAuthReturn {
       setIsAuthenticated(false);
       return true;
     } catch (error) {
-      setError(t('auth.errors.generic'));
+      setError(t(AUTH_TRANSLATIONS.ERRORS.GENERIC));
       return false;
     } finally {
       setLoading(false);
