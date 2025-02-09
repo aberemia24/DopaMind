@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
 import { User, onAuthStateChanged } from 'firebase/auth';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { 
   getFirebaseAuth, 
   signInWithEmail, 
@@ -13,15 +12,17 @@ import {
 import { useTranslation } from 'react-i18next';
 import { useSessionManager } from './useSessionManager';
 import { TFunction } from 'i18next';
+import { secureStorage } from '../utils/secureStorage';
 
 const AUTH_STATE_KEY = '@auth_state';
-const AUTH_CREDENTIALS_KEY = '@auth_credentials';
+const AUTH_CREDENTIALS_KEY = 'AUTH_CREDENTIALS_KEY';
 
 export interface UseAuthReturn {
   user: User | null;
   loading: boolean;
   error: string | null;
   isAuthenticated: boolean;
+  sessionExpired: boolean;
   login: (email: string, password: string) => Promise<boolean>;
   register: (email: string, password: string) => Promise<boolean>;
   logout: () => Promise<boolean>;
@@ -39,6 +40,7 @@ export function useAuth(): UseAuthReturn {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [sessionExpired, setSessionExpired] = useState(false);
 
   /**
    * Funcție de expirare sesiune:
@@ -46,6 +48,7 @@ export function useAuth(): UseAuthReturn {
    */
   const handleSessionExpired = useCallback(async () => {
     console.log('useAuth: Session expired. Logging out...');
+    setSessionExpired(true);
     await logout();
   }, []);
 
@@ -66,9 +69,9 @@ export function useAuth(): UseAuthReturn {
           password,
           timestamp: Date.now()
         };
-        await AsyncStorage.setItem(AUTH_CREDENTIALS_KEY, JSON.stringify(data));
+        await secureStorage.setItem(AUTH_CREDENTIALS_KEY, JSON.stringify(data));
         await updateLastActivity();
-        console.log('useAuth: Credentials saved successfully');
+        console.log('useAuth: Credentials saved in SecureStorage');
       } catch (err) {
         console.error('useAuth: Error saving credentials:', err);
       }
@@ -78,18 +81,24 @@ export function useAuth(): UseAuthReturn {
 
   /**
    * Încearcă reautentificarea cu credențialele salvate.
+   * Gestionează loading state și curăță credențialele în caz de eșec.
    */
   const attemptReauthentication = useCallback(async (t: TFunction): Promise<boolean> => {
+    setLoading(true);
     try {
-      const credsString = await AsyncStorage.getItem(AUTH_CREDENTIALS_KEY);
-      if (!credsString) return false;
+      const credsString = await secureStorage.getItem(AUTH_CREDENTIALS_KEY);
+      if (!credsString) {
+        setLoading(false);
+        return false;
+      }
 
       const { email, password, timestamp } = JSON.parse(credsString);
       
       // Verificăm dacă credențialele sunt prea vechi (30 zile)
       if (Date.now() - timestamp > 30 * 24 * 60 * 60 * 1000) {
         console.log('useAuth: Saved credentials too old, clearing');
-        await AsyncStorage.removeItem(AUTH_CREDENTIALS_KEY);
+        await secureStorage.removeItem(AUTH_CREDENTIALS_KEY);
+        setLoading(false);
         return false;
       }
 
@@ -101,14 +110,16 @@ export function useAuth(): UseAuthReturn {
         await updateLastActivity();
         return true;
       } else {
-        console.log('useAuth: Reauth failed, clearing credentials');
-        await AsyncStorage.removeItem(AUTH_CREDENTIALS_KEY);
+        console.log('useAuth: Reauth failed, removing credentials');
+        await secureStorage.removeItem(AUTH_CREDENTIALS_KEY);
         return false;
       }
     } catch (err) {
       console.error('useAuth: Reauth error:', err);
-      await AsyncStorage.removeItem(AUTH_CREDENTIALS_KEY);
+      await secureStorage.removeItem(AUTH_CREDENTIALS_KEY);
       return false;
+    } finally {
+      setLoading(false);
     }
   }, [updateLastActivity]);
 
@@ -235,43 +246,64 @@ export function useAuth(): UseAuthReturn {
   }, [t, persistCredentials, updateLastActivity]);
 
   /**
-   * Logout
+   * Deconectează utilizatorul și curăță datele locale.
+   * Gestionează loading state și traduce mesajele de eroare.
    */
-  const logout = useCallback(async (): Promise<boolean> => {
-    try {
-      setError(null);
-      setLoading(true);
+  const logout = useCallback(async () => {
+    setLoading(true);
+    setError(null);
 
-      // Mai întâi ștergem credențialele locale
-      await AsyncStorage.removeItem(AUTH_CREDENTIALS_KEY);
-      
+    try {
+      // Ștergem credențialele din SecureStorage
+      await secureStorage.removeItem(AUTH_CREDENTIALS_KEY);
+
       // Deconectăm din Firebase
       const result = await firebaseSignOut();
-      
+
       if (result.status === 'error' && result.error) {
-        setError(result.error.message);
+        setError(t('auth.errors.logout'));
         return false;
       }
-      
-      // Resetăm state local
+
       setUser(null);
       setIsAuthenticated(false);
-      
       return true;
-    } catch (err) {
-      console.error('useAuth: Logout error:', err);
-      setError(err instanceof Error ? err.message : 'Logout failed');
+    } catch (error) {
+      setError(t('auth.errors.generic'));
       return false;
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [t]);
+
+  // Inițializare și subscripție la schimbări de autentificare
+  useEffect(() => {
+    const auth = initializeFirebaseAuth();
+    
+    // Încercăm reautentificarea la pornire
+    attemptReauthentication(t);
+
+    // Subscripție la schimbări de autentificare
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user);
+      setIsAuthenticated(!!user);
+      if (user) {
+        updateLastActivity();
+        setLoading(false);
+      }
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, [attemptReauthentication, t, updateLastActivity]);
 
   return {
     user,
     loading,
     error,
     isAuthenticated,
+    sessionExpired,
     login,
     logout,
     register

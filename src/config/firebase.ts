@@ -19,11 +19,13 @@ import { useTranslation } from 'react-i18next';
 import { TFunction } from 'i18next';
 import { getValidatedEnv } from './environment';
 import { RateLimiter } from '../services/rateLimiter';
+import { initializeAppCheck, ReCaptchaV3Provider, AppCheck } from 'firebase/app-check';
 
 // Variabile pentru singleton-uri
 let app: FirebaseApp | null = null;
 let auth: Auth | null = null;
 let firestore: Firestore | null = null;
+let appCheck: AppCheck | null = null;
 
 // Configurare Firebase cu variabile de mediu validate
 const env = getValidatedEnv();
@@ -97,6 +99,14 @@ export function initializeFirebaseApp(): FirebaseApp {
     if (getApps().length === 0) {
       console.log('Creating new Firebase App instance');
       app = initializeApp(firebaseConfig);
+      
+      // Inițializăm App Check doar în producție
+      if (env.EXPO_PUBLIC_ENV === 'production') {
+        appCheck = initializeAppCheck(app, {
+          provider: new ReCaptchaV3Provider(env.EXPO_PUBLIC_RECAPTCHA_SITE_KEY),
+          isTokenAutoRefreshEnabled: true
+        });
+      }
     } else {
       console.log('Using existing Firebase App instance');
       app = getApps()[0];

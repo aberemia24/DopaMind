@@ -11,7 +11,12 @@ const envSchema = z.object({
   EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: z.string().min(1),
   EXPO_PUBLIC_FIREBASE_APP_ID: z.string().min(1),
   EXPO_PUBLIC_FIREBASE_MEASUREMENT_ID: z.string().min(1),
+  EXPO_PUBLIC_ENV: z.enum(['development', 'production']).default('development'),
+  // Facem cheia opțională în development
+  EXPO_PUBLIC_RECAPTCHA_SITE_KEY: z.string().optional(),
 });
+
+type Env = z.infer<typeof envSchema>;
 
 /**
  * Schema pentru variabilele de mediu Firebase
@@ -24,12 +29,14 @@ const firebaseEnvSchema = z.object({
   EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: z.string(),
   EXPO_PUBLIC_FIREBASE_APP_ID: z.string(),
   EXPO_PUBLIC_FIREBASE_MEASUREMENT_ID: z.string(),
+  EXPO_PUBLIC_ENV: z.enum(['development', 'production']).default('development'),
+  EXPO_PUBLIC_RECAPTCHA_SITE_KEY: z.string(),
 });
 
 /**
  * Validează și returnează variabilele de mediu tipizate
  */
-export function getValidatedEnv() {
+export function getValidatedEnv(): Env {
   const env = {
     EXPO_PUBLIC_FIREBASE_API_KEY: process.env.EXPO_PUBLIC_FIREBASE_API_KEY,
     EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN: process.env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN,
@@ -38,6 +45,8 @@ export function getValidatedEnv() {
     EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: process.env.EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
     EXPO_PUBLIC_FIREBASE_APP_ID: process.env.EXPO_PUBLIC_FIREBASE_APP_ID,
     EXPO_PUBLIC_FIREBASE_MEASUREMENT_ID: process.env.EXPO_PUBLIC_FIREBASE_MEASUREMENT_ID,
+    EXPO_PUBLIC_ENV: process.env.EXPO_PUBLIC_ENV || 'development',
+    EXPO_PUBLIC_RECAPTCHA_SITE_KEY: process.env.EXPO_PUBLIC_RECAPTCHA_SITE_KEY || '',
   };
 
   const result = envSchema.safeParse(env);
@@ -50,16 +59,7 @@ export function getValidatedEnv() {
     throw new Error(`Validare variabile de mediu eșuată:\n${errorMessage}`);
   }
 
-  try {
-    return firebaseEnvSchema.parse(process.env);
-  } catch (error: unknown) {
-    if (error instanceof z.ZodError) {
-      console.error('Eroare de validare pentru variabilele de mediu:', error.errors);
-    } else {
-      console.error('Eroare neașteptată la validarea variabilelor de mediu:', error);
-    }
-    throw new Error('Configurare invalidă pentru variabilele de mediu Firebase');
-  }
+  return result.data;
 }
 
 /**
@@ -83,3 +83,19 @@ export const SESSION_CONFIG = {
   TIMEOUT_MS: 30 * 60 * 1000, // 30 minute
   REFRESH_THRESHOLD_MS: 25 * 60 * 1000, // 25 minute
 } as const;
+
+/**
+ * Returnează configurația Firebase validată
+ */
+export function getFirebaseConfig() {
+  const env = getValidatedEnv();
+  return {
+    apiKey: env.EXPO_PUBLIC_FIREBASE_API_KEY,
+    authDomain: env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN,
+    projectId: env.EXPO_PUBLIC_FIREBASE_PROJECT_ID,
+    storageBucket: env.EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: env.EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+    appId: env.EXPO_PUBLIC_FIREBASE_APP_ID,
+    measurementId: env.EXPO_PUBLIC_FIREBASE_MEASUREMENT_ID,
+  };
+}
