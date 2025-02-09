@@ -224,16 +224,30 @@
     }
   },
   "taskItem": {
-    "placeholder": {
-      "title": "Introdu titlul sarcinii..."
-    },
     "accessibility": {
       "taskStatus": "Sarcina {{title}} este {{status}}",
       "toggleComplete": "{{action}} sarcina",
-      "editTitle": "Editează titlul sarcinii",
-      "editTitleHint": "Introdu minim 3 caractere",
       "edit": "Editează sarcina",
-      "delete": "Șterge sarcina"
+      "delete": "Șterge sarcina",
+      "editMode": "Editare sarcină",
+      "editTitle": "Editează titlul sarcinii",
+      "editTitleHint": "Introdu noul titlu al sarcinii",
+      "validation": {
+        "titleTooShort": "Titlul trebuie să aibă cel puțin 3 caractere",
+        "titleRequired": "Titlul este obligatoriu"
+      },
+      "priority": "prioritară"
+    },
+    "placeholder": {
+      "title": "Titlul sarcinii..."
+    },
+    "metadata": {
+      "created": "Creată {{date}}",
+      "updated": "Actualizată {{date}}"
+    },
+    "validation": {
+      "titleMinLength": "Titlul trebuie să aibă cel puțin {{min}} caractere",
+      "titleRequired": "Titlul este obligatoriu"
     }
   },
   "navigation": {
@@ -274,6 +288,92 @@
       "newTagHint": "Introdu un nume pentru noua etichetă",
       "addTag": "Adaugă etichetă nouă",
       "createTag": "Creează etichetă nouă"
+    }
+  },
+  "dateTime": {
+    "time": {
+      "hours24": "{{hours}}",
+      "hours12": "{{hours}}",
+      "minutes": "{{minutes}}",
+      "period": {
+        "am": "dimineața",
+        "pm": "după-amiaza"
+      },
+      "ranges": {
+        "morning": "dimineața",
+        "afternoon": "după-amiaza",
+        "evening": "seara"
+      },
+      "format": {
+        "short": "{{hours}}:{{minutes}}",
+        "long": "{{hours}}:{{minutes}} {{period}}",
+        "range": "{{start}} - {{end}}"
+      }
+    },
+    "date": {
+      "weekday": {
+        "short": {
+          "mon": "Lun",
+          "tue": "Mar",
+          "wed": "Mie",
+          "thu": "Joi",
+          "fri": "Vin",
+          "sat": "Sâm",
+          "sun": "Dum"
+        },
+        "long": {
+          "mon": "Luni",
+          "tue": "Marți",
+          "wed": "Miercuri",
+          "thu": "Joi",
+          "fri": "Vineri",
+          "sat": "Sâmbătă",
+          "sun": "Duminică"
+        }
+      },
+      "month": {
+        "short": {
+          "jan": "Ian",
+          "feb": "Feb",
+          "mar": "Mar",
+          "apr": "Apr",
+          "may": "Mai",
+          "jun": "Iun",
+          "jul": "Iul",
+          "aug": "Aug",
+          "sep": "Sep",
+          "oct": "Oct",
+          "nov": "Noi",
+          "dec": "Dec"
+        },
+        "long": {
+          "jan": "Ianuarie",
+          "feb": "Februarie",
+          "mar": "Martie",
+          "apr": "Aprilie",
+          "may": "Mai",
+          "jun": "Iunie",
+          "jul": "Iulie",
+          "aug": "August",
+          "sep": "Septembrie",
+          "oct": "Octombrie",
+          "nov": "Noiembrie",
+          "dec": "Decembrie"
+        }
+      },
+      "format": {
+        "short": "{{day}} {{month}} {{year}}",
+        "long": "{{weekday}}, {{day}} {{month}} {{year}}",
+        "relative": {
+          "today": "astăzi",
+          "yesterday": "ieri",
+          "tomorrow": "mâine",
+          "days": {
+            "past": "acum {{count}} zile",
+            "future": "peste {{count}} zile"
+          }
+        }
+      }
     }
   }
 }

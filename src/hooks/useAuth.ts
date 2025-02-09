@@ -14,6 +14,8 @@ import { useSessionManager } from './useSessionManager';
 import { TFunction } from 'i18next';
 import { secureStorage } from '../utils/secureStorage';
 import { ERROR_TRANSLATIONS } from '../i18n/keys';
+import { AUTH_CONFIG } from '../config/environment';
+import { formatLogTimestamp } from '../utils/dateTimeFormat';
 
 const AUTH_STATE_KEY = '@auth_state';
 const AUTH_CREDENTIALS_KEY = 'AUTH_CREDENTIALS_KEY';
@@ -65,14 +67,15 @@ export function useAuth(): UseAuthReturn {
   const persistCredentials = useCallback(
     async (email: string, password: string) => {
       try {
+        const timestamp = Date.now();
         const data = {
           email,
           password,
-          timestamp: Date.now()
+          timestamp
         };
         await secureStorage.setItem(AUTH_CREDENTIALS_KEY, JSON.stringify(data));
         await updateLastActivity();
-        console.log('useAuth: Credentials saved in SecureStorage');
+        console.log(`useAuth: Credentials saved in SecureStorage at ${formatLogTimestamp(timestamp)}`);
       } catch (err) {
         console.error('useAuth: Error saving credentials:', err);
       }
@@ -94,16 +97,17 @@ export function useAuth(): UseAuthReturn {
       }
 
       const { email, password, timestamp } = JSON.parse(credsString);
+      const now = Date.now();
       
-      // Verificăm dacă credențialele sunt prea vechi (30 zile)
-      if (Date.now() - timestamp > 30 * 24 * 60 * 60 * 1000) {
-        console.log('useAuth: Saved credentials too old, clearing');
+      // Verificăm dacă credențialele sunt prea vechi
+      if (now - timestamp > AUTH_CONFIG.CREDENTIALS_MAX_AGE_MS) {
+        console.log(`useAuth: Saved credentials from ${formatLogTimestamp(timestamp)} are too old, clearing`);
         await secureStorage.removeItem(AUTH_CREDENTIALS_KEY);
         setLoading(false);
         return false;
       }
 
-      console.log('useAuth: Attempting reauth with saved credentials');
+      console.log(`useAuth: Attempting reauth with credentials saved at ${formatLogTimestamp(timestamp)}`);
       const result = await signInWithEmail(email, password, t);
       if (result.status === 'success' && result.data) {
         setUser(result.data.user);

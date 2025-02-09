@@ -246,12 +246,26 @@
       "title": "Enter task title..."
     },
     "accessibility": {
-      "taskStatus": "{{title}} task is {{status}}",
+      "taskStatus": "Task {{title}} is {{status}}",
       "toggleComplete": "{{action}} task",
-      "editTitle": "Edit task title",
-      "editTitleHint": "Enter at least 3 characters",
       "edit": "Edit task",
-      "delete": "Delete task"
+      "delete": "Delete task",
+      "editMode": "Edit task",
+      "editTitle": "Edit task title",
+      "editTitleHint": "Enter new task title",
+      "validation": {
+        "titleTooShort": "Title must be at least 3 characters long",
+        "titleRequired": "Title is required"
+      },
+      "priority": "priority"
+    },
+    "metadata": {
+      "created": "Created {{date}}",
+      "updated": "Updated {{date}}"
+    },
+    "validation": {
+      "titleMinLength": "Title must be at least {{min}} characters long",
+      "titleRequired": "Title is required"
     }
   },
   "tagSelector": {
@@ -292,6 +306,92 @@
     "progress": "{{completed}} of {{total}} tasks completed",
     "accessibility": {
       "addTask": "Add task to {{period}} period"
+    }
+  },
+  "dateTime": {
+    "time": {
+      "hours24": "{{hours}}",
+      "hours12": "{{hours}}",
+      "minutes": "{{minutes}}",
+      "period": {
+        "am": "AM",
+        "pm": "PM"
+      },
+      "ranges": {
+        "morning": "morning",
+        "afternoon": "afternoon",
+        "evening": "evening"
+      },
+      "format": {
+        "short": "{{hours}}:{{minutes}}",
+        "long": "{{hours}}:{{minutes}} {{period}}",
+        "range": "{{start}} - {{end}}"
+      }
+    },
+    "date": {
+      "weekday": {
+        "short": {
+          "mon": "Mon",
+          "tue": "Tue",
+          "wed": "Wed",
+          "thu": "Thu",
+          "fri": "Fri",
+          "sat": "Sat",
+          "sun": "Sun"
+        },
+        "long": {
+          "mon": "Monday",
+          "tue": "Tuesday",
+          "wed": "Wednesday",
+          "thu": "Thursday",
+          "fri": "Friday",
+          "sat": "Saturday",
+          "sun": "Sunday"
+        }
+      },
+      "month": {
+        "short": {
+          "jan": "Jan",
+          "feb": "Feb",
+          "mar": "Mar",
+          "apr": "Apr",
+          "may": "May",
+          "jun": "Jun",
+          "jul": "Jul",
+          "aug": "Aug",
+          "sep": "Sep",
+          "oct": "Oct",
+          "nov": "Nov",
+          "dec": "Dec"
+        },
+        "long": {
+          "jan": "January",
+          "feb": "February",
+          "mar": "March",
+          "apr": "April",
+          "may": "May",
+          "jun": "June",
+          "jul": "July",
+          "aug": "August",
+          "sep": "September",
+          "oct": "October",
+          "nov": "November",
+          "dec": "December"
+        }
+      },
+      "format": {
+        "short": "{{day}} {{month}} {{year}}",
+        "long": "{{weekday}}, {{day}} {{month}} {{year}}",
+        "relative": {
+          "today": "today",
+          "yesterday": "yesterday",
+          "tomorrow": "tomorrow",
+          "days": {
+            "past": "{{count}} days ago",
+            "future": "in {{count}} days"
+          }
+        }
+      }
     }
   }
 }
