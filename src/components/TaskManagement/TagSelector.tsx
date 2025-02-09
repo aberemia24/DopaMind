@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet, TextInput } from 'react-nativ
 import { ACCESSIBILITY } from '../../constants/accessibility';
 import { useTranslation } from 'react-i18next';
 import { MaterialIcons } from '@expo/vector-icons';
+import { TASK_TRANSLATIONS, COMMON_TRANSLATIONS } from '../../i18n/keys';
 
 interface Tag {
   id: string;
@@ -46,7 +47,7 @@ const TagSelector: React.FC<TagSelectorProps> = ({
       style={styles.container}
       accessible={true}
       accessibilityRole="radiogroup"
-      accessibilityLabel={t('tagSelector.accessibility.tagList')}
+      accessibilityLabel={t(TASK_TRANSLATIONS.TAG.ACCESSIBILITY.TAG_SELECTOR)}
     >
       <View style={styles.tagList}>
         {tags.map(tag => (
@@ -62,7 +63,7 @@ const TagSelector: React.FC<TagSelectorProps> = ({
             accessibilityState={{ 
               selected: selectedTags.includes(tag.id),
             }}
-            accessibilityLabel={t('tagSelector.accessibility.tag', {
+            accessibilityLabel={t(TASK_TRANSLATIONS.TAG.ACCESSIBILITY.TAG_OPTION, {
               label: tag.label,
               selected: selectedTags.includes(tag.id)
             })}
@@ -84,14 +85,14 @@ const TagSelector: React.FC<TagSelectorProps> = ({
                 style={styles.input}
                 value={newTagText}
                 onChangeText={setNewTagText}
-                placeholder={t('tagSelector.placeholder.newTag')}
+                placeholder={t(TASK_TRANSLATIONS.TAG.LABELS.ADD_TAG)}
                 placeholderTextColor={ACCESSIBILITY.COLORS.TEXT.DISABLED}
                 autoFocus
                 returnKeyType="done"
                 onSubmitEditing={handleAddCustomTag}
                 accessibilityRole="none"
-                accessibilityLabel={t('tagSelector.accessibility.newTagInput')}
-                accessibilityHint={t('tagSelector.accessibility.newTagHint')}
+                accessibilityLabel={t(TASK_TRANSLATIONS.TAG.ACCESSIBILITY.TAG_SELECTOR)}
+                accessibilityHint={t(TASK_TRANSLATIONS.TAG.ACCESSIBILITY.SELECTED_TAGS)}
               />
               <View style={styles.addTagActions}>
                 <TouchableOpacity
@@ -101,13 +102,11 @@ const TagSelector: React.FC<TagSelectorProps> = ({
                     setNewTagText('');
                   }}
                   accessibilityRole="button"
-                  accessibilityLabel={t('common.cancel')}
+                  accessibilityLabel={t(COMMON_TRANSLATIONS.ACTIONS.CANCEL)}
                 >
-                  <MaterialIcons 
-                    name="close" 
-                    size={24} 
-                    color={ACCESSIBILITY.COLORS.TEXT.SECONDARY} 
-                  />
+                  <Text style={styles.actionButtonText}>
+                    {t(COMMON_TRANSLATIONS.ACTIONS.CANCEL)}
+                  </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={[
@@ -118,31 +117,32 @@ const TagSelector: React.FC<TagSelectorProps> = ({
                   onPress={handleAddCustomTag}
                   disabled={!newTagText.trim()}
                   accessibilityRole="button"
-                  accessibilityLabel={t('tagSelector.accessibility.addTag')}
+                  accessibilityLabel={t(TASK_TRANSLATIONS.TAG.LABELS.ADD_TAG)}
                   accessibilityState={{ disabled: !newTagText.trim() }}
                 >
-                  <MaterialIcons 
-                    name="check" 
-                    size={24} 
-                    color={ACCESSIBILITY.COLORS.BACKGROUND.PRIMARY} 
-                  />
+                  <Text style={[
+                    styles.actionButtonText,
+                    !newTagText.trim() && styles.actionButtonTextDisabled
+                  ]}>
+                    {t(TASK_TRANSLATIONS.TAG.LABELS.ADD_TAG)}
+                  </Text>
                 </TouchableOpacity>
               </View>
             </View>
           ) : (
             <TouchableOpacity
-              style={styles.addTagButton}
+              style={[styles.tag, styles.addTagButton]}
               onPress={() => setIsAddingCustom(true)}
               accessibilityRole="button"
-              accessibilityLabel={t('tagSelector.accessibility.createTag')}
+              accessibilityLabel={t(TASK_TRANSLATIONS.TAG.LABELS.ADD_TAG)}
             >
               <MaterialIcons 
                 name="add" 
-                size={24} 
+                size={16} 
                 color={ACCESSIBILITY.COLORS.INTERACTIVE.PRIMARY} 
               />
-              <Text style={styles.addTagText}>
-                {t('tagSelector.createTag')}
+              <Text style={styles.addTagButtonText}>
+                {t(TASK_TRANSLATIONS.TAG.LABELS.ADD_TAG)}
               </Text>
             </TouchableOpacity>
           )
@@ -215,6 +215,14 @@ const styles = StyleSheet.create({
   addButtonDisabled: {
     backgroundColor: ACCESSIBILITY.COLORS.BACKGROUND.DISABLED,
   },
+  actionButtonText: {
+    fontSize: ACCESSIBILITY.TYPOGRAPHY.SIZES.SM,
+    fontWeight: ACCESSIBILITY.TYPOGRAPHY.WEIGHTS.MEDIUM,
+    color: ACCESSIBILITY.COLORS.TEXT.PRIMARY,
+  },
+  actionButtonTextDisabled: {
+    color: ACCESSIBILITY.COLORS.TEXT.DISABLED,
+  },
   addTagButton: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -225,7 +233,7 @@ const styles = StyleSheet.create({
     backgroundColor: ACCESSIBILITY.COLORS.INTERACTIVE.SECONDARY,
     gap: ACCESSIBILITY.SPACING.XS,
   },
-  addTagText: {
+  addTagButtonText: {
     fontSize: ACCESSIBILITY.TYPOGRAPHY.SIZES.SM,
     fontWeight: ACCESSIBILITY.TYPOGRAPHY.WEIGHTS.MEDIUM,
     color: ACCESSIBILITY.COLORS.INTERACTIVE.PRIMARY,

@@ -100,12 +100,15 @@ export function initializeFirebaseApp(): FirebaseApp {
       console.log('Creating new Firebase App instance');
       app = initializeApp(firebaseConfig);
       
-      // Inițializăm App Check doar în producție
-      if (env.EXPO_PUBLIC_ENV === 'production') {
+      // Inițializăm App Check doar în producție și doar dacă avem cheie reCAPTCHA
+      if (env.EXPO_PUBLIC_ENV === 'production' && env.EXPO_PUBLIC_RECAPTCHA_SITE_KEY) {
+        console.log('Initializing Firebase App Check with reCAPTCHA');
         appCheck = initializeAppCheck(app, {
           provider: new ReCaptchaV3Provider(env.EXPO_PUBLIC_RECAPTCHA_SITE_KEY),
           isTokenAutoRefreshEnabled: true
         });
+      } else if (env.EXPO_PUBLIC_ENV === 'production') {
+        console.warn('Firebase App Check disabled: missing RECAPTCHA_SITE_KEY');
       }
     } else {
       console.log('Using existing Firebase App instance');

@@ -6,6 +6,8 @@ import type { Task } from '../../services/taskService';
 import type { TimePeriod } from '../../constants/taskTypes';
 import { useTranslation } from 'react-i18next';
 import { MaterialIcons } from '@expo/vector-icons';
+import { TASK_TRANSLATIONS } from '../../i18n/keys';
+import { formatTimeRange, parseTimeRange } from '../../utils/dateTimeFormat';
 
 interface TimeSectionProps {
   period: TimePeriod;
@@ -26,26 +28,39 @@ const TimeSection: React.FC<TimeSectionProps> = ({
 }) => {
   const { t } = useTranslation();
   const completedTasks = tasks.filter(task => task.completed).length;
+  const timeRange = parseTimeRange(period.timeFrame);
+  const formattedTimeRange = formatTimeRange(t, timeRange);
 
   return (
-    <View style={styles.container}>
+    <View 
+      style={styles.container}
+      accessible={true}
+      accessibilityRole="tablist"
+      accessibilityLabel={t(TASK_TRANSLATIONS.TIME.ACCESSIBILITY.TIME_SECTION, {
+        period: t(TASK_TRANSLATIONS.TIME.PERIODS[period.id.toUpperCase() as keyof typeof TASK_TRANSLATIONS.TIME.PERIODS])
+      })}
+    >
       <View style={styles.header}>
         <View style={styles.titleContainer}>
           <Text style={styles.icon}>{period.icon}</Text>
           <View>
-            <Text style={styles.title}>{t(`taskManagement.timeSlots.${period.id}`)}</Text>
-            <Text style={styles.timeFrame}>{t(`taskManagement.timeRanges.${period.id}`)}</Text>
+            <Text style={styles.title}>
+              {t(TASK_TRANSLATIONS.TIME.PERIODS[period.id.toUpperCase() as keyof typeof TASK_TRANSLATIONS.TIME.PERIODS])}
+            </Text>
+            <Text style={styles.timeFrame}>
+              {formattedTimeRange}
+            </Text>
           </View>
           <Text style={styles.description}>
-            {t(`taskManagement.timeDescriptions.${period.id}`)}
+            {t(TASK_TRANSLATIONS.TIME.LABELS.DESCRIPTION, { description: period.description })}
           </Text>
         </View>
         <TouchableOpacity
           style={styles.addButton}
           onPress={onAddTask}
           accessibilityRole="button"
-          accessibilityLabel={t('timeSection.accessibility.addTask', {
-            period: t(`taskManagement.timeSlots.${period.id}`)
+          accessibilityLabel={t(TASK_TRANSLATIONS.TIME.ACCESSIBILITY.ADD_TASK, {
+            period: t(TASK_TRANSLATIONS.TIME.PERIODS[period.id.toUpperCase() as keyof typeof TASK_TRANSLATIONS.TIME.PERIODS])
           })}
         >
           <MaterialIcons 
@@ -58,7 +73,7 @@ const TimeSection: React.FC<TimeSectionProps> = ({
 
       <View style={styles.progress}>
         <Text style={styles.progressText}>
-          {t('timeSection.progress', {
+          {t(TASK_TRANSLATIONS.TIME.LABELS.PROGRESS, {
             completed: completedTasks,
             total: tasks.length
           })}

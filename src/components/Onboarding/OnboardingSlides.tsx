@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { ACCESSIBILITY } from '../../constants/accessibility';
+import { ONBOARDING_TRANSLATIONS } from '../../i18n/keys';
 
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList<Slide>);
 
@@ -28,20 +29,20 @@ interface Slide {
 const slides: Slide[] = [
   {
     id: '1',
-    titleKey: 'onboarding.slides.slide1.title',
-    descriptionKey: 'onboarding.slides.slide1.description',
+    titleKey: ONBOARDING_TRANSLATIONS.SLIDES.SLIDE1.TITLE,
+    descriptionKey: ONBOARDING_TRANSLATIONS.SLIDES.SLIDE1.DESCRIPTION,
     image: require('./Multitasking-bro.png'),
   },
   {
     id: '2',
-    titleKey: 'onboarding.slides.slide2.title',
-    descriptionKey: 'onboarding.slides.slide2.description',
+    titleKey: ONBOARDING_TRANSLATIONS.SLIDES.SLIDE2.TITLE,
+    descriptionKey: ONBOARDING_TRANSLATIONS.SLIDES.SLIDE2.DESCRIPTION,
     image: require('./Task-bro.png'),
   },
   {
     id: '3',
-    titleKey: 'onboarding.slides.slide3.title',
-    descriptionKey: 'onboarding.slides.slide3.description',
+    titleKey: ONBOARDING_TRANSLATIONS.SLIDES.SLIDE3.TITLE,
+    descriptionKey: ONBOARDING_TRANSLATIONS.SLIDES.SLIDE3.DESCRIPTION,
     image: require('./Mental health-bro.png'),
   },
 ];
@@ -90,10 +91,21 @@ export function OnboardingSlides() {
     autoScrollTimer.current = setInterval(scrollToNextSlide, 3000);
   };
 
-  const renderItem: ListRenderItem<Slide> = ({ item }) => {
+  const renderItem: ListRenderItem<Slide> = ({ item, index }) => {
     return (
-      <View style={styles.slide}>
-        <Image source={item.image} style={styles.image} resizeMode="contain" />
+      <View 
+        style={styles.slide}
+        accessibilityRole="tab"
+        accessibilityLabel={t(ONBOARDING_TRANSLATIONS.ACCESSIBILITY.SLIDE)}
+        accessibilityState={{ selected: index === currentIndex }}
+      >
+        <Image 
+          source={item.image} 
+          style={styles.image} 
+          resizeMode="contain"
+          accessibilityRole="image"
+          accessibilityLabel={t(item.titleKey)}
+        />
         <View style={styles.textContainer}>
           <Text 
             style={styles.title}
@@ -117,7 +129,7 @@ export function OnboardingSlides() {
       style={styles.container}
       accessible={true}
       accessibilityRole="tablist"
-      accessibilityLabel={t('onboarding.accessibility.slideshow')}
+      accessibilityLabel={t(ONBOARDING_TRANSLATIONS.ACCESSIBILITY.SLIDESHOW)}
     >
       <AnimatedFlatList
         ref={flatListRef}
@@ -141,7 +153,7 @@ export function OnboardingSlides() {
       <View 
         style={styles.pagination}
         accessibilityRole="tablist"
-        accessibilityLabel={t('onboarding.accessibility.pagination')}
+        accessibilityLabel={t(ONBOARDING_TRANSLATIONS.ACCESSIBILITY.PAGINATION)}
       >
         {slides.map((_, i) => {
           const inputRange = [(i - 1) * width, i * width, (i + 1) * width];
@@ -150,6 +162,7 @@ export function OnboardingSlides() {
             outputRange: [10, 20, 10],
             extrapolate: 'clamp',
           });
+
           const opacity = scrollX.interpolate({
             inputRange,
             outputRange: [0.3, 1, 0.3],
@@ -157,23 +170,18 @@ export function OnboardingSlides() {
           });
 
           return (
-            <TouchableOpacity
+            <Animated.View
               key={i}
-              onPress={() => scrollTo(i)}
+              style={[
+                styles.dot,
+                {
+                  width: dotWidth,
+                  opacity,
+                },
+              ]}
               accessibilityRole="tab"
-              accessibilityState={{ selected: currentIndex === i }}
-              accessibilityLabel={t('onboarding.accessibility.pageIndicator', {
-                current: i + 1,
-                total: slides.length
-              })}
-            >
-              <Animated.View
-                style={[
-                  styles.dot,
-                  { width: dotWidth, opacity }
-                ]}
-              />
-            </TouchableOpacity>
+              accessibilityState={{ selected: i === currentIndex }}
+            />
           );
         })}
       </View>

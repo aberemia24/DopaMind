@@ -1,8 +1,18 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Animated, InteractionManager } from 'react-native';
+import React, { useState, useRef, useEffect } from 'react';
+import { 
+  View, 
+  Text, 
+  TextInput, 
+  TouchableOpacity, 
+  Animated, 
+  StyleSheet,
+  InteractionManager 
+} from 'react-native';
 import type { Task } from '../../services/taskService';
 import { ACCESSIBILITY } from '../../constants/accessibility';
 import { useTranslation } from 'react-i18next';
+import { TASK_TRANSLATIONS, COMMON_TRANSLATIONS } from '../../i18n/keys';
+import { formatRelativeTime } from '../../utils/dateTimeFormat';
 
 interface TaskItemProps {
   task: Task;
@@ -67,10 +77,14 @@ const TaskItem: React.FC<TaskItemProps> = ({
       style={[styles.container, { opacity: fadeAnim }]}
       accessible={true}
       accessibilityRole="checkbox"
-      accessibilityState={{ checked: task.completed }}
-      accessibilityLabel={t('taskItem.accessibility.taskStatus', {
+      accessibilityState={{ 
+        checked: task.completed,
+        disabled: isEditing,
+      }}
+      accessibilityLabel={t(TASK_TRANSLATIONS.ITEM.ACCESSIBILITY.TASK_STATUS, {
         title: task.title,
-        status: task.completed ? t('common.completed') : t('common.incomplete')
+        status: task.completed ? t(COMMON_TRANSLATIONS.STATUS.COMPLETED) : t(COMMON_TRANSLATIONS.STATUS.INCOMPLETE),
+        priority: isPriority ? t(TASK_TRANSLATIONS.ITEM.ACCESSIBILITY.PRIORITY) : ''
       })}
     >
       <TouchableOpacity
@@ -78,8 +92,10 @@ const TaskItem: React.FC<TaskItemProps> = ({
         onPress={() => onToggle(task.id)}
         activeOpacity={0.7}
         accessibilityRole="button"
-        accessibilityLabel={t('taskItem.accessibility.toggleComplete', {
-          action: task.completed ? t('common.markIncomplete') : t('common.markComplete')
+        disabled={isEditing}
+        accessibilityState={{ disabled: isEditing }}
+        accessibilityLabel={t(TASK_TRANSLATIONS.ITEM.ACCESSIBILITY.TOGGLE_COMPLETE, {
+          action: task.completed ? t(COMMON_TRANSLATIONS.STATUS.MARK_INCOMPLETE) : t(COMMON_TRANSLATIONS.STATUS.MARK_COMPLETE)
         })}
       >
         <View style={[
@@ -90,7 +106,12 @@ const TaskItem: React.FC<TaskItemProps> = ({
 
       <View style={styles.content}>
         {isEditing ? (
-          <View style={styles.editContainer}>
+          <View 
+            style={styles.editContainer}
+            accessible={true}
+            accessibilityRole="none"
+            accessibilityLabel={t(TASK_TRANSLATIONS.ITEM.ACCESSIBILITY.EDIT_MODE)}
+          >
             <TextInput
               ref={inputRef}
               style={styles.input}
@@ -98,19 +119,30 @@ const TaskItem: React.FC<TaskItemProps> = ({
               onChangeText={setTitle}
               onBlur={handleCancel}
               onSubmitEditing={handleSubmit}
-              placeholder={t('taskItem.placeholder.title')}
+              placeholder={t(TASK_TRANSLATIONS.ITEM.PLACEHOLDER.TITLE)}
               maxLength={100}
               multiline
-              accessibilityLabel={t('taskItem.accessibility.editTitle')}
-              accessibilityHint={t('taskItem.accessibility.editTitleHint')}
+              accessibilityLabel={t(TASK_TRANSLATIONS.ITEM.ACCESSIBILITY.EDIT_TITLE)}
+              accessibilityHint={t(TASK_TRANSLATIONS.ITEM.ACCESSIBILITY.EDIT_TITLE_HINT)}
+              accessibilityState={{
+                disabled: false,
+                selected: true
+              }}
+              accessibilityValue={{
+                text: title,
+                min: 3,
+                max: 100,
+                now: title.length
+              }}
             />
             <View style={styles.actions}>
               <TouchableOpacity
                 style={[styles.actionButton, styles.editButton]}
                 onPress={handleCancel}
-                accessibilityLabel={t('common.cancel')}
+                accessibilityRole="button"
+                accessibilityLabel={t(COMMON_TRANSLATIONS.ACTIONS.CANCEL)}
               >
-                <Text style={styles.buttonText}>{t('common.cancel')}</Text>
+                <Text style={styles.buttonText}>{t(COMMON_TRANSLATIONS.ACTIONS.CANCEL)}</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[
@@ -120,14 +152,23 @@ const TaskItem: React.FC<TaskItemProps> = ({
                 ]}
                 onPress={handleSubmit}
                 disabled={title.trim().length < 3}
-                accessibilityLabel={t('common.save')}
-                accessibilityState={{ disabled: title.trim().length < 3 }}
+                accessibilityRole="button"
+                accessibilityLabel={t(COMMON_TRANSLATIONS.ACTIONS.SAVE)}
+                accessibilityState={{ 
+                  disabled: title.trim().length < 3,
+                  busy: false
+                }}
+                accessibilityHint={
+                  title.trim().length < 3 
+                    ? t(TASK_TRANSLATIONS.ITEM.ACCESSIBILITY.VALIDATION.TITLE_TOO_SHORT)
+                    : undefined
+                }
               >
                 <Text style={[
                   styles.buttonText,
                   title.trim().length < 3 && styles.buttonTextDisabled
                 ]}>
-                  {t('common.save')}
+                  {t(COMMON_TRANSLATIONS.ACTIONS.SAVE)}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -140,24 +181,41 @@ const TaskItem: React.FC<TaskItemProps> = ({
                 task.completed && styles.titleCompleted,
                 isPriority && styles.titlePriority
               ]}
-              accessibilityLabel={task.title}
+              accessibilityLabel={`${task.title}${isPriority ? ', ' + t(TASK_TRANSLATIONS.ITEM.ACCESSIBILITY.PRIORITY) : ''}`}
             >
               {task.title}
+            </Text>
+            <Text style={styles.metadata}>
+              {t(TASK_TRANSLATIONS.ITEM.METADATA.CREATED, {
+                date: formatRelativeTime(t, task.createdAt)
+              })}
+              {task.updatedAt && (
+                <>
+                  {' • '}
+                  {t(TASK_TRANSLATIONS.ITEM.METADATA.UPDATED, {
+                    date: formatRelativeTime(t, task.updatedAt)
+                  })}
+                </>
+              )}
             </Text>
             <View style={styles.actions}>
               <TouchableOpacity
                 style={styles.actionButton}
                 onPress={() => setIsEditing(true)}
-                accessibilityLabel={t('taskItem.accessibility.edit')}
+                accessibilityRole="button"
+                accessibilityLabel={t(TASK_TRANSLATIONS.ITEM.ACCESSIBILITY.EDIT)}
               >
-                <Text style={styles.buttonText}>{t('common.edit')}</Text>
+                <Text style={styles.buttonText}>{t(COMMON_TRANSLATIONS.ACTIONS.EDIT)}</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.actionButton, styles.deleteButton]}
                 onPress={() => onDelete(task.id)}
-                accessibilityLabel={t('taskItem.accessibility.delete')}
+                accessibilityRole="button"
+                accessibilityLabel={t(TASK_TRANSLATIONS.ITEM.ACCESSIBILITY.DELETE)}
               >
-                <Text style={styles.deleteButtonText}>{t('common.delete')}</Text>
+                <Text style={[styles.buttonText, styles.deleteButtonText]}>
+                  {t(COMMON_TRANSLATIONS.ACTIONS.DELETE)}
+                </Text>
               </TouchableOpacity>
             </View>
           </>
@@ -260,6 +318,10 @@ const styles = StyleSheet.create({
   },
   deleteButtonText: {
     color: ACCESSIBILITY.COLORS.BACKGROUND.PRIMARY,
+  },
+  metadata: {
+    fontSize: ACCESSIBILITY.TYPOGRAPHY.SIZES.XS,
+    color: ACCESSIBILITY.COLORS.TEXT.SECONDARY,
   },
 });
 

@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { User } from 'firebase/auth';
 import { SESSION_CONFIG } from '../config/environment';
 import { getFirebaseAuth } from '../config/firebase';
+import { formatLogTimestamp } from '../utils/dateTimeFormat';
 
 const LAST_ACTIVITY_KEY = '@last_activity';
 const USER_TOKEN_KEY = '@user_token';
@@ -23,7 +24,7 @@ export function useSessionManager({ onSessionExpired, onTokenRefreshed }: Sessio
     lastActivityRef.current = timestamp;
     try {
       await AsyncStorage.setItem(LAST_ACTIVITY_KEY, timestamp.toString());
-      console.log('SessionManager: Last activity updated');
+      console.log(`SessionManager: Last activity updated at ${formatLogTimestamp(timestamp)}`);
     } catch (error) {
       console.error('SessionManager: Error updating last activity:', error);
     }
@@ -38,7 +39,7 @@ export function useSessionManager({ onSessionExpired, onTokenRefreshed }: Sessio
         const newToken = await currentUser.getIdToken(true);
         await AsyncStorage.setItem(USER_TOKEN_KEY, newToken);
         await updateLastActivity();
-        console.log('SessionManager: Token refreshed successfully');
+        console.log(`SessionManager: Token refreshed successfully at ${formatLogTimestamp(Date.now())}`);
         onTokenRefreshed?.();
       } catch (error) {
         console.error('SessionManager: Error refreshing token:', error);
@@ -57,13 +58,13 @@ export function useSessionManager({ onSessionExpired, onTokenRefreshed }: Sessio
     const timeSinceLastActivity = now - lastActivityRef.current;
 
     if (timeSinceLastActivity >= SESSION_CONFIG.TIMEOUT_MS) {
-      console.log('SessionManager: Session timeout');
+      console.log(`SessionManager: Session timeout at ${formatLogTimestamp(now)}, last activity was at ${formatLogTimestamp(lastActivityRef.current)}`);
       await onSessionExpired();
       return;
     }
 
     if (timeSinceLastActivity >= SESSION_CONFIG.REFRESH_THRESHOLD_MS) {
-      console.log('SessionManager: Token refresh needed');
+      console.log(`SessionManager: Token refresh needed at ${formatLogTimestamp(now)}, last activity was at ${formatLogTimestamp(lastActivityRef.current)}`);
       await refreshUserSession();
     }
   }, [onSessionExpired, refreshUserSession]);

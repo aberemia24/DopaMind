@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Animated } from 'react-native';
 import { ACCESSIBILITY } from '../../constants/accessibility';
 import { useTranslation } from 'react-i18next';
+import { TASK_TRANSLATIONS } from '../../i18n/keys';
 
 export type FilterOption = 'all' | 'active' | 'completed' | 'priority';
 
@@ -25,10 +26,10 @@ const TaskFilter: React.FC<TaskFilterProps> = ({
   const [animation] = useState(new Animated.Value(0));
 
   const filterOptions: { id: FilterOption; label: string }[] = [
-    { id: 'all', label: t('taskFilter.all') },
-    { id: 'active', label: t('taskFilter.active') },
-    { id: 'completed', label: t('taskFilter.completed') },
-    { id: 'priority', label: t('taskFilter.priority') }
+    { id: 'all', label: t(TASK_TRANSLATIONS.FILTER.OPTIONS.ALL) },
+    { id: 'active', label: t(TASK_TRANSLATIONS.FILTER.OPTIONS.ACTIVE) },
+    { id: 'completed', label: t(TASK_TRANSLATIONS.FILTER.OPTIONS.COMPLETED) },
+    { id: 'priority', label: t(TASK_TRANSLATIONS.FILTER.OPTIONS.PRIORITY) }
   ];
 
   const handleFilterPress = (filter: FilterOption) => {
@@ -53,7 +54,7 @@ const TaskFilter: React.FC<TaskFilterProps> = ({
       style={styles.container}
       accessible={true}
       accessibilityRole="tablist"
-      accessibilityLabel={t('taskFilter.accessibility.filterList')}
+      accessibilityLabel={t(TASK_TRANSLATIONS.FILTER.ACCESSIBILITY.FILTER_OPTIONS)}
     >
       {filterOptions.map(({ id, label }) => (
         <TouchableOpacity
@@ -65,7 +66,7 @@ const TaskFilter: React.FC<TaskFilterProps> = ({
           onPress={() => handleFilterPress(id)}
           accessibilityRole="tab"
           accessibilityState={{ selected: currentFilter === id }}
-          accessibilityLabel={t('taskFilter.accessibility.filterOption', {
+          accessibilityLabel={t(TASK_TRANSLATIONS.FILTER.ACCESSIBILITY.SELECTED_FILTER, {
             filter: label,
             count: counts[id]
           })}
