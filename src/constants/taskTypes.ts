@@ -1,4 +1,4 @@
-interface TimePeriod {
+export interface TimePeriod {
   id: string;
   label: string;
   icon: string;

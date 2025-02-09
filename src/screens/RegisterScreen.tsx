@@ -8,11 +8,13 @@ import {
   ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
+  ScrollView,
 } from 'react-native';
 import { useAuth } from '../hooks/useAuth';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation';
 import { useTranslation } from 'react-i18next';
+import { ACCESSIBILITY } from '../constants/accessibility';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Register'>;
 
@@ -27,12 +29,12 @@ export function RegisterScreen({ navigation }: Props) {
 
   const handleRegister = async () => {
     if (!email || !password || !confirmPassword) {
-      setLocalError('Please fill in all fields');
+      setLocalError(t('auth.register.errors.fillAllFields'));
       return;
     }
 
     if (password !== confirmPassword) {
-      setLocalError('Passwords do not match');
+      setLocalError(t('auth.register.errors.passwordsDoNotMatch'));
       return;
     }
 
@@ -56,63 +58,108 @@ export function RegisterScreen({ navigation }: Props) {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.container}
     >
-      <View style={styles.form}>
-        <Text style={styles.title}>{t('auth.register.createAccount')}</Text>
-        
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.input}
-            value={email}
-            onChangeText={setEmail}
-            placeholder={t('inputs.placeholders.email')}
-            autoCapitalize="none"
-            keyboardType="email-address"
-          />
-        </View>
-
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.input}
-            value={password}
-            onChangeText={setPassword}
-            placeholder={t('inputs.placeholders.password')}
-            secureTextEntry
-          />
-        </View>
-
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.input}
-            value={confirmPassword}
-            onChangeText={setConfirmPassword}
-            placeholder={t('inputs.placeholders.confirmPassword')}
-            secureTextEntry
-          />
-        </View>
-        
-        {error && <Text style={styles.error}>{error}</Text>}
-        
-        <TouchableOpacity 
-          style={styles.button}
-          onPress={handleRegister}
-          disabled={isLoading}
+      <ScrollView 
+        contentContainerStyle={styles.scrollContent}
+        keyboardShouldPersistTaps="handled"
+      >
+        <View 
+          style={styles.form}
+          accessible={true}
+          accessibilityRole="none"
+          accessibilityLabel={t('auth.register.accessibility.form')}
         >
-          {isLoading ? (
-            <ActivityIndicator color="#fff" />
-          ) : (
-            <Text style={styles.buttonText}>Register</Text>
-          )}
-        </TouchableOpacity>
-        
-        <TouchableOpacity 
-          onPress={() => navigation.navigate('Login')}
-          style={styles.linkButton}
-        >
-          <Text style={styles.linkText}>
-            Already have an account? Login
+          <Text 
+            style={styles.title}
+            accessibilityRole="header"
+          >
+            {t('auth.register.createAccount')}
           </Text>
-        </TouchableOpacity>
-      </View>
+          
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.input}
+              value={email}
+              onChangeText={setEmail}
+              placeholder={t('inputs.placeholders.email')}
+              autoCapitalize="none"
+              keyboardType="email-address"
+              accessibilityRole="none"
+              accessibilityLabel={t('auth.register.accessibility.emailInput')}
+              accessibilityHint={t('auth.register.accessibility.emailHint')}
+            />
+          </View>
+
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.input}
+              value={password}
+              onChangeText={setPassword}
+              placeholder={t('inputs.placeholders.password')}
+              secureTextEntry
+              accessibilityRole="none"
+              accessibilityLabel={t('auth.register.accessibility.passwordInput')}
+              accessibilityHint={t('auth.register.accessibility.passwordHint')}
+            />
+          </View>
+
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.input}
+              value={confirmPassword}
+              onChangeText={setConfirmPassword}
+              placeholder={t('inputs.placeholders.confirmPassword')}
+              secureTextEntry
+              accessibilityRole="none"
+              accessibilityLabel={t('auth.register.accessibility.confirmPasswordInput')}
+              accessibilityHint={t('auth.register.accessibility.confirmPasswordHint')}
+            />
+          </View>
+          
+          {error && (
+            <Text 
+              style={styles.error}
+              accessibilityRole="alert"
+              accessibilityLiveRegion="polite"
+            >
+              {error}
+            </Text>
+          )}
+          
+          <TouchableOpacity 
+            style={[
+              styles.button,
+              isLoading && styles.buttonDisabled
+            ]}
+            onPress={handleRegister}
+            disabled={isLoading}
+            accessibilityRole="button"
+            accessibilityLabel={t('auth.register.accessibility.registerButton')}
+            accessibilityState={{ 
+              disabled: isLoading,
+              busy: isLoading
+            }}
+          >
+            {isLoading ? (
+              <ActivityIndicator color={ACCESSIBILITY.COLORS.BACKGROUND.PRIMARY} />
+            ) : (
+              <Text style={styles.buttonText}>
+                {t('auth.register.createAccount')}
+              </Text>
+            )}
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.loginLink}
+            onPress={() => navigation.navigate('Login')}
+            accessibilityRole="link"
+            accessibilityLabel={t('auth.register.accessibility.loginLink')}
+          >
+            <Text style={styles.loginLinkText}>
+              {t('auth.register.alreadyHaveAccount')}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
     </KeyboardAvoidingView>
   );
 }
@@ -120,52 +167,65 @@ export function RegisterScreen({ navigation }: Props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: ACCESSIBILITY.COLORS.BACKGROUND.PRIMARY,
   },
-  form: {
-    flex: 1,
-    padding: 20,
+  scrollContent: {
+    flexGrow: 1,
     justifyContent: 'center',
   },
+  form: {
+    padding: ACCESSIBILITY.SPACING.XL,
+    alignItems: 'stretch',
+  },
   title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#6495ED',
-    marginBottom: 30,
+    fontSize: ACCESSIBILITY.TYPOGRAPHY.SIZES.XL,
+    fontWeight: ACCESSIBILITY.TYPOGRAPHY.WEIGHTS.BOLD,
+    color: ACCESSIBILITY.COLORS.TEXT.PRIMARY,
     textAlign: 'center',
+    marginBottom: ACCESSIBILITY.SPACING.XL,
   },
   inputContainer: {
-    marginBottom: 15,
+    marginBottom: ACCESSIBILITY.SPACING.LG,
   },
   input: {
-    backgroundColor: '#f5f5f5',
-    padding: 15,
-    borderRadius: 8,
-    fontSize: 16,
-  },
-  button: {
-    backgroundColor: '#6495ED',
-    padding: 15,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginTop: 10,
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
+    height: ACCESSIBILITY.TOUCH_TARGET.MIN_HEIGHT,
+    backgroundColor: ACCESSIBILITY.COLORS.BACKGROUND.SECONDARY,
+    borderRadius: ACCESSIBILITY.SPACING.SM,
+    paddingHorizontal: ACCESSIBILITY.SPACING.MD,
+    fontSize: ACCESSIBILITY.TYPOGRAPHY.SIZES.BASE,
+    color: ACCESSIBILITY.COLORS.TEXT.PRIMARY,
   },
   error: {
     color: '#ff3b30',
-    marginBottom: 10,
+    fontSize: ACCESSIBILITY.TYPOGRAPHY.SIZES.SM,
     textAlign: 'center',
+    marginBottom: ACCESSIBILITY.SPACING.MD,
   },
-  linkButton: {
-    marginTop: 20,
+  button: {
+    height: ACCESSIBILITY.TOUCH_TARGET.MIN_HEIGHT,
+    backgroundColor: ACCESSIBILITY.COLORS.INTERACTIVE.PRIMARY,
+    borderRadius: ACCESSIBILITY.SPACING.SM,
+    justifyContent: 'center',
     alignItems: 'center',
+    marginTop: ACCESSIBILITY.SPACING.MD,
   },
-  linkText: {
-    color: '#6495ED',
-    fontSize: 16,
+  buttonDisabled: {
+    backgroundColor: ACCESSIBILITY.COLORS.BACKGROUND.DISABLED,
+  },
+  buttonText: {
+    color: ACCESSIBILITY.COLORS.BACKGROUND.PRIMARY,
+    fontSize: ACCESSIBILITY.TYPOGRAPHY.SIZES.BASE,
+    fontWeight: ACCESSIBILITY.TYPOGRAPHY.WEIGHTS.MEDIUM,
+  },
+  loginLink: {
+    height: ACCESSIBILITY.TOUCH_TARGET.MIN_HEIGHT,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: ACCESSIBILITY.SPACING.MD,
+  },
+  loginLinkText: {
+    color: ACCESSIBILITY.COLORS.INTERACTIVE.PRIMARY,
+    fontSize: ACCESSIBILITY.TYPOGRAPHY.SIZES.BASE,
+    fontWeight: ACCESSIBILITY.TYPOGRAPHY.WEIGHTS.MEDIUM,
   },
 });

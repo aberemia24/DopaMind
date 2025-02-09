@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Animated, InteractionManager } from 'react-native';
 import type { Task } from '../../services/taskService';
+import { ACCESSIBILITY } from '../../constants/accessibility';
+import { useTranslation } from 'react-i18next';
 
 interface TaskItemProps {
   task: Task;
@@ -17,6 +19,7 @@ const TaskItem: React.FC<TaskItemProps> = ({
   onUpdate, 
   isPriority = false 
 }) => {
+  const { t } = useTranslation();
   const [title, setTitle] = useState(task.title);
   const [isEditing, setIsEditing] = useState(!task.title);
   const fadeAnim = useRef(new Animated.Value(1)).current;
@@ -60,66 +63,104 @@ const TaskItem: React.FC<TaskItemProps> = ({
   };
 
   return (
-    <Animated.View style={[
-      styles.taskItem,
-      isPriority && styles.priorityTask,
-      { opacity: fadeAnim }
-    ]}>
+    <Animated.View 
+      style={[styles.container, { opacity: fadeAnim }]}
+      accessible={true}
+      accessibilityRole="checkbox"
+      accessibilityState={{ checked: task.completed }}
+      accessibilityLabel={t('taskItem.accessibility.taskStatus', {
+        title: task.title,
+        status: task.completed ? t('common.completed') : t('common.incomplete')
+      })}
+    >
       <TouchableOpacity
         style={styles.checkbox}
         onPress={() => onToggle(task.id)}
-        accessibilityRole="checkbox"
-        accessibilityState={{ checked: task.completed }}
-        accessibilityLabel={`Marchează task-ul ${title} ca ${task.completed ? 'neterminat' : 'terminat'}`}
+        activeOpacity={0.7}
+        accessibilityRole="button"
+        accessibilityLabel={t('taskItem.accessibility.toggleComplete', {
+          action: task.completed ? t('common.markIncomplete') : t('common.markComplete')
+        })}
       >
         <View style={[
           styles.checkboxInner,
-          task.completed && styles.checkboxChecked,
-          isPriority && styles.priorityCheckbox
-        ]}>
-          {task.completed && <Text style={styles.checkmark}>✓</Text>}
-        </View>
+          task.completed && styles.checkboxChecked
+        ]} />
       </TouchableOpacity>
 
-      <View style={styles.contentContainer}>
+      <View style={styles.content}>
         {isEditing ? (
-          <TextInput
-            ref={inputRef}
-            style={[styles.input, isPriority && styles.priorityInput]}
-            value={title}
-            onChangeText={setTitle}
-            onBlur={handleSubmit}
-            onSubmitEditing={handleSubmit}
-            placeholder="Descrie task-ul..."
-            placeholderTextColor="#9CA3AF"
-            returnKeyType="done"
-          />
+          <View style={styles.editContainer}>
+            <TextInput
+              ref={inputRef}
+              style={styles.input}
+              value={title}
+              onChangeText={setTitle}
+              onBlur={handleCancel}
+              onSubmitEditing={handleSubmit}
+              placeholder={t('taskItem.placeholder.title')}
+              maxLength={100}
+              multiline
+              accessibilityLabel={t('taskItem.accessibility.editTitle')}
+              accessibilityHint={t('taskItem.accessibility.editTitleHint')}
+            />
+            <View style={styles.actions}>
+              <TouchableOpacity
+                style={[styles.actionButton, styles.editButton]}
+                onPress={handleCancel}
+                accessibilityLabel={t('common.cancel')}
+              >
+                <Text style={styles.buttonText}>{t('common.cancel')}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  styles.actionButton,
+                  styles.editButton,
+                  title.trim().length < 3 && styles.editButtonDisabled
+                ]}
+                onPress={handleSubmit}
+                disabled={title.trim().length < 3}
+                accessibilityLabel={t('common.save')}
+                accessibilityState={{ disabled: title.trim().length < 3 }}
+              >
+                <Text style={[
+                  styles.buttonText,
+                  title.trim().length < 3 && styles.buttonTextDisabled
+                ]}>
+                  {t('common.save')}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
         ) : (
-          <TouchableOpacity
-            style={styles.titleContainer}
-            onPress={() => setIsEditing(true)}
-            accessibilityRole="button"
-            accessibilityLabel="Editează titlul task-ului"
-          >
-            <Text style={[
-              styles.title,
-              task.completed && styles.titleCompleted,
-              isPriority && styles.priorityTitle
-            ]}>
-              {title}
+          <>
+            <Text 
+              style={[
+                styles.title,
+                task.completed && styles.titleCompleted,
+                isPriority && styles.titlePriority
+              ]}
+              accessibilityLabel={task.title}
+            >
+              {task.title}
             </Text>
-          </TouchableOpacity>
-        )}
-
-        {!isEditing && (
-          <TouchableOpacity
-            style={styles.deleteButton}
-            onPress={() => onDelete(task.id)}
-            accessibilityRole="button"
-            accessibilityLabel="Șterge task-ul"
-          >
-            <Text style={styles.deleteButtonText}>×</Text>
-          </TouchableOpacity>
+            <View style={styles.actions}>
+              <TouchableOpacity
+                style={styles.actionButton}
+                onPress={() => setIsEditing(true)}
+                accessibilityLabel={t('taskItem.accessibility.edit')}
+              >
+                <Text style={styles.buttonText}>{t('common.edit')}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.actionButton, styles.deleteButton]}
+                onPress={() => onDelete(task.id)}
+                accessibilityLabel={t('taskItem.accessibility.delete')}
+              >
+                <Text style={styles.deleteButtonText}>{t('common.delete')}</Text>
+              </TouchableOpacity>
+            </View>
+          </>
         )}
       </View>
     </Animated.View>
@@ -127,94 +168,99 @@ const TaskItem: React.FC<TaskItemProps> = ({
 };
 
 const styles = StyleSheet.create({
-  taskItem: {
+  container: {
     flexDirection: 'row',
+    padding: ACCESSIBILITY.SPACING.MD,
+    backgroundColor: ACCESSIBILITY.COLORS.BACKGROUND.PRIMARY,
+    borderRadius: ACCESSIBILITY.SPACING.SM,
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-    borderRadius: 8,
-    padding: 12,
-    marginBottom: 8,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
-      height: 1,
+      height: 2,
     },
-    shadowOpacity: 0.1,
-    shadowRadius: 1,
-    elevation: 1
-  },
-  priorityTask: {
-    borderLeftWidth: 4,
-    borderLeftColor: '#4F46E5',
-    backgroundColor: '#F5F3FF'
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   checkbox: {
-    marginRight: 12,
-    height: 24,
-    width: 24,
+    width: ACCESSIBILITY.TOUCH_TARGET.MIN_WIDTH,
+    height: ACCESSIBILITY.TOUCH_TARGET.MIN_HEIGHT,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   checkboxInner: {
-    width: 20,
-    height: 20,
-    borderRadius: 4,
+    width: 24,
+    height: 24,
     borderWidth: 2,
-    borderColor: '#9CA3AF',
-    justifyContent: 'center',
-    alignItems: 'center'
+    borderColor: ACCESSIBILITY.COLORS.INTERACTIVE.PRIMARY,
+    borderRadius: ACCESSIBILITY.SPACING.XS,
   },
   checkboxChecked: {
-    backgroundColor: '#10B981',
-    borderColor: '#10B981'
+    backgroundColor: ACCESSIBILITY.COLORS.INTERACTIVE.PRIMARY,
   },
-  priorityCheckbox: {
-    borderColor: '#4F46E5'
+  content: {
+    flex: 1,
+    marginLeft: ACCESSIBILITY.SPACING.MD,
   },
-  checkmark: {
-    color: '#FFFFFF',
-    fontSize: 14,
-    fontWeight: 'bold'
-  },
-  contentContainer: {
+  editContainer: {
     flex: 1,
     flexDirection: 'row',
-    alignItems: 'center'
-  },
-  titleContainer: {
-    flex: 1,
-    paddingVertical: 4
+    alignItems: 'center',
   },
   title: {
-    fontSize: 16,
-    color: '#1F2937'
+    flex: 1,
+    fontSize: ACCESSIBILITY.TYPOGRAPHY.SIZES.BASE,
+    color: ACCESSIBILITY.COLORS.TEXT.PRIMARY,
   },
   titleCompleted: {
     textDecorationLine: 'line-through',
-    color: '#9CA3AF'
+    color: ACCESSIBILITY.COLORS.TEXT.DISABLED,
   },
-  priorityTitle: {
-    color: '#4F46E5',
-    fontWeight: '500'
+  titlePriority: {
+    color: ACCESSIBILITY.COLORS.INTERACTIVE.PRIMARY,
+    fontWeight: ACCESSIBILITY.TYPOGRAPHY.WEIGHTS.BOLD,
   },
   input: {
     flex: 1,
-    fontSize: 16,
-    color: '#1F2937',
-    padding: 0
+    fontSize: ACCESSIBILITY.TYPOGRAPHY.SIZES.BASE,
+    color: ACCESSIBILITY.COLORS.TEXT.PRIMARY,
+    minHeight: ACCESSIBILITY.TOUCH_TARGET.MIN_HEIGHT,
+    textAlignVertical: 'center',
+    padding: ACCESSIBILITY.SPACING.SM,
   },
-  priorityInput: {
-    color: '#4F46E5'
+  actions: {
+    flexDirection: 'row',
+    gap: ACCESSIBILITY.SPACING.SM,
+  },
+  actionButton: {
+    minWidth: ACCESSIBILITY.TOUCH_TARGET.MIN_WIDTH,
+    height: ACCESSIBILITY.TOUCH_TARGET.MIN_HEIGHT,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: ACCESSIBILITY.SPACING.MD,
+    borderRadius: ACCESSIBILITY.SPACING.SM,
+  },
+  editButton: {
+    backgroundColor: ACCESSIBILITY.COLORS.INTERACTIVE.SECONDARY,
+  },
+  editButtonDisabled: {
+    backgroundColor: ACCESSIBILITY.COLORS.BACKGROUND.DISABLED,
   },
   deleteButton: {
-    padding: 8,
-    marginLeft: 8
+    backgroundColor: ACCESSIBILITY.COLORS.INTERACTIVE.DANGER,
+  },
+  buttonText: {
+    color: ACCESSIBILITY.COLORS.TEXT.PRIMARY,
+    fontSize: ACCESSIBILITY.TYPOGRAPHY.SIZES.SM,
+    fontWeight: ACCESSIBILITY.TYPOGRAPHY.WEIGHTS.MEDIUM,
+  },
+  buttonTextDisabled: {
+    color: ACCESSIBILITY.COLORS.TEXT.DISABLED,
   },
   deleteButtonText: {
-    fontSize: 20,
-    color: '#9CA3AF',
-    fontWeight: 'bold'
-  }
+    color: ACCESSIBILITY.COLORS.BACKGROUND.PRIMARY,
+  },
 });
 
-export default TaskItem;
+export { TaskItem };

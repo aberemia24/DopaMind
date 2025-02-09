@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -12,6 +12,7 @@ import {
   ListRenderItem,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { ACCESSIBILITY } from '../../constants/accessibility';
 
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList<Slide>);
 
@@ -49,28 +50,24 @@ export function OnboardingSlides() {
   const { t } = useTranslation();
   const [currentIndex, setCurrentIndex] = useState(0);
   const scrollX = useRef(new Animated.Value(0)).current;
-  const slidesRef = useRef<FlatList<Slide>>(null);
+  const flatListRef = useRef<FlatList>(null);
   const autoScrollTimer = useRef<NodeJS.Timeout>();
 
-  const viewableItemsChanged = useRef(({ viewableItems }: any) => {
-    setCurrentIndex(viewableItems[0]?.index || 0);
+  const viewableItemsChanged = useRef(({ viewableItems }: { viewableItems: ViewToken[] }) => {
+    if (viewableItems[0]) {
+      setCurrentIndex(Number(viewableItems[0].index));
+    }
   }).current;
 
   const viewConfig = useRef({ viewAreaCoveragePercentThreshold: 50 }).current;
 
+  const scrollTo = (index: number) => {
+    flatListRef.current?.scrollToIndex({ index, animated: true });
+  };
+
   const scrollToNextSlide = () => {
-    if (currentIndex < slides.length - 1) {
-      slidesRef.current?.scrollToIndex({
-        index: currentIndex + 1,
-        animated: true
-      });
-    } else {
-      // Revenim la primul slide
-      slidesRef.current?.scrollToIndex({
-        index: 0,
-        animated: true
-      });
-    }
+    const nextIndex = currentIndex < slides.length - 1 ? currentIndex + 1 : 0;
+    scrollTo(nextIndex);
   };
 
   useEffect(() => {
@@ -96,22 +93,34 @@ export function OnboardingSlides() {
   const renderItem: ListRenderItem<Slide> = ({ item }) => {
     return (
       <View style={styles.slide}>
-        <Image 
-          source={item.image} 
-          style={styles.image}
-          resizeMode="contain"
-        />
+        <Image source={item.image} style={styles.image} resizeMode="contain" />
         <View style={styles.textContainer}>
-          <Text style={styles.title}>{t(item.titleKey)}</Text>
-          <Text style={styles.description}>{t(item.descriptionKey)}</Text>
+          <Text 
+            style={styles.title}
+            accessibilityRole="header"
+          >
+            {t(item.titleKey)}
+          </Text>
+          <Text 
+            style={styles.description}
+            accessibilityRole="text"
+          >
+            {t(item.descriptionKey)}
+          </Text>
         </View>
       </View>
     );
   };
 
   return (
-    <View style={styles.container}>
+    <View 
+      style={styles.container}
+      accessible={true}
+      accessibilityRole="tablist"
+      accessibilityLabel={t('onboarding.accessibility.slideshow')}
+    >
       <AnimatedFlatList
+        ref={flatListRef}
         data={slides}
         renderItem={renderItem}
         horizontal
@@ -119,29 +128,54 @@ export function OnboardingSlides() {
         pagingEnabled
         bounces={false}
         keyExtractor={(item) => item.id}
-        onScroll={Animated.event(
-          [{ nativeEvent: { contentOffset: { x: scrollX } } }],
-          { useNativeDriver: true }
-        )}
-        onMomentumScrollEnd={handleMomentumScrollEnd}
-        scrollEventThrottle={32}
+        onScroll={Animated.event([{ nativeEvent: { contentOffset: { x: scrollX } } }], {
+          useNativeDriver: false,
+        })}
         onViewableItemsChanged={viewableItemsChanged}
         viewabilityConfig={viewConfig}
-        ref={slidesRef}
+        scrollEventThrottle={32}
+        onMomentumScrollEnd={handleMomentumScrollEnd}
+        accessibilityRole="none"
       />
-      
-      <View style={styles.dotsContainer}>
-        {slides.map((_, index) => (
-          <View
-            key={index}
-            style={[
-              styles.dot,
-              {
-                backgroundColor: currentIndex === index ? '#6495ED' : '#E0E0E0',
-              },
-            ]}
-          />
-        ))}
+
+      <View 
+        style={styles.pagination}
+        accessibilityRole="tablist"
+        accessibilityLabel={t('onboarding.accessibility.pagination')}
+      >
+        {slides.map((_, i) => {
+          const inputRange = [(i - 1) * width, i * width, (i + 1) * width];
+          const dotWidth = scrollX.interpolate({
+            inputRange,
+            outputRange: [10, 20, 10],
+            extrapolate: 'clamp',
+          });
+          const opacity = scrollX.interpolate({
+            inputRange,
+            outputRange: [0.3, 1, 0.3],
+            extrapolate: 'clamp',
+          });
+
+          return (
+            <TouchableOpacity
+              key={i}
+              onPress={() => scrollTo(i)}
+              accessibilityRole="tab"
+              accessibilityState={{ selected: currentIndex === i }}
+              accessibilityLabel={t('onboarding.accessibility.pageIndicator', {
+                current: i + 1,
+                total: slides.length
+              })}
+            >
+              <Animated.View
+                style={[
+                  styles.dot,
+                  { width: dotWidth, opacity }
+                ]}
+              />
+            </TouchableOpacity>
+          );
+        })}
       </View>
     </View>
   );
@@ -150,49 +184,45 @@ export function OnboardingSlides() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: ACCESSIBILITY.COLORS.BACKGROUND.PRIMARY,
   },
   slide: {
     width,
-    height: '100%',
+    flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
-    padding: 20,
+    padding: ACCESSIBILITY.SPACING.MD,
   },
   image: {
     flex: 0.7,
-    width: width * 0.8,
-    height: width * 0.8,
+    width: '80%',
   },
   textContainer: {
     flex: 0.3,
-    alignItems: 'center',
   },
   title: {
-    fontWeight: 'bold',
-    fontSize: 24,
-    marginBottom: 10,
-    color: '#2E2E2E',
+    fontSize: ACCESSIBILITY.TYPOGRAPHY.SIZES.XL,
+    fontWeight: ACCESSIBILITY.TYPOGRAPHY.WEIGHTS.BOLD,
+    color: ACCESSIBILITY.COLORS.TEXT.PRIMARY,
     textAlign: 'center',
+    marginBottom: ACCESSIBILITY.SPACING.MD,
   },
   description: {
-    fontSize: 16,
-    color: '#666666',
+    fontSize: ACCESSIBILITY.TYPOGRAPHY.SIZES.BASE,
+    color: ACCESSIBILITY.COLORS.TEXT.SECONDARY,
     textAlign: 'center',
-    paddingHorizontal: 20,
+    paddingHorizontal: ACCESSIBILITY.SPACING.MD,
   },
-  dotsContainer: {
+  pagination: {
     flexDirection: 'row',
-    height: 40,
+    height: ACCESSIBILITY.TOUCH_TARGET.MIN_HEIGHT,
     justifyContent: 'center',
     alignItems: 'center',
+    paddingBottom: ACCESSIBILITY.SPACING.MD,
   },
   dot: {
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: '#E0E0E0',
-    marginHorizontal: 4,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: ACCESSIBILITY.COLORS.INTERACTIVE.PRIMARY,
+    marginHorizontal: ACCESSIBILITY.SPACING.XS,
   },
 });

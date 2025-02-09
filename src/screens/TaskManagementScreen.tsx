@@ -11,24 +11,18 @@ import {
   Text,
 } from 'react-native';
 import TimeSection from '../components/TaskManagement/TimeSection';
-import { TIME_PERIODS, type TimePeriodKey } from '../constants/taskTypes';
+import TaskFilter, { FilterOption } from '../components/TaskManagement/TaskFilter';
+import { TIME_PERIODS, type TimePeriodKey, type TimePeriod } from '../constants/taskTypes';
 import { useAuth } from '../hooks/useAuth';
 import { useTranslation } from 'react-i18next';
 import { MaterialIcons } from '@expo/vector-icons';
 import type { Task } from '../services/taskService';
+import { ACCESSIBILITY } from '../constants/accessibility';
 
 interface TasksByPeriod {
   MORNING: Task[];
   AFTERNOON: Task[];
   EVENING: Task[];
-}
-
-interface TimePeriod {
-  id: TimePeriodKey;
-  label: string;
-  icon: string;
-  timeFrame: string;
-  description: string;
 }
 
 const TaskManagementScreen: React.FC = () => {
@@ -39,6 +33,30 @@ const TaskManagementScreen: React.FC = () => {
     AFTERNOON: [],
     EVENING: []
   });
+  const [currentFilter, setCurrentFilter] = useState<FilterOption>('all');
+
+  const filterTasks = (taskList: Task[]): Task[] => {
+    switch (currentFilter) {
+      case 'active':
+        return taskList.filter(task => !task.completed);
+      case 'completed':
+        return taskList.filter(task => task.completed);
+      case 'priority':
+        return taskList.filter(task => task.isPriority);
+      default:
+        return taskList;
+    }
+  };
+
+  const getFilterCounts = () => {
+    const allTasks = [...tasks.MORNING, ...tasks.AFTERNOON, ...tasks.EVENING];
+    return {
+      all: allTasks.length,
+      active: allTasks.filter(task => !task.completed).length,
+      completed: allTasks.filter(task => task.completed).length,
+      priority: allTasks.filter(task => task.isPriority).length
+    };
+  };
 
   const getTotalTaskCount = (): number => {
     return tasks.MORNING.length + tasks.AFTERNOON.length + tasks.EVENING.length;
@@ -120,73 +138,78 @@ const TaskManagementScreen: React.FC = () => {
   };
 
   return (
-    <KeyboardAvoidingView 
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={styles.container}
-    >
-      <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container}>
+      <KeyboardAvoidingView 
+        style={styles.keyboardAvoidingView}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      >
         <View style={styles.header}>
+          <Text style={styles.title}>{t('taskManagement.title')}</Text>
           <TouchableOpacity
-            style={styles.logoutButton}
             onPress={signOut}
+            style={styles.signOutButton}
+            accessibilityRole="button"
+            accessibilityLabel={t('common.signOut')}
           >
-            <MaterialIcons name="logout" size={24} color="#fff" />
-            <Text style={styles.logoutText}>{t('auth.signOut')}</Text>
+            <MaterialIcons name="logout" size={24} color={ACCESSIBILITY.COLORS.TEXT.PRIMARY} />
           </TouchableOpacity>
         </View>
-        <ScrollView
-          contentContainerStyle={styles.scrollContent}
-          keyboardShouldPersistTaps="handled"
-        >
-          {Object.values(TIME_PERIODS).map((period) => (
+
+        <TaskFilter
+          currentFilter={currentFilter}
+          onFilterChange={setCurrentFilter}
+          counts={getFilterCounts()}
+        />
+
+        <ScrollView style={styles.content}>
+          {Object.entries(TIME_PERIODS).map(([id, period]) => (
             <TimeSection
-              key={period.id}
-              timePeriod={{
-                id: period.id.toUpperCase() as TimePeriodKey,
-                label: period.label,
-                icon: period.icon,
-                timeFrame: period.timeFrame,
-                description: period.description
-              }}
-              tasks={tasks[period.id.toUpperCase() as TimePeriodKey] || []}
-              onAddTask={() => handleAddTask(period.id.toUpperCase() as TimePeriodKey)}
+              key={id}
+              period={period}
+              tasks={filterTasks(tasks[id as TimePeriodKey])}
+              onAddTask={() => handleAddTask(id as TimePeriodKey)}
               onToggleTask={handleToggleTask}
               onDeleteTask={handleDeleteTask}
               onUpdateTask={handleUpdateTask}
             />
           ))}
         </ScrollView>
-      </SafeAreaView>
-    </KeyboardAvoidingView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F9FAFB',
+    backgroundColor: ACCESSIBILITY.COLORS.BACKGROUND.PRIMARY,
+  },
+  keyboardAvoidingView: {
+    flex: 1,
   },
   header: {
     flexDirection: 'row',
-    justifyContent: 'flex-end',
-    padding: 16,
-    backgroundColor: '#6495ED',
-  },
-  logoutButton: {
-    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    padding: 8,
-    borderRadius: 8,
+    padding: ACCESSIBILITY.SPACING.MD,
+    backgroundColor: ACCESSIBILITY.COLORS.BACKGROUND.PRIMARY,
+    borderBottomWidth: 1,
+    borderBottomColor: ACCESSIBILITY.COLORS.INTERACTIVE.SECONDARY,
   },
-  logoutText: {
-    color: '#fff',
-    marginLeft: 8,
-    fontWeight: '500',
+  title: {
+    fontSize: ACCESSIBILITY.TYPOGRAPHY.SIZES.LG,
+    fontWeight: ACCESSIBILITY.TYPOGRAPHY.WEIGHTS.SEMIBOLD,
+    color: ACCESSIBILITY.COLORS.TEXT.PRIMARY,
   },
-  scrollContent: {
-    padding: 16
-  }
+  signOutButton: {
+    width: ACCESSIBILITY.TOUCH_TARGET.MIN_WIDTH,
+    height: ACCESSIBILITY.TOUCH_TARGET.MIN_HEIGHT,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  content: {
+    flex: 1,
+  },
 });
 
 export default TaskManagementScreen;

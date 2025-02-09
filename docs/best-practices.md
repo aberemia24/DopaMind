@@ -53,6 +53,37 @@
 - Evitați re-renderuri inutile
 - Implementați lazy loading pentru componente mari
 
+## Accesibilitate și UX pentru ADHD
+
+### 1. Dimensiuni Touch Target
+- Toate elementele interactive trebuie să aibă minim 44x44px
+- Spațiere minimă între elemente interactive: 8px
+- Folosiți constantele din `ACCESSIBILITY.TOUCH_TARGET`
+
+### 2. Contrast și Culori
+- Folosiți doar culorile definite în `ACCESSIBILITY.COLORS`
+- Text principal: contrast minim 16:1
+- Text secundar: contrast minim 9:1
+- Text dezactivat: contrast minim 7:1
+- Evitați culorile stridente sau care distrag atenția
+
+### 3. Tipografie
+- Folosiți mărimile predefinite din `ACCESSIBILITY.TYPOGRAPHY`
+- Font size minim: 12px pentru text secundar
+- Font size standard: 16px pentru text principal
+- Line height: 1.5 pentru lizibilitate optimă
+
+### 4. Spațiere și Layout
+- Folosiți sistemul de spațiere din `ACCESSIBILITY.SPACING`
+- Mențineți consistența folosind multiplii de 8
+- Asigurați suficient spațiu alb între elemente
+
+### 5. Feedback și Interacțiune
+- Feedback vizual clar pentru toate acțiunile
+- Stări vizibile pentru hover/press/focus
+- Mesaje de eroare clare și acționabile
+- Confirmări vizibile pentru acțiuni completate
+
 ## Accesibilitate
 - Adăugați `accessibilityLabel` și `accessibilityHint`
 - Asigurați contrast suficient pentru text

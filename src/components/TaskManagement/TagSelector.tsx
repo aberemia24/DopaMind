@@ -1,193 +1,234 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, TextInput } from 'react-native';
-import { TASK_TAGS } from '../../constants/taskTags';
-import type { TaskTagKey } from '../../constants/taskTags';
+import { ACCESSIBILITY } from '../../constants/accessibility';
+import { useTranslation } from 'react-i18next';
+import { MaterialIcons } from '@expo/vector-icons';
 
-interface CustomTag {
+interface Tag {
   id: string;
   label: string;
   color: string;
-  isCustom: boolean;
 }
 
 interface TagSelectorProps {
+  tags: Tag[];
   selectedTags: string[];
-  onTagToggle: (tagId: string) => void;
-  onAddCustomTag: (tag: CustomTag) => void;
+  onTagSelect: (tagId: string) => void;
+  onAddCustomTag?: (tag: Tag) => void;
 }
 
-const TagSelector: React.FC<TagSelectorProps> = ({ selectedTags, onTagToggle, onAddCustomTag }) => {
+const TagSelector: React.FC<TagSelectorProps> = ({
+  tags,
+  selectedTags,
+  onTagSelect,
+  onAddCustomTag
+}) => {
+  const { t } = useTranslation();
+  const [isAddingCustom, setIsAddingCustom] = useState(false);
   const [newTagText, setNewTagText] = useState('');
-  const [showCustomInput, setShowCustomInput] = useState(false);
 
   const handleAddCustomTag = () => {
     if (newTagText.trim()) {
-      const customTagId = `custom_${Date.now()}`;
-      
-      const newTag: CustomTag = {
-        id: customTagId,
+      const newTag: Tag = {
+        id: `custom-${Date.now()}`,
         label: newTagText.trim(),
-        color: '#333333', // Culoare neutră pentru text
-        isCustom: true // Marcăm eticheta ca fiind personalizată
+        color: ACCESSIBILITY.COLORS.INTERACTIVE.PRIMARY
       };
-      
-      onAddCustomTag(newTag);
-      
+
+      onAddCustomTag?.(newTag);
       setNewTagText('');
-      setShowCustomInput(false);
+      setIsAddingCustom(false);
     }
   };
 
-  const handleTagPress = (tagId: TaskTagKey | string) => {
-    onTagToggle(tagId);
-    setShowCustomInput(false);
-  };
-
   return (
-    <View style={styles.container}>
-      <View style={styles.tagsContainer}>
-        {Object.values(TASK_TAGS).map((tag) => (
+    <View 
+      style={styles.container}
+      accessible={true}
+      accessibilityRole="radiogroup"
+      accessibilityLabel={t('tagSelector.accessibility.tagList')}
+    >
+      <View style={styles.tagList}>
+        {tags.map(tag => (
           <TouchableOpacity
             key={tag.id}
             style={[
               styles.tag,
-              { backgroundColor: tag.color + '20' },
               selectedTags.includes(tag.id) && styles.tagSelected,
-              selectedTags.includes(tag.id) && { backgroundColor: tag.color + '40' }
+              { backgroundColor: selectedTags.includes(tag.id) ? tag.color : tag.color + '10' }
             ]}
-            onPress={() => handleTagPress(tag.id)}
+            onPress={() => onTagSelect(tag.id)}
+            accessibilityRole="radio"
+            accessibilityState={{ 
+              selected: selectedTags.includes(tag.id),
+            }}
+            accessibilityLabel={t('tagSelector.accessibility.tag', {
+              label: tag.label,
+              selected: selectedTags.includes(tag.id)
+            })}
           >
-            <Text
-              style={[
-                styles.tagText,
-                { color: tag.color },
-                selectedTags.includes(tag.id) && styles.tagTextSelected
-              ]}
-            >
+            <Text style={[
+              styles.tagText,
+              selectedTags.includes(tag.id) && styles.tagTextSelected,
+              { color: selectedTags.includes(tag.id) ? ACCESSIBILITY.COLORS.BACKGROUND.PRIMARY : tag.color }
+            ]}>
               {tag.label}
             </Text>
           </TouchableOpacity>
         ))}
-      </View>
 
-      {!showCustomInput ? (
-        <TouchableOpacity
-          style={styles.addCustomButton}
-          onPress={() => setShowCustomInput(true)}
-        >
-          <Text style={styles.addCustomButtonText}>+ Adaugă etichetă nouă</Text>
-        </TouchableOpacity>
-      ) : (
-        <View style={styles.customTagInput}>
-          <TextInput
-            style={styles.input}
-            value={newTagText}
-            onChangeText={setNewTagText}
-            placeholder="Numele etichetei..."
-            maxLength={20}
-            autoFocus
-          />
-          <View style={styles.customTagButtons}>
+        {onAddCustomTag && (
+          isAddingCustom ? (
+            <View style={styles.addTagContainer}>
+              <TextInput
+                style={styles.input}
+                value={newTagText}
+                onChangeText={setNewTagText}
+                placeholder={t('tagSelector.placeholder.newTag')}
+                placeholderTextColor={ACCESSIBILITY.COLORS.TEXT.DISABLED}
+                autoFocus
+                returnKeyType="done"
+                onSubmitEditing={handleAddCustomTag}
+                accessibilityRole="none"
+                accessibilityLabel={t('tagSelector.accessibility.newTagInput')}
+                accessibilityHint={t('tagSelector.accessibility.newTagHint')}
+              />
+              <View style={styles.addTagActions}>
+                <TouchableOpacity
+                  style={[styles.actionButton, styles.cancelButton]}
+                  onPress={() => {
+                    setIsAddingCustom(false);
+                    setNewTagText('');
+                  }}
+                  accessibilityRole="button"
+                  accessibilityLabel={t('common.cancel')}
+                >
+                  <MaterialIcons 
+                    name="close" 
+                    size={24} 
+                    color={ACCESSIBILITY.COLORS.TEXT.SECONDARY} 
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[
+                    styles.actionButton,
+                    styles.addButton,
+                    !newTagText.trim() && styles.addButtonDisabled
+                  ]}
+                  onPress={handleAddCustomTag}
+                  disabled={!newTagText.trim()}
+                  accessibilityRole="button"
+                  accessibilityLabel={t('tagSelector.accessibility.addTag')}
+                  accessibilityState={{ disabled: !newTagText.trim() }}
+                >
+                  <MaterialIcons 
+                    name="check" 
+                    size={24} 
+                    color={ACCESSIBILITY.COLORS.BACKGROUND.PRIMARY} 
+                  />
+                </TouchableOpacity>
+              </View>
+            </View>
+          ) : (
             <TouchableOpacity
-              style={[styles.customTagButton, styles.cancelButton]}
-              onPress={() => {
-                setNewTagText('');
-                setShowCustomInput(false);
-              }}
+              style={styles.addTagButton}
+              onPress={() => setIsAddingCustom(true)}
+              accessibilityRole="button"
+              accessibilityLabel={t('tagSelector.accessibility.createTag')}
             >
-              <Text style={styles.cancelButtonText}>Anulează</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.customTagButton, styles.addButton]}
-              onPress={handleAddCustomTag}
-              disabled={!newTagText.trim()}
-            >
-              <Text style={[
-                styles.addButtonText,
-                !newTagText.trim() && styles.addButtonTextDisabled
-              ]}>
-                Adaugă
+              <MaterialIcons 
+                name="add" 
+                size={24} 
+                color={ACCESSIBILITY.COLORS.INTERACTIVE.PRIMARY} 
+              />
+              <Text style={styles.addTagText}>
+                {t('tagSelector.createTag')}
               </Text>
             </TouchableOpacity>
-          </View>
-        </View>
-      )}
+          )
+        )}
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    marginVertical: 8,
+    padding: ACCESSIBILITY.SPACING.MD,
   },
-  tagsContainer: {
+  tagList: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    marginBottom: 8,
+    gap: ACCESSIBILITY.SPACING.SM,
   },
   tag: {
-    borderRadius: 16,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    marginRight: 8,
-    marginBottom: 8,
-    minWidth: 60,
+    minWidth: ACCESSIBILITY.TOUCH_TARGET.MIN_WIDTH,
+    height: ACCESSIBILITY.TOUCH_TARGET.MIN_HEIGHT,
+    paddingHorizontal: ACCESSIBILITY.SPACING.MD,
+    borderRadius: ACCESSIBILITY.SPACING.SM,
+    justifyContent: 'center',
     alignItems: 'center',
   },
   tagSelected: {
-    borderWidth: 1,
-    borderColor: 'rgba(0,0,0,0.1)',
+    borderWidth: 0,
   },
   tagText: {
-    fontSize: 14,
-    fontWeight: '500',
+    fontSize: ACCESSIBILITY.TYPOGRAPHY.SIZES.SM,
+    fontWeight: ACCESSIBILITY.TYPOGRAPHY.WEIGHTS.MEDIUM,
   },
   tagTextSelected: {
-    fontWeight: '600',
+    color: ACCESSIBILITY.COLORS.BACKGROUND.PRIMARY,
   },
-  addCustomButton: {
-    paddingVertical: 8,
-  },
-  addCustomButtonText: {
-    color: '#666',
-    fontSize: 14,
-  },
-  customTagInput: {
-    marginTop: 8,
+  addTagContainer: {
+    flex: 1,
+    minWidth: 200,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: ACCESSIBILITY.SPACING.SM,
   },
   input: {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    fontSize: 14,
+    flex: 1,
+    height: ACCESSIBILITY.TOUCH_TARGET.MIN_HEIGHT,
+    paddingHorizontal: ACCESSIBILITY.SPACING.MD,
+    backgroundColor: ACCESSIBILITY.COLORS.BACKGROUND.SECONDARY,
+    borderRadius: ACCESSIBILITY.SPACING.SM,
+    fontSize: ACCESSIBILITY.TYPOGRAPHY.SIZES.BASE,
+    color: ACCESSIBILITY.COLORS.TEXT.PRIMARY,
   },
-  customTagButtons: {
+  addTagActions: {
     flexDirection: 'row',
-    justifyContent: 'flex-end',
-    marginTop: 8,
+    gap: ACCESSIBILITY.SPACING.SM,
   },
-  customTagButton: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 8,
-    marginLeft: 8,
+  actionButton: {
+    width: ACCESSIBILITY.TOUCH_TARGET.MIN_WIDTH,
+    height: ACCESSIBILITY.TOUCH_TARGET.MIN_HEIGHT,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: ACCESSIBILITY.SPACING.SM,
   },
   cancelButton: {
-    backgroundColor: '#f5f5f5',
-  },
-  cancelButtonText: {
-    color: '#666',
+    backgroundColor: ACCESSIBILITY.COLORS.BACKGROUND.SECONDARY,
   },
   addButton: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: ACCESSIBILITY.COLORS.INTERACTIVE.PRIMARY,
   },
-  addButtonText: {
-    color: '#fff',
+  addButtonDisabled: {
+    backgroundColor: ACCESSIBILITY.COLORS.BACKGROUND.DISABLED,
   },
-  addButtonTextDisabled: {
-    opacity: 0.5,
+  addTagButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    minWidth: ACCESSIBILITY.TOUCH_TARGET.MIN_WIDTH,
+    height: ACCESSIBILITY.TOUCH_TARGET.MIN_HEIGHT,
+    paddingHorizontal: ACCESSIBILITY.SPACING.MD,
+    borderRadius: ACCESSIBILITY.SPACING.SM,
+    backgroundColor: ACCESSIBILITY.COLORS.INTERACTIVE.SECONDARY,
+    gap: ACCESSIBILITY.SPACING.XS,
+  },
+  addTagText: {
+    fontSize: ACCESSIBILITY.TYPOGRAPHY.SIZES.SM,
+    fontWeight: ACCESSIBILITY.TYPOGRAPHY.WEIGHTS.MEDIUM,
+    color: ACCESSIBILITY.COLORS.INTERACTIVE.PRIMARY,
   },
 });
 
