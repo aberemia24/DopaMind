@@ -1,5 +1,3 @@
-import { useTranslation } from 'react-i18next';
-
 export interface TimePeriod {
   id: string;
   label: string;
@@ -20,31 +18,31 @@ interface TimeEstimate {
   icon: string;
 }
 
-export const getTimePeriods = (t: ReturnType<typeof useTranslation>['t']) => ({
+export const TIME_PERIODS = {
   MORNING: {
     id: 'morning',
-    label: t('timePeriods.morning.label'),
+    label: 'Dimineață',
     icon: '🌅',
-    timeFrame: t('timePeriods.morning.timeFrame'),
-    description: t('timePeriods.morning.description')
+    timeFrame: '06:00 - 12:00',
+    description: 'Perioada optimă pentru taskuri care necesită concentrare'
   },
   AFTERNOON: {
     id: 'afternoon',
-    label: t('timePeriods.afternoon.label'),
+    label: 'După-amiază',
     icon: '☀️',
-    timeFrame: t('timePeriods.afternoon.timeFrame'),
-    description: t('timePeriods.afternoon.description')
+    timeFrame: '12:00 - 18:00',
+    description: 'Perioada bună pentru taskuri creative și colaborative'
   },
   EVENING: {
     id: 'evening',
-    label: t('timePeriods.evening.label'),
+    label: 'Seară',
     icon: '🌙',
-    timeFrame: t('timePeriods.evening.timeFrame'),
-    description: t('timePeriods.evening.description')
+    timeFrame: '18:00 - 23:00',
+    description: 'Perioada potrivită pentru taskuri ușoare și relaxante'
   }
-});
+} as const;
 
-export type TimePeriodKey = 'MORNING' | 'AFTERNOON' | 'EVENING';
+export type TimePeriodKey = keyof typeof TIME_PERIODS;
 
 export const TASK_STATUS = {
   NOT_STARTED: 'not_started',

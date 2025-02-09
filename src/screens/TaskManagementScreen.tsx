@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import TimeSection from '../components/TaskManagement/TimeSection';
 import TaskFilter, { FilterOption } from '../components/TaskManagement/TaskFilter';
-import { getTimePeriods, type TimePeriodKey, type TimePeriod } from '../constants/taskTypes';
+import { TIME_PERIODS, type TimePeriodKey, type TimePeriod } from '../constants/taskTypes';
 import { useAuth } from '../hooks/useAuth';
 import { useTranslation } from 'react-i18next';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -28,7 +28,6 @@ interface TasksByPeriod {
 const TaskManagementScreen: React.FC = () => {
   const { signOut, user } = useAuth();
   const { t } = useTranslation();
-  const timePeriods = getTimePeriods(t);
   const [tasks, setTasks] = useState<TasksByPeriod>({
     MORNING: [],
     AFTERNOON: [],
@@ -178,7 +177,7 @@ const TaskManagementScreen: React.FC = () => {
           accessibilityRole="list"
           accessibilityLabel={t('taskManagement.accessibility.taskList')}
         >
-          {Object.entries(timePeriods).map(([id, period]) => (
+          {Object.entries(TIME_PERIODS).map(([id, period]) => (
             <TimeSection
               key={id}
               period={period}

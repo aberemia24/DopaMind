@@ -213,22 +213,5 @@
       "addTag": "Adaugă etichetă nouă",
       "createTag": "Creează etichetă nouă"
     }
-  },
-  "timePeriods": {
-    "morning": {
-      "label": "Dimineață",
-      "timeFrame": "06:00 - 12:00",
-      "description": "Perioada optimă pentru taskuri care necesită concentrare"
-    },
-    "afternoon": {
-      "label": "După-amiază",
-      "timeFrame": "12:00 - 18:00",
-      "description": "Perioada bună pentru taskuri creative și colaborative"
-    },
-    "evening": {
-      "label": "Seară",
-      "timeFrame": "18:00 - 23:00",
-      "description": "Perioada potrivită pentru taskuri ușoare și relaxante"
-    }
   }
 }

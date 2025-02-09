@@ -211,22 +211,5 @@
     "accessibility": {
       "addTask": "Add task to {{period}} period"
     }
-  },
-  "timePeriods": {
-    "morning": {
-      "label": "Morning",
-      "timeFrame": "06:00 - 12:00",
-      "description": "Best time for tasks that require focus"
-    },
-    "afternoon": {
-      "label": "Afternoon",
-      "timeFrame": "12:00 - 18:00",
-      "description": "Great time for creative and collaborative tasks"
-    },
-    "evening": {
-      "label": "Evening",
-      "timeFrame": "18:00 - 23:00",
-      "description": "Perfect time for light and relaxing tasks"
-    }
   }
 }
