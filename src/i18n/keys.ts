@@ -2,6 +2,11 @@
  * Chei pentru erori comune
  */
 export const ERROR_TRANSLATIONS = {
+  TITLE: 'errors.title',
+  GENERIC: 'errors.generic',
+  OOPS: 'errors.oops',
+  TRY_AGAIN: 'errors.tryAgain',
+  OK: 'common.ok',
   NETWORK: {
     CONNECTION: 'errors.network.connection',
     TIMEOUT: 'errors.network.timeout',
@@ -30,7 +35,6 @@ export const ERROR_TRANSLATIONS = {
     INVALID_FORMAT: 'errors.data.invalidFormat',
     SAVE_FAILED: 'errors.data.saveFailed',
   },
-  GENERIC: 'errors.generic',
 } as const;
 
 /**

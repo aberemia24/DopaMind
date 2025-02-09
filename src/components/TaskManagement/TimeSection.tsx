@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { FlashList } from '@shopify/flash-list';
 import { TaskItem } from './TaskItem';
 import { ACCESSIBILITY } from '../../constants/accessibility';
 import type { Task } from '../../services/taskService';
@@ -30,6 +31,18 @@ const TimeSection: React.FC<TimeSectionProps> = ({
   const completedTasks = tasks.filter(task => task.completed).length;
   const timeRange = parseTimeRange(period.timeFrame);
   const formattedTimeRange = formatTimeRange(t, timeRange);
+
+  const renderItem = useCallback(({ item }: { item: Task }) => (
+    <TaskItem
+      key={item.id}
+      task={item}
+      onToggle={onToggleTask}
+      onDelete={onDeleteTask}
+      onUpdate={(updatedTask: Task) => onUpdateTask(item.id, updatedTask)}
+    />
+  ), [onToggleTask, onDeleteTask, onUpdateTask]);
+
+  const keyExtractor = useCallback((item: Task) => item.id, []);
 
   return (
     <View 
@@ -80,16 +93,15 @@ const TimeSection: React.FC<TimeSectionProps> = ({
         </Text>
       </View>
 
-      <View style={styles.taskList}>
-        {tasks.map(task => (
-          <TaskItem
-            key={task.id}
-            task={task}
-            onToggle={onToggleTask}
-            onDelete={onDeleteTask}
-            onUpdate={(updatedTask: Task) => onUpdateTask(task.id, updatedTask)}
-          />
-        ))}
+      <View style={[styles.taskList, { flex: 1 }]}>
+        <FlashList
+          data={tasks}
+          renderItem={renderItem}
+          keyExtractor={keyExtractor}
+          estimatedItemSize={88} 
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.listContent}
+        />
       </View>
     </View>
   );
@@ -101,11 +113,7 @@ const styles = StyleSheet.create({
     borderRadius: ACCESSIBILITY.SPACING.SM,
     padding: ACCESSIBILITY.SPACING.MD,
     marginBottom: ACCESSIBILITY.SPACING.MD,
-    shadowColor: ACCESSIBILITY.COLORS.TEXT.PRIMARY,
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
+    flex: 1,
   },
   header: {
     flexDirection: 'row',
@@ -152,7 +160,11 @@ const styles = StyleSheet.create({
     backgroundColor: ACCESSIBILITY.COLORS.INTERACTIVE.SECONDARY,
   },
   taskList: {
-    gap: ACCESSIBILITY.SPACING.SM,
+    flex: 1,
+    minHeight: 200, 
+  },
+  listContent: {
+    paddingVertical: ACCESSIBILITY.SPACING.SM,
   },
 });
 

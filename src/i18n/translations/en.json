@@ -20,7 +20,8 @@
     "incomplete": "incomplete",
     "markComplete": "mark as complete",
     "markIncomplete": "mark as incomplete",
-    "signOut": "Sign Out"
+    "signOut": "Sign Out",
+    "ok": "OK"
   },
   "errors": {
     "network": {
@@ -51,7 +52,10 @@
       "invalidFormat": "Invalid data format",
       "saveFailed": "Failed to save data"
     },
-    "generic": "An error occurred. Please try again"
+    "generic": "An error occurred. Please try again",
+    "title": "Error",
+    "oops": "Oops! Something went wrong",
+    "tryAgain": "Try again"
   },
   "auth": {
     "signIn": "Sign In",

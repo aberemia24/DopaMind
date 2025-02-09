@@ -20,13 +20,14 @@
     "incomplete": "nefinalizată",
     "markComplete": "marchează ca finalizată",
     "markIncomplete": "marchează ca nefinalizată",
-    "signOut": "Deconectare"
+    "signOut": "Deconectare",
+    "ok": "OK"
   },
   "errors": {
     "network": {
-      "connection": "Eroare de conexiune la rețea",
+      "connection": "Nu există conexiune la internet",
       "timeout": "Timpul de așteptare a expirat",
-      "server": "Eroare de server"
+      "serverError": "Eroare de server"
     },
     "validation": {
       "required": "Acest câmp este obligatoriu",
@@ -44,20 +45,18 @@
       "emailInUse": "Această adresă de email este deja folosită",
       "weakPassword": "Parola este prea slabă",
       "tooManyRequests": "Prea multe încercări. Vă rugăm să așteptați",
-      "default": "Eroare de autentificare"
+      "default": "Eroare de autentificare",
+      "logout": "Nu s-a putut efectua deconectarea. Vă rugăm să încercați din nou."
     },
     "data": {
       "notFound": "Datele nu au fost găsite",
       "invalidFormat": "Format de date invalid",
       "saveFailed": "Salvarea datelor a eșuat"
     },
-    "generic": "A apărut o eroare. Vă rugăm să încercați din nou",
-    "logout": "Nu s-a putut efectua deconectarea. Vă rugăm să încercați din nou.",
-    "invalidEmail": "Adresă de email invalidă",
-    "wrongPassword": "Parolă incorectă",
-    "userNotFound": "Utilizatorul nu a fost găsit",
-    "emailInUse": "Această adresă de email este deja folosită",
-    "weakPassword": "Parola este prea slabă",
+    "title": "Eroare",
+    "generic": "A apărut o eroare. Te rugăm să încerci din nou.",
+    "oops": "Ups! Ceva nu a mers bine",
+    "tryAgain": "Încearcă din nou",
     "networkError": "Eroare de rețea. Verificați conexiunea.",
     "tooManyRequests": "Prea multe încercări. Vă rugăm să așteptați.",
     "signOutError": "Eroare la deconectare:",

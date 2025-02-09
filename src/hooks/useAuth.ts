@@ -26,6 +26,7 @@ export interface UseAuthReturn {
   error: string | null;
   isAuthenticated: boolean;
   sessionExpired: boolean;
+  setIsAuthenticated: (value: boolean) => void;
   login: (email: string, password: string) => Promise<boolean>;
   register: (email: string, password: string) => Promise<boolean>;
   logout: () => Promise<boolean>;
@@ -309,6 +310,7 @@ export function useAuth(): UseAuthReturn {
     error,
     isAuthenticated,
     sessionExpired,
+    setIsAuthenticated,
     login,
     logout,
     register

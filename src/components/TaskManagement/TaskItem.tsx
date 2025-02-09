@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { 
   View, 
   Text, 
@@ -22,7 +22,7 @@ interface TaskItemProps {
   isPriority?: boolean;
 }
 
-const TaskItem: React.FC<TaskItemProps> = ({ 
+const TaskItem: React.FC<TaskItemProps> = React.memo(({ 
   task, 
   onToggle, 
   onDelete, 
@@ -55,22 +55,26 @@ const TaskItem: React.FC<TaskItemProps> = ({
     }
   }, [isEditing]);
 
-  const handleSubmit = () => {
+  const handleSubmit = useCallback(() => {
     const trimmedTitle = title.trim();
     if (trimmedTitle.length >= 3) {
       onUpdate({ ...task, title: trimmedTitle });
       setIsEditing(false);
     }
-  };
+  }, [title, task, onUpdate]);
 
-  const handleCancel = () => {
+  const handleCancel = useCallback(() => {
     if (task.title) {
       setTitle(task.title);
       setIsEditing(false);
     } else {
       onDelete(task.id);
     }
-  };
+  }, [task.title, task.id, onDelete]);
+
+  const handleToggle = useCallback(() => {
+    onToggle(task.id);
+  }, [task.id, onToggle]);
 
   return (
     <Animated.View 
@@ -89,7 +93,7 @@ const TaskItem: React.FC<TaskItemProps> = ({
     >
       <TouchableOpacity
         style={styles.checkbox}
-        onPress={() => onToggle(task.id)}
+        onPress={handleToggle}
         activeOpacity={0.7}
         accessibilityRole="button"
         disabled={isEditing}
@@ -223,7 +227,15 @@ const TaskItem: React.FC<TaskItemProps> = ({
       </View>
     </Animated.View>
   );
-};
+}, (prevProps, nextProps) => {
+  // Comparăm doar proprietățile care afectează randarea
+  return (
+    prevProps.task.id === nextProps.task.id &&
+    prevProps.task.title === nextProps.task.title &&
+    prevProps.task.completed === nextProps.task.completed &&
+    prevProps.isPriority === nextProps.isPriority
+  );
+});
 
 const styles = StyleSheet.create({
   container: {

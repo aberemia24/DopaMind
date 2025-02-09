@@ -4,6 +4,7 @@ import { initializeFirebaseApp, initializeFirebaseAuth, initializeFirestore } fr
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Navigation } from './src/navigation';
+import { GlobalErrorBoundary } from './src/core/error/ErrorBoundary';
 import './src/i18n';  // Import i18n configuration
 
 export default function App() {
@@ -46,9 +47,11 @@ export default function App() {
   }
 
   return (
-    <SafeAreaProvider>
-      <Navigation />
-      <StatusBar style="auto" />
-    </SafeAreaProvider>
+    <GlobalErrorBoundary>
+      <SafeAreaProvider>
+        <Navigation />
+        <StatusBar style="auto" />
+      </SafeAreaProvider>
+    </GlobalErrorBoundary>
   );
 }

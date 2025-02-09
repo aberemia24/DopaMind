@@ -5,23 +5,20 @@ import { ActivityIndicator, View } from 'react-native';
 import { AuthStack } from './AuthStack';
 import { AppStack } from './AppStack';
 import { useAuthMiddleware } from './middleware/authMiddleware';
-import { useNavigation } from '@react-navigation/native';
 
 export function Navigation() {
-  const { isAuthenticated, loading } = useAuth();
+  const { isAuthenticated, loading, setIsAuthenticated } = useAuth();
   const navigationRef = useRef(null);
   const routeNameRef = useRef<string | undefined>();
 
   // Handler pentru când accesul este refuzat
   const handleAccessDenied = useCallback(() => {
     if (navigationRef.current) {
-      // @ts-ignore - Știm că navigationRef.current există aici
-      navigationRef.current.reset({
-        index: 0,
-        routes: [{ name: 'Login' }]
-      });
+      // Forțăm reîncărcarea stării de autentificare
+      // Acest lucru va determina re-renderul Navigation și afișarea AuthStack
+      setIsAuthenticated(false);
     }
-  }, []);
+  }, [setIsAuthenticated]);
 
   // Folosim hook-ul în componenta principală
   const { checkAccess } = useAuthMiddleware({

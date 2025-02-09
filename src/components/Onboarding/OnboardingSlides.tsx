@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   View,
   Text,
@@ -62,34 +62,40 @@ export function OnboardingSlides() {
 
   const viewConfig = useRef({ viewAreaCoveragePercentThreshold: 50 }).current;
 
-  const scrollTo = (index: number) => {
+  const scrollTo = useCallback((index: number) => {
     flatListRef.current?.scrollToIndex({ index, animated: true });
-  };
+  }, []);
 
-  const scrollToNextSlide = () => {
+  const scrollToNextSlide = useCallback(() => {
     const nextIndex = currentIndex < slides.length - 1 ? currentIndex + 1 : 0;
     scrollTo(nextIndex);
-  };
+  }, [currentIndex, scrollTo]);
 
   useEffect(() => {
-    // Pornim auto-scroll
-    autoScrollTimer.current = setInterval(scrollToNextSlide, 3000);
+    let isActive = true;
 
-    // Cleanup la unmount
+    // Pornim auto-scroll doar dacă componenta e mounted
+    if (isActive) {
+      autoScrollTimer.current = setInterval(scrollToNextSlide, 3000);
+    }
+
+    // Cleanup complet
     return () => {
+      isActive = false;
       if (autoScrollTimer.current) {
         clearInterval(autoScrollTimer.current);
+        autoScrollTimer.current = undefined;
       }
     };
-  }, [currentIndex]);
+  }, [scrollToNextSlide]);
 
-  const handleMomentumScrollEnd = () => {
+  const handleMomentumScrollEnd = useCallback(() => {
     // Resetăm timer-ul când utilizatorul face scroll manual
     if (autoScrollTimer.current) {
       clearInterval(autoScrollTimer.current);
     }
     autoScrollTimer.current = setInterval(scrollToNextSlide, 3000);
-  };
+  }, [scrollToNextSlide]);
 
   const renderItem: ListRenderItem<Slide> = ({ item, index }) => {
     return (
