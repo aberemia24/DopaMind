@@ -13,7 +13,7 @@ import { useTranslation } from 'react-i18next';
 import { useSessionManager } from './useSessionManager';
 import { TFunction } from 'i18next';
 import { secureStorage } from '../utils/secureStorage';
-import { AUTH_TRANSLATIONS } from '../i18n/keys';
+import { ERROR_TRANSLATIONS } from '../i18n/keys';
 
 const AUTH_STATE_KEY = '@auth_state';
 const AUTH_CREDENTIALS_KEY = 'AUTH_CREDENTIALS_KEY';
@@ -206,7 +206,7 @@ export function useAuth(): UseAuthReturn {
       return false;
     } catch (err) {
       console.error('useAuth: Login error:', err);
-      setError(t('auth.errors.generic'));
+      setError(t(ERROR_TRANSLATIONS.AUTH.DEFAULT));
       return false;
     } finally {
       setLoading(false);
@@ -239,7 +239,7 @@ export function useAuth(): UseAuthReturn {
       return false;
     } catch (err) {
       console.error('useAuth: Register error:', err);
-      setError(t('auth.errors.generic'));
+      setError(t(ERROR_TRANSLATIONS.AUTH.DEFAULT));
       return false;
     } finally {
       setLoading(false);
@@ -262,7 +262,7 @@ export function useAuth(): UseAuthReturn {
       const result = await firebaseSignOut();
 
       if (result.status === 'error' && result.error) {
-        setError(t(AUTH_TRANSLATIONS.ERRORS.LOGOUT));
+        setError(t(ERROR_TRANSLATIONS.AUTH.DEFAULT));
         return false;
       }
 
@@ -270,7 +270,7 @@ export function useAuth(): UseAuthReturn {
       setIsAuthenticated(false);
       return true;
     } catch (error) {
-      setError(t(AUTH_TRANSLATIONS.ERRORS.GENERIC));
+      setError(t(ERROR_TRANSLATIONS.GENERIC));
       return false;
     } finally {
       setLoading(false);

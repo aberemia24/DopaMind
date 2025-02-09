@@ -22,6 +22,37 @@
     "markIncomplete": "mark as incomplete",
     "signOut": "Sign Out"
   },
+  "errors": {
+    "network": {
+      "connection": "Network connection error",
+      "timeout": "Request timed out",
+      "server": "Server error"
+    },
+    "validation": {
+      "required": "This field is required",
+      "email": "Invalid email address",
+      "password": {
+        "length": "Password must be at least 8 characters",
+        "match": "Passwords do not match",
+        "requirements": "Password must contain letters, numbers, and special characters"
+      }
+    },
+    "auth": {
+      "invalidEmail": "Invalid email address",
+      "wrongPassword": "Incorrect password",
+      "userNotFound": "User not found",
+      "emailInUse": "Email is already in use",
+      "weakPassword": "Password is too weak",
+      "tooManyRequests": "Too many attempts. Please try again later",
+      "default": "Authentication error"
+    },
+    "data": {
+      "notFound": "Data not found",
+      "invalidFormat": "Invalid data format",
+      "saveFailed": "Failed to save data"
+    },
+    "generic": "An error occurred. Please try again"
+  },
   "auth": {
     "signIn": "Sign In",
     "signUp": "Sign Up",
@@ -81,7 +112,19 @@
       "tooManyRequests": "Too many attempts. Please wait a moment",
       "unknownError": "An unexpected error occurred",
       "generic": "An error occurred. Please try again.",
-      "passwordMismatch": "Passwords don't match"
+      "passwordMismatch": "Passwords don't match",
+      "logout": "Could not log out. Please try again.",
+      "networkError": "Network error. Please check your connection."
+    },
+    "success": {
+      "login": "Successfully logged in",
+      "register": "Successfully registered",
+      "logout": "Successfully logged out"
+    },
+    "loading": {
+      "login": "Logging in...",
+      "register": "Creating account...",
+      "logout": "Logging out..."
     }
   },
   "home": {

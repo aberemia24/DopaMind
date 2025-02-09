@@ -22,6 +22,48 @@
     "markIncomplete": "marchează ca nefinalizată",
     "signOut": "Deconectare"
   },
+  "errors": {
+    "network": {
+      "connection": "Eroare de conexiune la rețea",
+      "timeout": "Timpul de așteptare a expirat",
+      "server": "Eroare de server"
+    },
+    "validation": {
+      "required": "Acest câmp este obligatoriu",
+      "email": "Adresă de email invalidă",
+      "password": {
+        "length": "Parola trebuie să aibă cel puțin 8 caractere",
+        "match": "Parolele nu coincid",
+        "requirements": "Parola trebuie să conțină litere, numere și caractere speciale"
+      }
+    },
+    "auth": {
+      "invalidEmail": "Adresă de email invalidă",
+      "wrongPassword": "Parolă incorectă",
+      "userNotFound": "Utilizatorul nu a fost găsit",
+      "emailInUse": "Această adresă de email este deja folosită",
+      "weakPassword": "Parola este prea slabă",
+      "tooManyRequests": "Prea multe încercări. Vă rugăm să așteptați",
+      "default": "Eroare de autentificare"
+    },
+    "data": {
+      "notFound": "Datele nu au fost găsite",
+      "invalidFormat": "Format de date invalid",
+      "saveFailed": "Salvarea datelor a eșuat"
+    },
+    "generic": "A apărut o eroare. Vă rugăm să încercați din nou",
+    "logout": "Nu s-a putut efectua deconectarea. Vă rugăm să încercați din nou.",
+    "invalidEmail": "Adresă de email invalidă",
+    "wrongPassword": "Parolă incorectă",
+    "userNotFound": "Utilizatorul nu a fost găsit",
+    "emailInUse": "Această adresă de email este deja folosită",
+    "weakPassword": "Parola este prea slabă",
+    "networkError": "Eroare de rețea. Verificați conexiunea.",
+    "tooManyRequests": "Prea multe încercări. Vă rugăm să așteptați.",
+    "signOutError": "Eroare la deconectare:",
+    "userDisabled": "Acest cont a fost dezactivat",
+    "operationNotAllowed": "Această operațiune nu este permisă"
+  },
   "auth": {
     "signIn": "Conectare",
     "signUp": "Înregistrare",
@@ -68,18 +110,15 @@
         "generic": "A apărut o eroare. Te rugăm să încerci din nou."
       }
     },
-    "errors": {
-      "signOutError": "Eroare la deconectare:",
-      "invalidEmail": "Adresa de email nu este validă",
-      "userDisabled": "Acest cont a fost dezactivat",
-      "userNotFound": "Nu există niciun cont cu acest email",
-      "wrongPassword": "Parola este incorectă",
-      "emailInUse": "Există deja un cont cu acest email",
-      "weakPassword": "Parola este prea slabă",
-      "operationNotAllowed": "Această operațiune nu este permisă",
-      "tooManyRequests": "Prea multe încercări. Vă rugăm să așteptați puțin",
-      "unknownError": "A apărut o eroare neașteptată",
-      "generic": "A apărut o eroare. Te rugăm să încerci din nou."
+    "success": {
+      "login": "Autentificare reușită",
+      "register": "Înregistrare reușită",
+      "logout": "Deconectare reușită"
+    },
+    "loading": {
+      "login": "Se conectează...",
+      "register": "Se creează contul...",
+      "logout": "Se deconectează..."
     }
   },
   "welcome": {
