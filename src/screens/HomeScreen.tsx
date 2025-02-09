@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '../hooks/useAuth';
 import { useTranslation } from 'react-i18next';
 import { ACCESSIBILITY } from '../constants/accessibility';
+import { AUTH_TRANSLATIONS, ERROR_TRANSLATIONS, HOME_TRANSLATIONS } from '../i18n/keys';
 
 export function HomeScreen() {
   const { logout } = useAuth();
@@ -13,20 +14,20 @@ export function HomeScreen() {
     try {
       await logout();
     } catch (error) {
-      console.error(t('auth.errors.signOutError'), error);
+      console.error(t(ERROR_TRANSLATIONS.AUTH.DEFAULT), error);
     }
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.welcomeText}>{t('home.welcome')}</Text>
+      <Text style={styles.welcomeText}>{t(HOME_TRANSLATIONS.WELCOME)}</Text>
       <TouchableOpacity
         style={styles.signOutButton}
         onPress={handleSignOut}
         accessibilityRole="button"
-        accessibilityLabel={t('auth.signOut')}
+        accessibilityLabel={t(AUTH_TRANSLATIONS.SIGN_OUT)}
       >
-        <Text style={styles.signOutText}>{t('auth.signOut')}</Text>
+        <Text style={styles.signOutText}>{t(AUTH_TRANSLATIONS.SIGN_OUT)}</Text>
       </TouchableOpacity>
     </SafeAreaView>
   );

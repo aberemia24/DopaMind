@@ -60,3 +60,20 @@ export const AUTH_TRANSLATIONS = {
     LOGOUT: 'auth.success.logout',
   },
 } as const;
+
+/**
+ * Chei pentru ecranul Welcome
+ */
+export const WELCOME_TRANSLATIONS = {
+  BUTTONS: {
+    EMAIL_LOGIN: 'welcome.buttons.emailLogin',
+    GOOGLE_LOGIN: 'welcome.buttons.googleLogin',
+  },
+} as const;
+
+/**
+ * Chei pentru ecranul Home
+ */
+export const HOME_TRANSLATIONS = {
+  WELCOME: 'home.welcome',
+} as const;

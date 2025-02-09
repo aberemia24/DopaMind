@@ -13,6 +13,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/types';
 import { useTranslation } from 'react-i18next';
 import { ACCESSIBILITY } from '../constants/accessibility';
+import { WELCOME_TRANSLATIONS } from '../i18n/keys';
 
 type Props = {
   navigation: NativeStackNavigationProp<RootStackParamList, 'Welcome'>;
@@ -40,6 +41,8 @@ export function WelcomeScreen({ navigation }: Props) {
         <TouchableOpacity
           style={styles.emailButton}
           onPress={handleEmailLogin}
+          accessibilityRole="button"
+          accessibilityLabel={t(WELCOME_TRANSLATIONS.BUTTONS.EMAIL_LOGIN)}
         >
           <MaterialIcons 
             name="email" 
@@ -48,13 +51,15 @@ export function WelcomeScreen({ navigation }: Props) {
             style={styles.buttonIcon} 
           />
           <Text style={styles.emailButtonText}>
-            {t('welcome.buttons.emailLogin')}
+            {t(WELCOME_TRANSLATIONS.BUTTONS.EMAIL_LOGIN)}
           </Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={[styles.googleButton]}
           onPress={handleGoogleLogin}
+          accessibilityRole="button"
+          accessibilityLabel={t(WELCOME_TRANSLATIONS.BUTTONS.GOOGLE_LOGIN)}
         >
           <FontAwesome 
             name="google" 
@@ -63,7 +68,7 @@ export function WelcomeScreen({ navigation }: Props) {
             style={styles.buttonIcon} 
           />
           <Text style={styles.googleButtonText}>
-            {t('welcome.buttons.googleLogin')}
+            {t(WELCOME_TRANSLATIONS.BUTTONS.GOOGLE_LOGIN)}
           </Text>
         </TouchableOpacity>
       </View>
