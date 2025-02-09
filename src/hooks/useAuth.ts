@@ -1,7 +1,16 @@
 import { useState, useEffect } from 'react';
 import { User, onAuthStateChanged } from 'firebase/auth';
-import { getFirebaseAuth, signInWithEmail, signUpWithEmail, signOut as firebaseSignOut, isAuthError, initializeFirebaseAuth } from '../config/firebase';
+import { 
+  getFirebaseAuth, 
+  signInWithEmail, 
+  signUpWithEmail, 
+  signOut as firebaseSignOut, 
+  AuthError,
+  AuthResponse,
+  initializeFirebaseAuth 
+} from '../config/firebase';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useTranslation } from 'react-i18next';
 
 const AUTH_STATE_KEY = '@auth_state';
 const AUTH_CREDENTIALS_KEY = '@auth_credentials';
@@ -11,6 +20,7 @@ export function useAuth() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { t } = useTranslation();
 
   // Salvăm credențialele la login
   const persistCredentials = async (email: string, password: string) => {
@@ -29,14 +39,18 @@ export function useAuth() {
       if (savedCredentialsString) {
         const { email, password } = JSON.parse(savedCredentialsString);
         console.log('useAuth: Attempting reauth with saved credentials');
-        const result = await signInWithEmail(email, password);
-        if (!isAuthError(result)) {
+        const result = await signInWithEmail(email, password, t);
+        if (result.status === 'success' && result.data) {
           console.log('useAuth: Reauth successful');
           return true;
+        } else {
+          console.log('useAuth: Reauth failed, clearing credentials');
+          await AsyncStorage.removeItem(AUTH_CREDENTIALS_KEY);
         }
       }
     } catch (error) {
       console.error('useAuth: Reauth failed:', error);
+      await AsyncStorage.removeItem(AUTH_CREDENTIALS_KEY);
     }
     return false;
   };
@@ -50,9 +64,6 @@ export function useAuth() {
         console.log('useAuth: Initializing Firebase Auth...');
         const auth = await initializeFirebaseAuth();
         
-        // Încercăm reautentificarea la pornire
-        await attemptReauthentication();
-
         console.log('useAuth: Setting up auth state listener...');
         unsubscribe = onAuthStateChanged(auth, 
           async (user) => {
@@ -62,8 +73,17 @@ export function useAuth() {
               providerId: user?.providerId 
             });
             
-            setUser(user);
-            setIsAuthenticated(!!user);
+            if (!user) {
+              // Doar încercăm reautentificarea dacă nu avem user
+              const reauthed = await attemptReauthentication();
+              if (!reauthed) {
+                setUser(null);
+                setIsAuthenticated(false);
+              }
+            } else {
+              setUser(user);
+              setIsAuthenticated(true);
+            }
             setLoading(false);
           }, 
           (error) => {
@@ -92,35 +112,40 @@ export function useAuth() {
   const login = async (email: string, password: string) => {
     try {
       setError(null);
-      const result = await signInWithEmail(email, password);
-      if (isAuthError(result)) {
-        setError(result.message);
+      const result = await signInWithEmail(email, password, t);
+      if (result.status === 'error' && result.error) {
+        setError(result.error.message);
         return false;
       }
-      // Salvăm credențialele la login reușit
-      await persistCredentials(email, password);
-      return true;
+      if (result.status === 'success' && result.data) {
+        setUser(result.data.user);
+        setIsAuthenticated(true);
+        await persistCredentials(email, password);
+        return true;
+      }
+      return false;
     } catch (error) {
-      setError(error instanceof Error ? error.message : 'Login failed');
+      setError(t('auth.errors.generic'));
       return false;
     }
   };
 
   const register = async (email: string, password: string) => {
     try {
-      console.log('useAuth: Attempting registration...');
       setError(null);
-      const result = await signUpWithEmail(email, password);
-      if (isAuthError(result)) {
-        console.error('useAuth: Registration error:', result);
-        setError(result.message);
+      const result = await signUpWithEmail(email, password, t);
+      if (result.status === 'error' && result.error) {
+        setError(result.error.message);
         return false;
       }
-      console.log('useAuth: Registration successful');
-      return true;
+      if (result.status === 'success' && result.data) {
+        setUser(result.data.user);
+        setIsAuthenticated(true);
+        return true;
+      }
+      return false;
     } catch (error) {
-      console.error('useAuth: Unexpected registration error:', error);
-      setError(error instanceof Error ? error.message : 'An unknown error occurred');
+      setError(t('auth.errors.generic'));
       return false;
     }
   };
@@ -128,22 +153,30 @@ export function useAuth() {
   const logout = async () => {
     try {
       setError(null);
-      await firebaseSignOut();
+      setLoading(true); // Setăm loading pentru a preveni flashuri UI
+
+      // Mai întâi ștergem credențialele locale
       await AsyncStorage.removeItem(AUTH_CREDENTIALS_KEY);
+      
+      // La final facem logout din Firebase
+      const result = await firebaseSignOut();
+      
+      if (result.status === 'error' && result.error) {
+        setError(result.error.message);
+        setLoading(false);
+        return false;
+      }
+      
+      // Apoi actualizăm starea
+      setUser(null);
+      setIsAuthenticated(false);
+      setLoading(false);
+      
       return true;
     } catch (error) {
+      setLoading(false);
       setError(error instanceof Error ? error.message : 'Logout failed');
       return false;
-    }
-  };
-
-  const signOut = async () => {
-    try {
-      await firebaseSignOut();
-      setUser(null);
-    } catch (error) {
-      console.error('Error signing out:', error);
-      throw error;
     }
   };
 
@@ -154,7 +187,6 @@ export function useAuth() {
     isAuthenticated,
     login,
     logout,
-    signUp: signUpWithEmail,
-    signOut,
+    register
   };
 }

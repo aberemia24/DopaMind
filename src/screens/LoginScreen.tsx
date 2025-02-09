@@ -12,12 +12,14 @@ import {
   ReturnKeyType,
 } from 'react-native';
 import { useAuth } from '../hooks/useAuth';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../navigation';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../navigation/types';
 import { useTranslation } from 'react-i18next';
 import { ACCESSIBILITY } from '../constants/accessibility';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
+type Props = {
+  navigation: NativeStackNavigationProp<RootStackParamList, 'Login'>;
+};
 
 export function LoginScreen({ navigation }: Props) {
   const [email, setEmail] = useState('');

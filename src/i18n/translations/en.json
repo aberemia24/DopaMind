@@ -19,7 +19,8 @@
     "completed": "completed",
     "incomplete": "incomplete",
     "markComplete": "mark as complete",
-    "markIncomplete": "mark as incomplete"
+    "markIncomplete": "mark as incomplete",
+    "signOut": "Sign Out"
   },
   "auth": {
     "signIn": "Sign In",
@@ -43,7 +44,9 @@
       "emailFocus": "Email input focused",
       "emailBlur": "Email input lost focus",
       "passwordFocus": "Password input focused",
-      "passwordBlur": "Password input lost focus"
+      "passwordBlur": "Password input lost focus",
+      "title": "Login",
+      "forgotPassword": "Forgot Password?"
     },
     "register": {
       "title": "Create Account",
@@ -53,10 +56,32 @@
       "errors": {
         "fillAllFields": "Please fill in all fields",
         "passwordsNotMatch": "Passwords do not match"
+      },
+      "accessibility": {
+        "form": "Registration form",
+        "emailInput": "Email input field",
+        "emailHint": "Enter your email address",
+        "passwordInput": "Password input field",
+        "passwordHint": "Enter your password",
+        "confirmPasswordInput": "Confirm password input field",
+        "confirmPasswordHint": "Re-enter your password",
+        "registerButton": "Register button",
+        "loginLink": "Go to login page"
       }
     },
     "errors": {
-      "signOutError": "Error signing out:"
+      "signOutError": "Error signing out:",
+      "invalidEmail": "Invalid email address",
+      "userDisabled": "This account has been disabled",
+      "userNotFound": "No account exists with this email",
+      "wrongPassword": "Incorrect password",
+      "emailInUse": "An account already exists with this email",
+      "weakPassword": "Password is too weak",
+      "operationNotAllowed": "This operation is not allowed",
+      "tooManyRequests": "Too many attempts. Please wait a moment",
+      "unknownError": "An unexpected error occurred",
+      "generic": "An error occurred. Please try again.",
+      "passwordMismatch": "Passwords don't match"
     }
   },
   "home": {
@@ -124,6 +149,16 @@
       "afternoon": "Afternoon",
       "evening": "Evening"
     },
+    "timeDescriptions": {
+      "morning": "Best period for tasks requiring concentration",
+      "afternoon": "Good period for creative and collaborative tasks",
+      "evening": "Suitable period for light and relaxing tasks"
+    },
+    "timeRanges": {
+      "morning": "06:00 - 12:00",
+      "afternoon": "12:00 - 18:00",
+      "evening": "18:00 - 23:00"
+    },
     "addTask": "Add Task",
     "addPriorityTask": "Add a priority task",
     "editTask": "Edit Task",
@@ -132,6 +167,13 @@
     "priority": "Priority",
     "dueDate": "Due Date",
     "status": "Status",
+    "tasksCompleted": "{{count}} of {{total}} tasks completed",
+    "filters": {
+      "all": "All",
+      "active": "Active",
+      "completed": "Completed",
+      "priority": "Priority"
+    },
     "errors": {
       "notAuthenticated": "You must be logged in to manage tasks",
       "addTaskFailed": "Failed to add task",
@@ -144,9 +186,6 @@
         "message": "You already have 3 or more tasks. It's recommended not to have too many tasks at once to avoid overload. Do you want to continue?",
         "confirm": "Yes, add task"
       }
-    },
-    "accessibility": {
-      "taskList": "List of tasks organized by time periods"
     }
   },
   "taskFilter": {

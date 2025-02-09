@@ -26,7 +26,7 @@ interface TasksByPeriod {
 }
 
 const TaskManagementScreen: React.FC = () => {
-  const { signOut, user } = useAuth();
+  const { logout, user, isAuthenticated } = useAuth();
   const { t } = useTranslation();
   const [tasks, setTasks] = useState<TasksByPeriod>({
     MORNING: [],
@@ -34,6 +34,13 @@ const TaskManagementScreen: React.FC = () => {
     EVENING: []
   });
   const [currentFilter, setCurrentFilter] = useState<FilterOption>('all');
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  // Monitorizăm starea de autentificare 
+  useEffect(() => {
+    if (!isAuthenticated && isLoggingOut) {
+    }
+  }, [isAuthenticated, isLoggingOut]);
 
   const filterTasks = (taskList: Task[]): Task[] => {
     switch (currentFilter) {
@@ -148,6 +155,18 @@ const TaskManagementScreen: React.FC = () => {
     });
   };
 
+  const handleLogout = async () => {
+    try {
+      setIsLoggingOut(true);
+      await logout();
+      // Nu mai avem nevoie de nicio logică de navigare
+      // Navigarea se face automat prin schimbarea lui isAuthenticated
+    } catch (error) {
+      console.error('Logout failed:', error);
+      setIsLoggingOut(false);
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView 
@@ -157,12 +176,18 @@ const TaskManagementScreen: React.FC = () => {
         <View style={styles.header}>
           <Text style={styles.title}>{t('taskManagement.title')}</Text>
           <TouchableOpacity
-            onPress={signOut}
+            onPress={handleLogout}
             style={styles.signOutButton}
+            disabled={isLoggingOut}
             accessibilityRole="button"
             accessibilityLabel={t('common.signOut')}
+            accessibilityState={{ disabled: isLoggingOut }}
           >
-            <MaterialIcons name="logout" size={24} color={ACCESSIBILITY.COLORS.TEXT.PRIMARY} />
+            <MaterialIcons 
+              name="logout" 
+              size={24} 
+              color={isLoggingOut ? '#999' : ACCESSIBILITY.COLORS.TEXT.PRIMARY} 
+            />
           </TouchableOpacity>
         </View>
 

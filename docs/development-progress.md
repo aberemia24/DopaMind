@@ -269,7 +269,27 @@ Task Management este o componentă centrală a aplicației DopaMind, proiectată
 
 ## Changelog
 
-### 09.02.2025 - Accessibility Update
+### 2025-02-09
+#### Îmbunătățiri Navigare și Arhitectură
+- Reorganizat sistemul de navigare pentru o mai bună separare a responsabilităților
+  - Creat AuthStack pentru rutele de autentificare (Welcome, Login, Register)
+  - Creat AppStack pentru rutele aplicației (TaskManagement, Home)
+  - Îmbunătățit gestionarea stării de autentificare în navigator
+- Rezolvat probleme de navigare la logout
+  - Eliminat logica manuală de navigare din TaskManagementScreen
+  - Implementat comutare automată între stive bazată pe starea de autentificare
+- Îmbunătățit type safety pentru navigare
+  - Creat sistem de tipuri dedicat pentru navigare în types.ts
+  - Actualizat tipurile de props în toate ecranele pentru o mai bună type safety
+  - Combinat tipurile AuthStack și AppStack într-un singur tip RootStackParamList
+
+### 09.02.2025 - Accessibility & Localization Update
+#### Afternoon Update
+- Revert: Păstrat textele hardcodate în română pentru perioadele de timp (TIME_PERIODS)
+- Simplificat logica din TaskManagementScreen
+- Îmbunătățit tipurile TypeScript pentru gestionarea userId
+
+#### Morning Update
 - Implementat sistem standardizat de accesibilitate
 - Actualizate componente pentru WCAG 2.1 Level AA
 - Îmbunătățit contrast și dimensiuni touch targets

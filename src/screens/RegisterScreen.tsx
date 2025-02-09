@@ -11,12 +11,14 @@ import {
   ScrollView,
 } from 'react-native';
 import { useAuth } from '../hooks/useAuth';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../navigation';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../navigation/types';
 import { useTranslation } from 'react-i18next';
 import { ACCESSIBILITY } from '../constants/accessibility';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Register'>;
+type Props = {
+  navigation: NativeStackNavigationProp<RootStackParamList, 'Register'>;
+};
 
 export function RegisterScreen({ navigation }: Props) {
   const [email, setEmail] = useState('');
@@ -24,7 +26,7 @@ export function RegisterScreen({ navigation }: Props) {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [localError, setLocalError] = useState<string | null>(null);
-  const { signUp, error: authError } = useAuth();
+  const { register, error: authError } = useAuth();
   const { t } = useTranslation();
 
   const handleRegister = async () => {
@@ -40,14 +42,19 @@ export function RegisterScreen({ navigation }: Props) {
 
     setLocalError(null);
     setIsLoading(true);
-    const success = await signUp(email, password);
-    setIsLoading(false);
+    try {
+      const success = await register(email, password);
+      setIsLoading(false);
 
-    if (success) {
-      // Navigarea va fi gestionată automat de către AuthNavigator
-      setEmail('');
-      setPassword('');
-      setConfirmPassword('');
+      if (success) {
+        navigation.navigate('Login');
+        setEmail('');
+        setPassword('');
+        setConfirmPassword('');
+      }
+    } catch (error) {
+      setIsLoading(false);
+      setLocalError(error instanceof Error ? error.message : 'Registration failed');
     }
   };
 
@@ -155,7 +162,7 @@ export function RegisterScreen({ navigation }: Props) {
             accessibilityLabel={t('auth.register.accessibility.loginLink')}
           >
             <Text style={styles.loginLinkText}>
-              {t('auth.register.alreadyHaveAccount')}
+              {t('auth.register.haveAccount')}
             </Text>
           </TouchableOpacity>
         </View>

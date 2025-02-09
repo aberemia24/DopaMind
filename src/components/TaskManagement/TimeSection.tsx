@@ -33,16 +33,19 @@ const TimeSection: React.FC<TimeSectionProps> = ({
         <View style={styles.titleContainer}>
           <Text style={styles.icon}>{period.icon}</Text>
           <View>
-            <Text style={styles.title}>{period.label}</Text>
-            <Text style={styles.timeFrame}>{period.timeFrame}</Text>
+            <Text style={styles.title}>{t(`taskManagement.timeSlots.${period.id}`)}</Text>
+            <Text style={styles.timeFrame}>{t(`taskManagement.timeRanges.${period.id}`)}</Text>
           </View>
+          <Text style={styles.description}>
+            {t(`taskManagement.timeDescriptions.${period.id}`)}
+          </Text>
         </View>
         <TouchableOpacity
           style={styles.addButton}
           onPress={onAddTask}
           accessibilityRole="button"
           accessibilityLabel={t('timeSection.accessibility.addTask', {
-            period: period.label
+            period: t(`taskManagement.timeSlots.${period.id}`)
           })}
         >
           <MaterialIcons 
@@ -52,8 +55,6 @@ const TimeSection: React.FC<TimeSectionProps> = ({
           />
         </TouchableOpacity>
       </View>
-
-      <Text style={styles.description}>{period.description}</Text>
 
       <View style={styles.progress}>
         <Text style={styles.progressText}>

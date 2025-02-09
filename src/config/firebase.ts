@@ -1,4 +1,4 @@
-import { initializeApp, getApps, FirebaseApp } from 'firebase/app';
+import { initializeApp, getApps, FirebaseApp, FirebaseError } from 'firebase/app';
 import { 
   initializeAuth,
   signInWithEmailAndPassword,
@@ -6,7 +6,6 @@ import {
   signOut as firebaseSignOut,
   Auth,
   UserCredential,
-  AuthError as FirebaseAuthError,
   getAuth,
   setPersistence,
   inMemoryPersistence
@@ -16,6 +15,8 @@ import {
   Firestore
 } from 'firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useTranslation } from 'react-i18next';
+import { TFunction } from 'i18next';
 
 // Verificăm dacă toate variabilele de mediu necesare sunt definite
 const requiredEnvVars = [
@@ -117,71 +118,135 @@ export function getFirebaseFirestore(): Firestore {
   return firestore;
 }
 
-// Funcții pentru autentificare
-export const signInWithEmail = async (
-  email: string,
-  password: string
-): Promise<UserCredential | AuthError> => {
-  try {
-    const auth = initializeFirebaseAuth();
-    const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    return userCredential;
-  } catch (error: any) {
-    console.error('Error signing in:', error);
-    const authError: AuthError = {
-      name: error.name || 'AuthError',
-      code: error.code || 'auth/unknown',
-      message: error.message || 'An unknown error occurred',
-      customData: error.customData || {}
-    };
-    return authError;
-  }
-};
-
-export const signUpWithEmail = async (
-  email: string,
-  password: string
-): Promise<UserCredential | AuthError> => {
-  try {
-    const auth = initializeFirebaseAuth();
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    return userCredential;
-  } catch (error: any) {
-    console.error('Error signing up:', error);
-    const authError: AuthError = {
-      name: error.name || 'AuthError',
-      code: error.code || 'auth/unknown',
-      message: error.message || 'An unknown error occurred',
-      customData: error.customData || {}
-    };
-    return authError;
-  }
-};
-
-export const signOut = async (): Promise<void | AuthError> => {
-  try {
-    const auth = getFirebaseAuth();
-    await firebaseSignOut(auth);
-  } catch (error: any) {
-    console.error('Error signing out:', error);
-    const authError: AuthError = {
-      name: error.name || 'AuthError',
-      code: error.code || 'auth/unknown',
-      message: error.message || 'An unknown error occurred',
-      customData: error.customData || {}
-    };
-    return authError;
-  }
-};
-
 // Tipuri pentru autentificare
 export interface AuthError {
   name: string;
   code: string;
   message: string;
-  customData: any;
 }
 
-export const isAuthError = (result: any): result is AuthError => {
-  return result && 'name' in result && 'code' in result && 'message' in result && 'customData' in result;
-};
+export interface AuthResponse<T> {
+  data?: T;
+  error?: AuthError;
+  status: 'success' | 'error';
+}
+
+// Helper pentru traducerea erorilor Firebase
+function getFirebaseErrorMessage(error: FirebaseError, t: TFunction): string {
+  switch (error.code) {
+    case 'auth/invalid-email':
+      return t('auth.errors.invalidEmail');
+    case 'auth/user-disabled':
+      return t('auth.errors.userDisabled');
+    case 'auth/user-not-found':
+      return t('auth.errors.userNotFound');
+    case 'auth/wrong-password':
+      return t('auth.errors.wrongPassword');
+    case 'auth/email-already-in-use':
+      return t('auth.errors.emailInUse');
+    case 'auth/weak-password':
+      return t('auth.errors.weakPassword');
+    case 'auth/operation-not-allowed':
+      return t('auth.errors.operationNotAllowed');
+    case 'auth/too-many-requests':
+      return t('auth.errors.tooManyRequests');
+    default:
+      return t('auth.errors.unknownError');
+  }
+}
+
+// Funcții pentru autentificare
+export async function signInWithEmail(
+  email: string,
+  password: string,
+  t: TFunction
+): Promise<AuthResponse<UserCredential>> {
+  try {
+    const auth = getFirebaseAuth();
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    return {
+      data: userCredential,
+      status: 'success'
+    };
+  } catch (error) {
+    if (error instanceof FirebaseError) {
+      return {
+        error: {
+          name: error.name,
+          code: error.code,
+          message: getFirebaseErrorMessage(error, t)
+        },
+        status: 'error'
+      };
+    }
+    return {
+      error: {
+        name: 'UnknownError',
+        code: 'unknown',
+        message: t('auth.errors.generic')
+      },
+      status: 'error'
+    };
+  }
+}
+
+export async function signUpWithEmail(
+  email: string,
+  password: string,
+  t: TFunction
+): Promise<AuthResponse<UserCredential>> {
+  try {
+    const auth = getFirebaseAuth();
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    return {
+      data: userCredential,
+      status: 'success'
+    };
+  } catch (error) {
+    if (error instanceof FirebaseError) {
+      return {
+        error: {
+          name: error.name,
+          code: error.code,
+          message: getFirebaseErrorMessage(error, t)
+        },
+        status: 'error'
+      };
+    }
+    return {
+      error: {
+        name: 'UnknownError',
+        code: 'unknown',
+        message: t('auth.errors.generic')
+      },
+      status: 'error'
+    };
+  }
+}
+
+export async function signOut(): Promise<AuthResponse<void>> {
+  try {
+    const auth = getFirebaseAuth();
+    await firebaseSignOut(auth);
+    return { status: 'success' };
+  } catch (error) {
+    if (error instanceof FirebaseError) {
+      return {
+        error: {
+          name: error.name,
+          code: error.code,
+          message: error.message
+        },
+        status: 'error'
+      };
+    }
+    return {
+      error: {
+        name: 'UnknownError',
+        code: 'unknown',
+        message: error instanceof Error ? error.message : 'An unknown error occurred'
+      },
+      status: 'error'
+    };
+  }
+}

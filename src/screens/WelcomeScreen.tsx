@@ -9,12 +9,14 @@ import {
 import { MaterialIcons } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
 import { OnboardingSlides } from '../components/Onboarding/OnboardingSlides';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../navigation';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../navigation/types';
 import { useTranslation } from 'react-i18next';
 import { ACCESSIBILITY } from '../constants/accessibility';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Welcome'>;
+type Props = {
+  navigation: NativeStackNavigationProp<RootStackParamList, 'Welcome'>;
+};
 
 export function WelcomeScreen({ navigation }: Props) {
   const { t } = useTranslation();
