@@ -16,6 +16,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/types';
 import { useTranslation } from 'react-i18next';
 import { ACCESSIBILITY } from '../constants/accessibility';
+import { AUTH_TRANSLATIONS } from '../i18n/keys';
 
 type Props = {
   navigation: NativeStackNavigationProp<RootStackParamList, 'Login'>;
@@ -73,7 +74,7 @@ export function LoginScreen({ navigation }: Props) {
       keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
     >
       <View style={styles.form}>
-        <Text style={styles.title}>{t('auth.login.welcome')}</Text>
+        <Text style={styles.title}>{t(AUTH_TRANSLATIONS.LOGIN.WELCOME)}</Text>
         
         <View style={styles.inputContainer}>
           <TextInput
@@ -81,10 +82,10 @@ export function LoginScreen({ navigation }: Props) {
             style={styles.input}
             value={email}
             onChangeText={setEmail}
-            placeholder={t('inputs.placeholders.email')}
+            placeholder={t(AUTH_TRANSLATIONS.FIELDS.EMAIL)}
             autoCapitalize="none"
             keyboardType="email-address"
-            returnKeyType={getReturnKeyType(t('inputs.returnKeyTypes.next'))}
+            returnKeyType={getReturnKeyType('next')}
             onSubmitEditing={focusPasswordInput}
             blurOnSubmit={false}
             autoFocus
@@ -102,9 +103,9 @@ export function LoginScreen({ navigation }: Props) {
             style={styles.input}
             value={password}
             onChangeText={setPassword}
-            placeholder={t('inputs.placeholders.password')}
+            placeholder={t(AUTH_TRANSLATIONS.FIELDS.PASSWORD)}
             secureTextEntry
-            returnKeyType={getReturnKeyType(t('inputs.returnKeyTypes.done'))}
+            returnKeyType={getReturnKeyType('done')}
             onSubmitEditing={handleLogin}
             onFocus={() => console.log('LoginScreen: Password input a primit focus')}
             onBlur={() => console.log('LoginScreen: Password input a pierdut focus')}
@@ -121,7 +122,7 @@ export function LoginScreen({ navigation }: Props) {
           {isLoading ? (
             <ActivityIndicator color="#fff" />
           ) : (
-            <Text style={styles.buttonText}>Login</Text>
+            <Text style={styles.buttonText}>{t(AUTH_TRANSLATIONS.LOGIN.SUBMIT)}</Text>
           )}
         </TouchableOpacity>
 
@@ -129,7 +130,7 @@ export function LoginScreen({ navigation }: Props) {
           style={styles.registerButton}
           onPress={() => navigation.navigate('Register')}
         >
-          <Text style={styles.registerText}>Don't have an account? Register</Text>
+          <Text style={styles.registerText}>{t(AUTH_TRANSLATIONS.LOGIN.NO_ACCOUNT)}</Text>
         </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>

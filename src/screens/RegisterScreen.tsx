@@ -15,6 +15,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/types';
 import { useTranslation } from 'react-i18next';
 import { ACCESSIBILITY } from '../constants/accessibility';
+import { AUTH_TRANSLATIONS, ERROR_TRANSLATIONS } from '../i18n/keys';
 
 type Props = {
   navigation: NativeStackNavigationProp<RootStackParamList, 'Register'>;
@@ -31,12 +32,12 @@ export function RegisterScreen({ navigation }: Props) {
 
   const handleRegister = async () => {
     if (!email || !password || !confirmPassword) {
-      setLocalError(t('auth.register.errors.fillAllFields'));
+      setLocalError(t(ERROR_TRANSLATIONS.VALIDATION.REQUIRED));
       return;
     }
 
     if (password !== confirmPassword) {
-      setLocalError(t('auth.register.errors.passwordsDoNotMatch'));
+      setLocalError(t(ERROR_TRANSLATIONS.VALIDATION.PASSWORD.MATCH));
       return;
     }
 
@@ -54,7 +55,7 @@ export function RegisterScreen({ navigation }: Props) {
       }
     } catch (error) {
       setIsLoading(false);
-      setLocalError(error instanceof Error ? error.message : 'Registration failed');
+      setLocalError(t(ERROR_TRANSLATIONS.GENERIC));
     }
   };
 
@@ -79,7 +80,7 @@ export function RegisterScreen({ navigation }: Props) {
             style={styles.title}
             accessibilityRole="header"
           >
-            {t('auth.register.createAccount')}
+            {t(AUTH_TRANSLATIONS.SIGN_UP)}
           </Text>
           
           <View style={styles.inputContainer}>
@@ -87,7 +88,7 @@ export function RegisterScreen({ navigation }: Props) {
               style={styles.input}
               value={email}
               onChangeText={setEmail}
-              placeholder={t('inputs.placeholders.email')}
+              placeholder={t(AUTH_TRANSLATIONS.FIELDS.EMAIL)}
               autoCapitalize="none"
               keyboardType="email-address"
               accessibilityRole="none"
@@ -101,7 +102,7 @@ export function RegisterScreen({ navigation }: Props) {
               style={styles.input}
               value={password}
               onChangeText={setPassword}
-              placeholder={t('inputs.placeholders.password')}
+              placeholder={t(AUTH_TRANSLATIONS.FIELDS.PASSWORD)}
               secureTextEntry
               accessibilityRole="none"
               accessibilityLabel={t('auth.register.accessibility.passwordInput')}
@@ -114,7 +115,7 @@ export function RegisterScreen({ navigation }: Props) {
               style={styles.input}
               value={confirmPassword}
               onChangeText={setConfirmPassword}
-              placeholder={t('inputs.placeholders.confirmPassword')}
+              placeholder={t(AUTH_TRANSLATIONS.FIELDS.CONFIRM_PASSWORD)}
               secureTextEntry
               accessibilityRole="none"
               accessibilityLabel={t('auth.register.accessibility.confirmPasswordInput')}
@@ -150,7 +151,7 @@ export function RegisterScreen({ navigation }: Props) {
               <ActivityIndicator color={ACCESSIBILITY.COLORS.BACKGROUND.PRIMARY} />
             ) : (
               <Text style={styles.buttonText}>
-                {t('auth.register.createAccount')}
+                {t(AUTH_TRANSLATIONS.SIGN_UP)}
               </Text>
             )}
           </TouchableOpacity>
