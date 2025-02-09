@@ -20,9 +20,14 @@ export interface Task {
   isPriority?: boolean;
 }
 
-type TaskInput = Omit<Task, 'id' | 'userId' | 'periodId' | 'createdAt' | 'updatedAt'>;
-type TaskUpdate = Partial<Omit<Task, 'id' | 'userId' | 'createdAt' | 'updatedAt'>>;
-type TasksByPeriod = Record<TimePeriodKey, Task[]>;
+export interface TasksByPeriod {
+  MORNING: Task[];
+  AFTERNOON: Task[];
+  EVENING: Task[];
+}
+
+export type TaskInput = Omit<Task, 'id' | 'userId' | 'periodId' | 'createdAt' | 'updatedAt'>;
+export type TaskUpdate = Partial<Omit<Task, 'id' | 'userId' | 'createdAt' | 'updatedAt'>>;
 
 export const fetchTasks = async (userId: string): Promise<TasksByPeriod> => {
   try {

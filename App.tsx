@@ -5,6 +5,7 @@ import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Navigation } from './src/navigation';
 import { GlobalErrorBoundary } from './src/core/error/ErrorBoundary';
+import { TaskProvider } from './src/contexts/TaskContext';
 import './src/i18n';  // Import i18n configuration
 
 export default function App() {
@@ -49,7 +50,9 @@ export default function App() {
   return (
     <GlobalErrorBoundary>
       <SafeAreaProvider>
-        <Navigation />
+        <TaskProvider>
+          <Navigation />
+        </TaskProvider>
         <StatusBar style="auto" />
       </SafeAreaProvider>
     </GlobalErrorBoundary>

@@ -70,6 +70,89 @@
   ```
 - Preferă state local pentru componente izolate
 
+## Performanță și Optimizare
+
+### 1. Liste și Scroll Views
+- Folosește FlashList în loc de FlatList pentru liste lungi
+  ```typescript
+  // ❌ Evită pentru liste lungi
+  <FlatList
+    data={items}
+    renderItem={renderItem}
+  />
+
+  // ✅ Folosește
+  <FlashList
+    data={items}
+    renderItem={renderItem}
+    estimatedItemSize={88} // Specifică întotdeauna o dimensiune estimată
+  />
+  ```
+
+### 2. Memoizare și Prevenirea Re-renderurilor
+- Folosește React.memo pentru componente pure
+- Memoizează callback-urile cu useCallback
+- Specifică funcții de comparare personalizate când e necesar
+  ```typescript
+  // ✅ Exemplu complet de optimizare
+  const TaskItem = React.memo(({ task, onToggle }) => {
+    const handleToggle = useCallback(() => {
+      onToggle(task.id);
+    }, [task.id, onToggle]);
+
+    return <Component onPress={handleToggle} />;
+  }, (prev, next) => {
+    return prev.task.id === next.task.id &&
+           prev.task.completed === next.task.completed;
+  });
+  ```
+
+## Navigare și Autentificare
+
+### 1. Protejarea Rutelor
+- Implementează middleware pentru verificarea accesului
+- Gestionează corect tranziția între stacks de navigare
+  ```typescript
+  // ✅ Gestionare corectă a accesului refuzat
+  const handleAccessDenied = useCallback(() => {
+    setIsAuthenticated(false); // Forțează rerender la AuthStack
+  }, [setIsAuthenticated]);
+  ```
+
+### 2. Starea de Autentificare
+- Menține o singură sursă de adevăr pentru starea de autentificare
+- Expune doar metodele necesare prin hook-uri
+  ```typescript
+  // ✅ Interfață clară pentru autentificare
+  interface UseAuthReturn {
+    isAuthenticated: boolean;
+    setIsAuthenticated: (value: boolean) => void;
+    login: (credentials: Credentials) => Promise<boolean>;
+    logout: () => Promise<boolean>;
+  }
+  ```
+
+## Package Management și Dependențe
+
+### 1. Consistență în Package Management
+- Folosește un singur package manager (npm sau yarn)
+- Menține un singur fișier de lock
+- Verifică compatibilitatea înainte de a adăuga dependențe noi
+
+### 2. Versiuni și Compatibilitate
+- Specifică versiuni exacte pentru dependențe critice
+- Verifică compatibilitatea cu Expo SDK
+- Rezolvă proactiv conflictele de dependențe
+  ```json
+  // ✅ Exemplu package.json
+  {
+    "dependencies": {
+      "@shopify/flash-list": "1.7.3",
+      "expo": "^52.0.0"
+    }
+  }
+  ```
+
 ## Procese de Development
 
 ### Code Review Process

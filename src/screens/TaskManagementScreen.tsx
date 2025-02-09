@@ -12,33 +12,25 @@ import {
 } from 'react-native';
 import TimeSection from '../components/TaskManagement/TimeSection';
 import TaskFilter, { FilterOption } from '../components/TaskManagement/TaskFilter';
-import { TIME_PERIODS, type TimePeriodKey, type TimePeriod } from '../constants/taskTypes';
+import { TIME_PERIODS, type TimePeriodKey } from '../constants/taskTypes';
 import { useAuth } from '../hooks/useAuth';
 import { useTranslation } from 'react-i18next';
 import { MaterialIcons } from '@expo/vector-icons';
 import type { Task } from '../services/taskService';
 import { ACCESSIBILITY } from '../constants/accessibility';
-
-interface TasksByPeriod {
-  MORNING: Task[];
-  AFTERNOON: Task[];
-  EVENING: Task[];
-}
+import { useTaskContext } from '../contexts/TaskContext';
 
 const TaskManagementScreen: React.FC = () => {
   const { logout, user, isAuthenticated } = useAuth();
   const { t } = useTranslation();
-  const [tasks, setTasks] = useState<TasksByPeriod>({
-    MORNING: [],
-    AFTERNOON: [],
-    EVENING: []
-  });
+  const { tasks, loading, error, addTask, updateTask, deleteTask, toggleTask } = useTaskContext();
   const [currentFilter, setCurrentFilter] = useState<FilterOption>('all');
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   // Monitorizăm starea de autentificare 
   useEffect(() => {
     if (!isAuthenticated && isLoggingOut) {
+      // Handle logout completion
     }
   }, [isAuthenticated, isLoggingOut]);
 
@@ -99,59 +91,25 @@ const TaskManagementScreen: React.FC = () => {
       return;
     }
 
-    try {
-      const newTask: Omit<Task, 'id'> = {
+    showSoftLimitWarning(periodId, async () => {
+      const newTask: Task = {
+        id: Date.now().toString(),
         title: '',
         completed: false,
-        isPriority: false,
+        createdAt: new Date().toISOString(),
         userId: user.uid,
-        periodId: periodId,
-        createdAt: new Date().toISOString()
-      };
-      const addNewTask = () => {
-        setTasks(prev => ({
-          ...prev,
-          [periodId]: [...prev[periodId], { id: Date.now().toString(), ...newTask }]
-        }));
+        isPriority: false,
+        periodId
       };
 
-      showSoftLimitWarning(periodId, addNewTask);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const handleToggleTask = (taskId: string): void => {
-    setTasks(prev => {
-      const newTasks = { ...prev };
-      Object.keys(newTasks).forEach((periodId) => {
-        newTasks[periodId as TimePeriodKey] = newTasks[periodId as TimePeriodKey].map(task =>
-          task.id === taskId ? { ...task, completed: !task.completed } : task
+      try {
+        await addTask(periodId, newTask);
+      } catch (error) {
+        Alert.alert(
+          t('common.error'),
+          t('taskManagement.errors.addTask')
         );
-      });
-      return newTasks;
-    });
-  };
-
-  const handleDeleteTask = (taskId: string): void => {
-    setTasks(prev => {
-      const newTasks = { ...prev };
-      Object.keys(newTasks).forEach((periodId) => {
-        newTasks[periodId as TimePeriodKey] = newTasks[periodId as TimePeriodKey].filter(task => task.id !== taskId);
-      });
-      return newTasks;
-    });
-  };
-
-  const handleUpdateTask = (taskId: string, updatedTask: Task): void => {
-    setTasks(prev => {
-      const newTasks = { ...prev };
-      Object.keys(newTasks).forEach((periodId) => {
-        newTasks[periodId as TimePeriodKey] = newTasks[periodId as TimePeriodKey].map(task =>
-          task.id === taskId ? { ...updatedTask } : task
-        );
-      });
-      return newTasks;
+      }
     });
   };
 
@@ -170,8 +128,8 @@ const TaskManagementScreen: React.FC = () => {
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView 
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.keyboardAvoidingView}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
         <View style={styles.header}>
           <Text style={styles.title}>{t('taskManagement.title')}</Text>
@@ -191,26 +149,25 @@ const TaskManagementScreen: React.FC = () => {
           </TouchableOpacity>
         </View>
 
-        <TaskFilter
-          currentFilter={currentFilter}
-          onFilterChange={setCurrentFilter}
-          counts={getFilterCounts()}
-        />
-
         <ScrollView 
-          style={styles.content}
-          accessibilityRole="list"
-          accessibilityLabel={t('taskManagement.accessibility.taskList')}
+          style={styles.scrollView}
+          contentContainerStyle={styles.scrollViewContent}
         >
+          <TaskFilter
+            currentFilter={currentFilter}
+            onFilterChange={setCurrentFilter}
+            counts={getFilterCounts()}
+          />
+          
           {Object.entries(TIME_PERIODS).map(([id, period]) => (
             <TimeSection
               key={id}
               period={period}
               tasks={filterTasks(tasks[id as TimePeriodKey])}
               onAddTask={() => handleAddTask(id as TimePeriodKey)}
-              onToggleTask={handleToggleTask}
-              onDeleteTask={handleDeleteTask}
-              onUpdateTask={handleUpdateTask}
+              onToggleTask={(taskId) => toggleTask(id as TimePeriodKey, taskId)}
+              onDeleteTask={(taskId) => deleteTask(id as TimePeriodKey, taskId)}
+              onUpdateTask={(taskId, updatedTask) => updateTask(id as TimePeriodKey, taskId, updatedTask)}
             />
           ))}
         </ScrollView>
@@ -247,8 +204,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  content: {
+  scrollView: {
     flex: 1,
+  },
+  scrollViewContent: {
+    padding: ACCESSIBILITY.SPACING.MD,
   },
 });
 
