@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
     borderRadius: ACCESSIBILITY.SPACING.SM,
     padding: ACCESSIBILITY.SPACING.MD,
     marginBottom: ACCESSIBILITY.SPACING.MD,
-    shadowColor: '#000',
+    shadowColor: ACCESSIBILITY.COLORS.TEXT.PRIMARY,
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
     shadowRadius: 2,

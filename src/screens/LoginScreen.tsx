@@ -15,6 +15,7 @@ import { useAuth } from '../hooks/useAuth';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation';
 import { useTranslation } from 'react-i18next';
+import { ACCESSIBILITY } from '../constants/accessibility';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
@@ -136,7 +137,7 @@ export function LoginScreen({ navigation }: Props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: ACCESSIBILITY.COLORS.BACKGROUND.PRIMARY,
   },
   form: {
     flex: 1,

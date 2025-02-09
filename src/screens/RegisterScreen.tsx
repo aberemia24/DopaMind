@@ -196,7 +196,7 @@ const styles = StyleSheet.create({
     color: ACCESSIBILITY.COLORS.TEXT.PRIMARY,
   },
   error: {
-    color: '#ff3b30',
+    color: ACCESSIBILITY.COLORS.STATES.ERROR,
     fontSize: ACCESSIBILITY.TYPOGRAPHY.SIZES.SM,
     textAlign: 'center',
     marginBottom: ACCESSIBILITY.SPACING.MD,

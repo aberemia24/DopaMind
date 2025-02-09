@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import TimeSection from '../components/TaskManagement/TimeSection';
 import TaskFilter, { FilterOption } from '../components/TaskManagement/TaskFilter';
-import { TIME_PERIODS, type TimePeriodKey, type TimePeriod } from '../constants/taskTypes';
+import { getTimePeriods, type TimePeriodKey, type TimePeriod } from '../constants/taskTypes';
 import { useAuth } from '../hooks/useAuth';
 import { useTranslation } from 'react-i18next';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -26,8 +26,9 @@ interface TasksByPeriod {
 }
 
 const TaskManagementScreen: React.FC = () => {
-  const { signOut } = useAuth();
+  const { signOut, user } = useAuth();
   const { t } = useTranslation();
+  const timePeriods = getTimePeriods(t);
   const [tasks, setTasks] = useState<TasksByPeriod>({
     MORNING: [],
     AFTERNOON: [],
@@ -65,15 +66,15 @@ const TaskManagementScreen: React.FC = () => {
   const showSoftLimitWarning = (periodId: TimePeriodKey, onConfirm: () => void): void => {
     if (getTotalTaskCount() >= 3) {
       Alert.alert(
-        "Ești sigur?",
-        "Ai deja 3 sau mai multe task-uri. Este recomandat să nu ai prea multe task-uri simultan pentru a evita supraîncărcarea. Vrei să continui?",
+        t('taskManagement.alerts.softLimit.title'),
+        t('taskManagement.alerts.softLimit.message'),
         [
           {
-            text: "Nu, renunț",
+            text: t('common.buttons.cancel'),
             style: "cancel"
           },
           {
-            text: "Da, adaug task",
+            text: t('taskManagement.alerts.softLimit.confirm'),
             onPress: onConfirm
           }
         ]
@@ -83,24 +84,35 @@ const TaskManagementScreen: React.FC = () => {
     }
   };
 
-  const handleAddTask = (periodId: TimePeriodKey): void => {
-    const addNewTask = () => {
-      const newTask: Task = {
-        id: Date.now().toString(),
+  const handleAddTask = async (periodId: TimePeriodKey) => {
+    if (!user?.uid) {
+      Alert.alert(
+        t('common.error'),
+        t('taskManagement.errors.notAuthenticated')
+      );
+      return;
+    }
+
+    try {
+      const newTask: Omit<Task, 'id'> = {
         title: '',
         completed: false,
         isPriority: false,
-        userId: 'current_user', // TODO: Get from auth context
+        userId: user.uid,
         periodId: periodId,
         createdAt: new Date().toISOString()
       };
-      setTasks(prev => ({
-        ...prev,
-        [periodId]: [...prev[periodId], newTask]
-      }));
-    };
+      const addNewTask = () => {
+        setTasks(prev => ({
+          ...prev,
+          [periodId]: [...prev[periodId], { id: Date.now().toString(), ...newTask }]
+        }));
+      };
 
-    showSoftLimitWarning(periodId, addNewTask);
+      showSoftLimitWarning(periodId, addNewTask);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handleToggleTask = (taskId: string): void => {
@@ -161,8 +173,12 @@ const TaskManagementScreen: React.FC = () => {
           counts={getFilterCounts()}
         />
 
-        <ScrollView style={styles.content}>
-          {Object.entries(TIME_PERIODS).map(([id, period]) => (
+        <ScrollView 
+          style={styles.content}
+          accessibilityRole="list"
+          accessibilityLabel={t('taskManagement.accessibility.taskList')}
+        >
+          {Object.entries(timePeriods).map(([id, period]) => (
             <TimeSection
               key={id}
               period={period}

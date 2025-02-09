@@ -12,6 +12,7 @@ import { OnboardingSlides } from '../components/Onboarding/OnboardingSlides';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation';
 import { useTranslation } from 'react-i18next';
+import { ACCESSIBILITY } from '../constants/accessibility';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Welcome'>;
 
@@ -38,18 +39,28 @@ export function WelcomeScreen({ navigation }: Props) {
           style={styles.emailButton}
           onPress={handleEmailLogin}
         >
-          <MaterialIcons name="email" size={24} color="#2E2E2E" style={styles.buttonIcon} />
+          <MaterialIcons 
+            name="email" 
+            size={24} 
+            color={ACCESSIBILITY.COLORS.TEXT.PRIMARY} 
+            style={styles.buttonIcon} 
+          />
           <Text style={styles.emailButtonText}>
             {t('welcome.buttons.emailLogin')}
           </Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={[styles.googleButton, { backgroundColor: '#4285F4' }]}
+          style={[styles.googleButton]}
           onPress={handleGoogleLogin}
         >
-          <FontAwesome name="google" size={24} color="#fff" style={styles.buttonIcon} />
-          <Text style={[styles.googleButtonText, { color: '#fff' }]}>
+          <FontAwesome 
+            name="google" 
+            size={24} 
+            color={ACCESSIBILITY.COLORS.BACKGROUND.PRIMARY} 
+            style={styles.buttonIcon} 
+          />
+          <Text style={styles.googleButtonText}>
             {t('welcome.buttons.googleLogin')}
           </Text>
         </TouchableOpacity>
@@ -61,25 +72,25 @@ export function WelcomeScreen({ navigation }: Props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: ACCESSIBILITY.COLORS.BACKGROUND.PRIMARY,
   },
   slidesContainer: {
     flex: 1,
   },
   buttonsContainer: {
-    padding: 20,
-    paddingBottom: 40,
+    padding: ACCESSIBILITY.SPACING.XL,
+    paddingBottom: ACCESSIBILITY.SPACING.XXL,
   },
   emailButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F5F5F5',
-    borderRadius: 8,
-    padding: 16,
-    marginBottom: 12,
-    minHeight: 54,
+    backgroundColor: ACCESSIBILITY.COLORS.BACKGROUND.SECONDARY,
+    borderRadius: ACCESSIBILITY.SPACING.SM,
+    padding: ACCESSIBILITY.SPACING.MD,
+    marginBottom: ACCESSIBILITY.SPACING.SM,
+    minHeight: ACCESSIBILITY.TOUCH_TARGET.MIN_HEIGHT + ACCESSIBILITY.SPACING.MD,
     elevation: 2,
-    shadowColor: '#000',
+    shadowColor: ACCESSIBILITY.COLORS.TEXT.PRIMARY,
     shadowOffset: {
       width: 0,
       height: 1,
@@ -90,12 +101,12 @@ const styles = StyleSheet.create({
   googleButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#4285F4',
-    borderRadius: 8,
-    padding: 16,
-    minHeight: 54,
+    backgroundColor: '#4285F4', // Culoarea oficială Google
+    borderRadius: ACCESSIBILITY.SPACING.SM,
+    padding: ACCESSIBILITY.SPACING.MD,
+    minHeight: ACCESSIBILITY.TOUCH_TARGET.MIN_HEIGHT + ACCESSIBILITY.SPACING.MD,
     elevation: 2,
-    shadowColor: '#000',
+    shadowColor: ACCESSIBILITY.COLORS.TEXT.PRIMARY,
     shadowOffset: {
       width: 0,
       height: 1,
@@ -104,16 +115,16 @@ const styles = StyleSheet.create({
     shadowRadius: 1.41,
   },
   buttonIcon: {
-    marginRight: 12,
+    marginRight: ACCESSIBILITY.SPACING.SM,
   },
   emailButtonText: {
     flex: 1,
     fontSize: 16,
-    color: '#2E2E2E',
+    color: ACCESSIBILITY.COLORS.TEXT.PRIMARY,
   },
   googleButtonText: {
     flex: 1,
     fontSize: 16,
-    color: '#2E2E2E',
+    color: ACCESSIBILITY.COLORS.TEXT.PRIMARY,
   },
 });

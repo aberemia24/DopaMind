@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
     backgroundColor: ACCESSIBILITY.COLORS.BACKGROUND.PRIMARY,
     borderRadius: ACCESSIBILITY.SPACING.SM,
     alignItems: 'center',
-    shadowColor: '#000',
+    shadowColor: ACCESSIBILITY.COLORS.TEXT.PRIMARY,
     shadowOffset: {
       width: 0,
       height: 2,
@@ -190,8 +190,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   checkboxInner: {
-    width: 24,
-    height: 24,
+    width: ACCESSIBILITY.TOUCH_TARGET.MIN_WIDTH / 2,
+    height: ACCESSIBILITY.TOUCH_TARGET.MIN_HEIGHT / 2,
     borderWidth: 2,
     borderColor: ACCESSIBILITY.COLORS.INTERACTIVE.PRIMARY,
     borderRadius: ACCESSIBILITY.SPACING.XS,

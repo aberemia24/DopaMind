@@ -220,8 +220,8 @@ const styles = StyleSheet.create({
     paddingBottom: ACCESSIBILITY.SPACING.MD,
   },
   dot: {
-    height: 10,
-    borderRadius: 5,
+    height: ACCESSIBILITY.SPACING.SM,
+    borderRadius: ACCESSIBILITY.SPACING.XS,
     backgroundColor: ACCESSIBILITY.COLORS.INTERACTIVE.PRIMARY,
     marginHorizontal: ACCESSIBILITY.SPACING.XS,
   },

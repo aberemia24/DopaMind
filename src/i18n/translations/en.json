@@ -8,11 +8,18 @@
     "delete": "Delete",
     "edit": "Edit",
     "unknownError": "Unknown error",
+    "buttons": {
+      "cancel": "No, cancel"
+    },
     "firebase": {
       "initializationStart": "Starting Firebase initialization...",
       "initializationSuccess": "Firebase initialized successfully",
       "initializationError": "Error initializing Firebase:"
-    }
+    },
+    "completed": "completed",
+    "incomplete": "incomplete",
+    "markComplete": "mark as complete",
+    "markIncomplete": "mark as incomplete"
   },
   "auth": {
     "signIn": "Sign In",
@@ -92,21 +99,26 @@
   "onboarding": {
     "slides": {
       "slide1": {
-        "title": "Overcome Overwhelm",
-        "description": "We help you transform your overwhelming task list into a clear, achievable plan."
+        "title": "Welcome to DopaMind",
+        "description": "Your personal ADHD management companion"
       },
       "slide2": {
-        "title": "ADHD-Adapted System",
-        "description": "We use scientifically proven techniques to make time and task management easier with ADHD."
+        "title": "Task Management",
+        "description": "Break down your tasks into manageable chunks and track your progress"
       },
       "slide3": {
-        "title": "Support in Difficult Moments",
-        "description": "Get instant access to calming and focusing techniques when you feel overwhelmed or stuck."
+        "title": "Mental Health Support",
+        "description": "Get support when you need it with our crisis management features"
       }
+    },
+    "accessibility": {
+      "slideshow": "Onboarding slideshow",
+      "pagination": "Slide pagination",
+      "pageIndicator": "Slide {{current}} of {{total}}"
     }
   },
   "taskManagement": {
-    "title": "Tasks",
+    "title": "Task Management",
     "timeSlots": {
       "morning": "Morning",
       "afternoon": "Afternoon",
@@ -119,7 +131,60 @@
     "taskName": "Task Name",
     "priority": "Priority",
     "dueDate": "Due Date",
-    "status": "Status"
+    "status": "Status",
+    "errors": {
+      "notAuthenticated": "You must be logged in to manage tasks",
+      "addTaskFailed": "Failed to add task",
+      "updateTaskFailed": "Failed to update task",
+      "deleteTaskFailed": "Failed to delete task"
+    },
+    "alerts": {
+      "softLimit": {
+        "title": "Are you sure?",
+        "message": "You already have 3 or more tasks. It's recommended not to have too many tasks at once to avoid overload. Do you want to continue?",
+        "confirm": "Yes, add task"
+      }
+    },
+    "accessibility": {
+      "taskList": "List of tasks organized by time periods"
+    }
+  },
+  "taskFilter": {
+    "all": "All",
+    "active": "Active",
+    "completed": "Completed",
+    "priority": "Priority",
+    "accessibility": {
+      "filterList": "Task filter options",
+      "filterOption": "{{filter}} filter ({{count}} tasks)"
+    }
+  },
+  "taskItem": {
+    "placeholder": {
+      "title": "Enter task title..."
+    },
+    "accessibility": {
+      "taskStatus": "{{title}} task is {{status}}",
+      "toggleComplete": "{{action}} task",
+      "editTitle": "Edit task title",
+      "editTitleHint": "Enter at least 3 characters",
+      "edit": "Edit task",
+      "delete": "Delete task"
+    }
+  },
+  "tagSelector": {
+    "createTag": "Create new tag",
+    "placeholder": {
+      "newTag": "Enter tag name..."
+    },
+    "accessibility": {
+      "tagList": "List of available tags",
+      "tag": "{{label}} tag {{selected ? 'selected' : 'not selected'}}",
+      "newTagInput": "New tag name input",
+      "newTagHint": "Enter a name for the new tag",
+      "addTag": "Add new tag",
+      "createTag": "Create new tag"
+    }
   },
   "navigation": {
     "titles": {
@@ -139,6 +204,29 @@
     "returnKeyTypes": {
       "next": "next",
       "done": "done"
+    }
+  },
+  "timeSection": {
+    "progress": "{{completed}} of {{total}} tasks completed",
+    "accessibility": {
+      "addTask": "Add task to {{period}} period"
+    }
+  },
+  "timePeriods": {
+    "morning": {
+      "label": "Morning",
+      "timeFrame": "06:00 - 12:00",
+      "description": "Best time for tasks that require focus"
+    },
+    "afternoon": {
+      "label": "Afternoon",
+      "timeFrame": "12:00 - 18:00",
+      "description": "Great time for creative and collaborative tasks"
+    },
+    "evening": {
+      "label": "Evening",
+      "timeFrame": "18:00 - 23:00",
+      "description": "Perfect time for light and relaxing tasks"
     }
   }
 }
