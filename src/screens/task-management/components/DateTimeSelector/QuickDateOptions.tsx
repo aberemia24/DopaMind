@@ -52,12 +52,16 @@ export const QuickDateOptions: React.FC<QuickDateOptionsProps> = ({
             <MaterialIcons
               name={option.icon}
               size={24}
-              color={selected ? ACCESSIBILITY.COLORS.TEXT_ON_PRIMARY : ACCESSIBILITY.COLORS.TEXT_PRIMARY}
+              color={selected ? ACCESSIBILITY.COLORS.TEXT.ON_INTERACTIVE : ACCESSIBILITY.COLORS.TEXT.PRIMARY}
+              style={styles.icon}
             />
-            <Text style={[
-              styles.optionText,
-              selected && styles.selectedOptionText
-            ]}>
+            <Text
+              style={[
+                styles.optionText,
+                selected && styles.selectedOptionText,
+                { color: selected ? ACCESSIBILITY.COLORS.TEXT.ON_INTERACTIVE : ACCESSIBILITY.COLORS.TEXT.PRIMARY }
+              ]}
+            >
               {t(option.titleKey)}
             </Text>
           </TouchableOpacity>
@@ -72,27 +76,27 @@ const styles = StyleSheet.create({
     marginBottom: ACCESSIBILITY.SPACING.BASE
   },
   contentContainer: {
-    paddingHorizontal: ACCESSIBILITY.SPACING.SMALL
+    paddingHorizontal: ACCESSIBILITY.SPACING.SM
   },
   option: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: ACCESSIBILITY.SPACING.MEDIUM,
-    marginRight: ACCESSIBILITY.SPACING.SMALL,
-    borderRadius: ACCESSIBILITY.BORDER_RADIUS.MEDIUM,
-    backgroundColor: ACCESSIBILITY.COLORS.BACKGROUND_SECONDARY,
-    minWidth: 120
+    padding: ACCESSIBILITY.SPACING.MD,
+    marginRight: ACCESSIBILITY.SPACING.SM,
+    borderRadius: ACCESSIBILITY.TOUCH_TARGET.SPACING,
+    backgroundColor: ACCESSIBILITY.COLORS.BACKGROUND.SECONDARY,
+    minHeight: ACCESSIBILITY.TOUCH_TARGET.MIN_HEIGHT
   },
   selectedOption: {
-    backgroundColor: ACCESSIBILITY.COLORS.PRIMARY
+    backgroundColor: ACCESSIBILITY.COLORS.INTERACTIVE.PRIMARY
+  },
+  icon: {
+    marginLeft: ACCESSIBILITY.SPACING.SM,
   },
   optionText: {
-    marginLeft: ACCESSIBILITY.SPACING.SMALL,
-    fontSize: 16,
-    color: ACCESSIBILITY.COLORS.TEXT_PRIMARY
+    color: ACCESSIBILITY.COLORS.TEXT.PRIMARY
   },
   selectedOptionText: {
-    color: ACCESSIBILITY.COLORS.TEXT_ON_PRIMARY,
-    fontWeight: 'bold'
+    color: ACCESSIBILITY.COLORS.TEXT.ON_INTERACTIVE,
   }
 });

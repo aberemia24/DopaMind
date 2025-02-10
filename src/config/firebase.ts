@@ -20,6 +20,7 @@ import { TFunction } from 'i18next';
 import { getValidatedEnv } from './environment';
 import { RateLimiter } from '../services/rateLimiter';
 import { initializeAppCheck, ReCaptchaV3Provider, AppCheck } from 'firebase/app-check';
+import { ERROR_TRANSLATIONS } from '../i18n/keys';
 
 // Variabile pentru singleton-uri
 let app: FirebaseApp | null = null;
@@ -71,6 +72,7 @@ async function handleAuthOperation<T>(
       data: result,
     };
   } catch (error) {
+    // Verifică dacă eroarea este de la Firebase
     if (error instanceof FirebaseError) {
       return {
         status: 'error',
@@ -81,12 +83,14 @@ async function handleAuthOperation<T>(
         },
       };
     }
+
+    // Pentru alte tipuri de erori, returnează un mesaj generic
     return {
       status: 'error',
       error: {
         name: 'UnknownError',
         code: 'auth/unknown',
-        message: t('errors.auth.unknown'),
+        message: t(ERROR_TRANSLATIONS.AUTH.UNKNOWN),
       },
     };
   }
@@ -229,27 +233,19 @@ export async function signUpWithEmail(
   );
 }
 
-export async function signOut(): Promise<AuthResponse<void>> {
+export async function signOut(t: TFunction): Promise<AuthResponse<void>> {
   try {
     const auth = getFirebaseAuth();
-    await firebaseSignOut(auth);
-    return { status: 'success' };
+    await auth.signOut();
+    return {
+      status: 'success'
+    };
   } catch (error) {
-    if (error instanceof FirebaseError) {
-      return {
-        error: {
-          name: error.name,
-          code: error.code,
-          message: error.message
-        },
-        status: 'error'
-      };
-    }
     return {
       error: {
         name: 'UnknownError',
         code: 'unknown',
-        message: error instanceof Error ? error.message : 'An unknown error occurred'
+        message: error instanceof Error ? error.message : t(ERROR_TRANSLATIONS.AUTH.UNKNOWN)
       },
       status: 'error'
     };

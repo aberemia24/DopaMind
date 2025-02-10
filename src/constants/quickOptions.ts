@@ -1,4 +1,19 @@
 import { MaterialIcons } from '@expo/vector-icons';
+import { DATE_TIME_TRANSLATIONS, TASK_MANAGEMENT_TRANSLATIONS } from '../i18n/keys';
+
+// Constante pentru ID-uri
+export const REMINDER_IDS = {
+  FIVE_MIN: 'reminder_5min',
+  FIFTEEN_MIN: 'reminder_15min',
+  THIRTY_MIN: 'reminder_30min',
+  ONE_HOUR: 'reminder_1hour'
+} as const;
+
+export const REPEAT_IDS = {
+  DAILY: 'repeat_daily',
+  WEEKLY: 'repeat_weekly',
+  MONTHLY: 'repeat_monthly'
+} as const;
 
 export interface QuickDateOption {
   id: QuickDateOptionKey;
@@ -62,7 +77,7 @@ export const QUICK_DATE_OPTIONS: Record<QuickDateOptionKey, QuickDateOption> = {
   NEXT_WEEK: {
     id: 'NEXT_WEEK',
     label: 'next_week',
-    icon: 'event_note',
+    icon: 'event-note',
     titleKey: 'taskManagement.quickOptions.date.nextWeek',
     getDate: () => {
       const nextWeek = new Date();
@@ -72,13 +87,13 @@ export const QUICK_DATE_OPTIONS: Record<QuickDateOptionKey, QuickDateOption> = {
   }
 } as const;
 
-export interface QuickTimeOption {
+export type QuickTimeOption = {
   id: string;
   label: string;
   icon: keyof typeof MaterialIcons.glyphMap;
   titleKey: string;
-  time: string; // Format: "HH:mm"
-}
+  timeKey: string;
+};
 
 export const QUICK_TIME_OPTIONS: QuickTimeOption[] = [
   {
@@ -86,21 +101,21 @@ export const QUICK_TIME_OPTIONS: QuickTimeOption[] = [
     label: 'morning',
     icon: 'wb-sunny',
     titleKey: 'taskManagement.quickOptions.time.morning',
-    time: '09:00'
+    timeKey: DATE_TIME_TRANSLATIONS.TIME.DEFAULT.MORNING
   },
   {
     id: 'afternoon',
     label: 'afternoon',
     icon: 'wb-sunny',
     titleKey: 'taskManagement.quickOptions.time.afternoon',
-    time: '14:00'
+    timeKey: DATE_TIME_TRANSLATIONS.TIME.DEFAULT.AFTERNOON
   },
   {
     id: 'evening',
     label: 'evening',
     icon: 'nights-stay',
     titleKey: 'taskManagement.quickOptions.time.evening',
-    time: '20:00'
+    timeKey: DATE_TIME_TRANSLATIONS.TIME.DEFAULT.EVENING
   }
 ];
 
@@ -114,31 +129,31 @@ export interface QuickReminderOption {
 
 export const QUICK_REMINDER_OPTIONS: QuickReminderOption[] = [
   {
-    id: '5min',
-    label: '5 minutes before',
-    icon: 'notifications',
-    titleKey: 'taskManagement.quickOptions.reminder.fiveMin',
+    id: REMINDER_IDS.FIVE_MIN,
+    label: TASK_MANAGEMENT_TRANSLATIONS.QUICK_OPTIONS.REMINDER.FIVE_MIN,
+    icon: 'alarm',
+    titleKey: TASK_MANAGEMENT_TRANSLATIONS.QUICK_OPTIONS.REMINDER.FIVE_MIN,
     minutes: 5
   },
   {
-    id: '15min',
-    label: '15 minutes before',
-    icon: 'notifications',
-    titleKey: 'taskManagement.quickOptions.reminder.fifteenMin',
+    id: REMINDER_IDS.FIFTEEN_MIN,
+    label: TASK_MANAGEMENT_TRANSLATIONS.QUICK_OPTIONS.REMINDER.FIFTEEN_MIN,
+    icon: 'alarm',
+    titleKey: TASK_MANAGEMENT_TRANSLATIONS.QUICK_OPTIONS.REMINDER.FIFTEEN_MIN,
     minutes: 15
   },
   {
-    id: '30min',
-    label: '30 minutes before',
-    icon: 'notifications',
-    titleKey: 'taskManagement.quickOptions.reminder.thirtyMin',
+    id: REMINDER_IDS.THIRTY_MIN,
+    label: TASK_MANAGEMENT_TRANSLATIONS.QUICK_OPTIONS.REMINDER.THIRTY_MIN,
+    icon: 'alarm',
+    titleKey: TASK_MANAGEMENT_TRANSLATIONS.QUICK_OPTIONS.REMINDER.THIRTY_MIN,
     minutes: 30
   },
   {
-    id: '1hour',
-    label: '1 hour before',
-    icon: 'notifications',
-    titleKey: 'taskManagement.quickOptions.reminder.oneHour',
+    id: REMINDER_IDS.ONE_HOUR,
+    label: TASK_MANAGEMENT_TRANSLATIONS.QUICK_OPTIONS.REMINDER.ONE_HOUR,
+    icon: 'alarm',
+    titleKey: TASK_MANAGEMENT_TRANSLATIONS.QUICK_OPTIONS.REMINDER.ONE_HOUR,
     minutes: 60
   }
 ];
@@ -154,26 +169,26 @@ export interface QuickRepeatOption {
 
 export const QUICK_REPEAT_OPTIONS: QuickRepeatOption[] = [
   {
-    id: 'daily',
-    label: 'Every day',
+    id: REPEAT_IDS.DAILY,
+    label: TASK_MANAGEMENT_TRANSLATIONS.QUICK_OPTIONS.REPEAT.DAILY,
     icon: 'repeat',
-    titleKey: 'taskManagement.quickOptions.repeat.daily',
+    titleKey: TASK_MANAGEMENT_TRANSLATIONS.QUICK_OPTIONS.REPEAT.DAILY,
     frequency: 'daily',
     interval: 1
   },
   {
-    id: 'weekly',
-    label: 'Every week',
+    id: REPEAT_IDS.WEEKLY,
+    label: TASK_MANAGEMENT_TRANSLATIONS.QUICK_OPTIONS.REPEAT.WEEKLY,
     icon: 'repeat',
-    titleKey: 'taskManagement.quickOptions.repeat.weekly',
+    titleKey: TASK_MANAGEMENT_TRANSLATIONS.QUICK_OPTIONS.REPEAT.WEEKLY,
     frequency: 'weekly',
     interval: 1
   },
   {
-    id: 'monthly',
-    label: 'Every month',
+    id: REPEAT_IDS.MONTHLY,
+    label: TASK_MANAGEMENT_TRANSLATIONS.QUICK_OPTIONS.REPEAT.MONTHLY,
     icon: 'repeat',
-    titleKey: 'taskManagement.quickOptions.repeat.monthly',
+    titleKey: TASK_MANAGEMENT_TRANSLATIONS.QUICK_OPTIONS.REPEAT.MONTHLY,
     frequency: 'monthly',
     interval: 1
   }

@@ -2,33 +2,35 @@ interface TaskTag {
   id: string;
   label: string;
   color: string;
+  icon: string;
 }
 
+import { TASK_MANAGEMENT_TRANSLATIONS } from '../i18n/keys';
+
 export const TASK_TAGS = {
-  URGENT: {
-    id: 'urgent',
-    label: 'Urgent',
-    color: '#FF4B4B'
+  QUICK_WIN: {
+    id: 'quick_win',
+    label: TASK_MANAGEMENT_TRANSLATIONS.TAGS.QUICK_WIN,
+    color: '#4CAF50',
+    icon: 'flash-on'
   },
   IMPORTANT: {
     id: 'important',
-    label: 'Important',
-    color: '#FFB800'
+    label: TASK_MANAGEMENT_TRANSLATIONS.TAGS.IMPORTANT,
+    color: '#F44336',
+    icon: 'priority-high'
   },
-  FOCUS: {
-    id: 'focus',
-    label: 'Focus',
-    color: '#4CAF50'
-  },
-  QUICK: {
-    id: 'quick',
-    label: 'Quick Win',
-    color: '#2196F3'
+  URGENT: {
+    id: 'urgent',
+    label: TASK_MANAGEMENT_TRANSLATIONS.TAGS.URGENT,
+    color: '#FF9800',
+    icon: 'alarm'
   },
   LATER: {
     id: 'later',
-    label: 'Maybe Later',
-    color: '#9E9E9E'
+    label: TASK_MANAGEMENT_TRANSLATIONS.TAGS.LATER,
+    color: '#9E9E9E',
+    icon: 'schedule'
   }
 } as const;
 

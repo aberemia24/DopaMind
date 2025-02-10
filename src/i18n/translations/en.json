@@ -89,13 +89,14 @@
       "serverError": "Server error"
     },
     "auth": {
+      "unknown": "An unknown error occurred",
       "invalidEmail": "Invalid email address",
-      "wrongPassword": "Incorrect password",
+      "wrongPassword": "Wrong password",
       "userNotFound": "User not found",
-      "emailInUse": "This email address is already in use",
+      "emailInUse": "This email is already in use",
       "weakPassword": "Password is too weak",
-      "tooManyRequests": "Too many attempts. Please wait",
-      "default": "Authentication error",
+      "tooManyRequests": "Too many attempts. Try again later.",
+      "default": "An authentication error occurred",
       "logout": "Could not log out. Please try again.",
       "userDisabled": "This account has been disabled",
       "operationNotAllowed": "This operation is not allowed"
@@ -112,6 +113,11 @@
     "networkError": "Network error. Check your connection.",
     "signOutError": "Sign out error:"
   },
+  "app": {
+    "name": "DopaMind",
+    "title": "ADHD Support",
+    "description": "Task and time management app for people with ADHD"
+  },
   "taskManagement": {
     "actions": {
       "create": "Create new task",
@@ -121,6 +127,25 @@
       "markIncomplete": "@:common.actions.markIncomplete",
       "addPriority": "Mark as priority",
       "removePriority": "Remove priority"
+    },
+    "tags": {
+      "quickWin": "Quick Win",
+      "important": "Important",
+      "urgent": "Urgent",
+      "later": "Later"
+    },
+    "quickOptions": {
+      "reminder": {
+        "fiveMin": "5 minutes before",
+        "fifteenMin": "15 minutes before",
+        "thirtyMin": "30 minutes before",
+        "oneHour": "1 hour before"
+      },
+      "repeat": {
+        "daily": "Every day",
+        "weekly": "Every week",
+        "monthly": "Every month"
+      }
     },
     "filters": {
       "all": "all",
@@ -167,18 +192,31 @@
       }
     }
   },
-  "datetime": {
-    "timeFormat": {
-      "full": "{{hours}}:{{minutes}} {{period}}",
-      "short": "{{hours}}:{{minutes}}"
-    },
-    "timePeriods": {
-      "morning": "morning",
-      "afternoon": "afternoon",
-      "evening": "evening",
-      "night": "night",
-      "am": "AM",
-      "pm": "PM"
+  "dateTime": {
+    "time": {
+      "default": {
+        "morning": "09:00",
+        "afternoon": "14:00",
+        "evening": "19:00"
+      },
+      "format": {
+        "full": "{{hours}}:{{minutes}} {{period}}",
+        "short": "{{hours}}:{{minutes}}"
+      },
+      "periods": {
+        "morning": "morning",
+        "afternoon": "afternoon",
+        "evening": "evening",
+        "night": "night",
+        "am": "AM",
+        "pm": "PM"
+      },
+      "ranges": {
+        "morning": "06:00 - 12:00",
+        "afternoon": "12:00 - 18:00",
+        "evening": "18:00 - 00:00",
+        "night": "00:00 - 06:00"
+      }
     },
     "weekdayShort": {
       "monday": "Mon",

@@ -11,6 +11,13 @@ interface CacheData {
   timestamp: number;
 }
 
+const INITIAL_TASKS: TasksByPeriod = {
+  MORNING: [],
+  AFTERNOON: [],
+  EVENING: [],
+  NIGHT: []
+};
+
 export const taskCacheService = {
   async setTasks(tasks: TasksByPeriod): Promise<void> {
     try {
@@ -27,20 +34,20 @@ export const taskCacheService = {
   async getTasks(): Promise<TasksByPeriod | null> {
     try {
       const cacheJson = await AsyncStorage.getItem(TASKS_CACHE_KEY);
-      if (!cacheJson) return null;
+      if (!cacheJson) return INITIAL_TASKS;
 
       const cache: CacheData = JSON.parse(cacheJson);
       const isExpired = Date.now() - cache.timestamp > CACHE_DURATION;
       
       if (isExpired) {
         await this.clearCache();
-        return null;
+        return INITIAL_TASKS;
       }
 
       return cache.tasks;
     } catch (error) {
       console.error('Error reading tasks cache:', error);
-      return null;
+      return INITIAL_TASKS;
     }
   },
 

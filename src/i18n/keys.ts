@@ -1,4 +1,13 @@
 /**
+ * Chei pentru aplicație
+ */
+export const APP_TRANSLATIONS = {
+  NAME: 'app.name',
+  TITLE: 'app.title',
+  DESCRIPTION: 'app.description',
+} as const;
+
+/**
  * Chei pentru erori comune
  */
 export const ERROR_TRANSLATIONS = {
@@ -22,6 +31,7 @@ export const ERROR_TRANSLATIONS = {
     },
   },
   AUTH: {
+    UNKNOWN: 'errors.auth.unknown',
     INVALID_EMAIL: 'errors.auth.invalidEmail',
     WRONG_PASSWORD: 'errors.auth.wrongPassword',
     USER_NOT_FOUND: 'errors.auth.userNotFound',
@@ -201,12 +211,18 @@ export const DATE_TIME_TRANSLATIONS = {
     RANGES: {
       MORNING: 'dateTime.time.ranges.morning',
       AFTERNOON: 'dateTime.time.ranges.afternoon',
-      EVENING: 'dateTime.time.ranges.evening'
+      EVENING: 'dateTime.time.ranges.evening',
+      NIGHT: 'dateTime.time.ranges.night'
     },
     FORMAT: {
       SHORT: 'dateTime.time.format.short',
       LONG: 'dateTime.time.format.long',
       RANGE: 'dateTime.time.format.range'
+    },
+    DEFAULT: {
+      MORNING: 'dateTime.time.default.morning',
+      AFTERNOON: 'dateTime.time.default.afternoon',
+      EVENING: 'dateTime.time.default.evening'
     }
   },
   DATE: {
@@ -357,5 +373,24 @@ export const TASK_MANAGEMENT_TRANSLATIONS = {
       TITLE: 'taskManagement.periods.evening.title',
       DESCRIPTION: 'taskManagement.periods.evening.description',
     },
+  },
+  QUICK_OPTIONS: {
+    REMINDER: {
+      FIVE_MIN: 'taskManagement.quickOptions.reminder.fiveMin',
+      FIFTEEN_MIN: 'taskManagement.quickOptions.reminder.fifteenMin',
+      THIRTY_MIN: 'taskManagement.quickOptions.reminder.thirtyMin',
+      ONE_HOUR: 'taskManagement.quickOptions.reminder.oneHour'
+    },
+    REPEAT: {
+      DAILY: 'taskManagement.quickOptions.repeat.daily',
+      WEEKLY: 'taskManagement.quickOptions.repeat.weekly',
+      MONTHLY: 'taskManagement.quickOptions.repeat.monthly'
+    }
+  },
+  TAGS: {
+    QUICK_WIN: 'taskManagement.tags.quickWin',
+    IMPORTANT: 'taskManagement.tags.important',
+    URGENT: 'taskManagement.tags.urgent',
+    LATER: 'taskManagement.tags.later'
   },
 } as const;

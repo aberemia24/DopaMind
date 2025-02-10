@@ -1,0 +1,2481 @@
+{
+  "Issues": [
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\components\\Onboarding\\OnboardingSlides.tsx",
+      "LineNumber": 13,
+      "Text": "react-native",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\config\\firebase.ts",
+      "LineNumber": 12,
+      "Text": "firebase/auth",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\config\\firebase.ts",
+      "LineNumber": 16,
+      "Text": "firebase/firestore",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\config\\firebase.ts",
+      "LineNumber": 45,
+      "Text": "Promise",
+      "Context": "Text hardcodat în JSX",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\config\\firebase.ts",
+      "LineNumber": 57,
+      "Text": "auth/too-many-requests",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\config\\firebase.ts",
+      "LineNumber": 88,
+      "Text": "auth/unknown",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\config\\firebase.ts",
+      "LineNumber": 156,
+      "Text": "Firebase Auth not initialized",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\config\\firebase.ts",
+      "LineNumber": 163,
+      "Text": "Firestore not initialized",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\config\\firebase.ts",
+      "LineNumber": 184,
+      "Text": "auth/invalid-email",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\config\\firebase.ts",
+      "LineNumber": 186,
+      "Text": "auth/user-disabled",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\config\\firebase.ts",
+      "LineNumber": 188,
+      "Text": "auth/user-not-found",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\config\\firebase.ts",
+      "LineNumber": 190,
+      "Text": "auth/wrong-password",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\config\\firebase.ts",
+      "LineNumber": 192,
+      "Text": "auth/email-already-in-use",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\config\\firebase.ts",
+      "LineNumber": 194,
+      "Text": "auth/weak-password",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\config\\firebase.ts",
+      "LineNumber": 196,
+      "Text": "auth/operation-not-allowed",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\config\\firebase.ts",
+      "LineNumber": 198,
+      "Text": "auth/too-many-requests",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\config\\firebase.ts",
+      "LineNumber": 252,
+      "Text": "An unknown error occurred",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\constants\\index.ts",
+      "LineNumber": 1,
+      "Text": "ADHD Support",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\constants\\quickOptions.ts",
+      "LineNumber": 24,
+      "Text": "taskManagement.quickOptions.date.today",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\constants\\quickOptions.ts",
+      "LineNumber": 31,
+      "Text": "taskManagement.quickOptions.date.tomorrow",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\constants\\quickOptions.ts",
+      "LineNumber": 41,
+      "Text": "nights-stay",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\constants\\quickOptions.ts",
+      "LineNumber": 42,
+      "Text": "taskManagement.quickOptions.date.tonight",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\constants\\quickOptions.ts",
+      "LineNumber": 53,
+      "Text": "taskManagement.quickOptions.date.weekend",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\constants\\quickOptions.ts",
+      "LineNumber": 66,
+      "Text": "taskManagement.quickOptions.date.nextWeek",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\constants\\quickOptions.ts",
+      "LineNumber": 80,
+      "Text": "HH:mm",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\constants\\quickOptions.ts",
+      "LineNumber": 87,
+      "Text": "wb-sunny",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\constants\\quickOptions.ts",
+      "LineNumber": 88,
+      "Text": "taskManagement.quickOptions.time.morning",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\constants\\quickOptions.ts",
+      "LineNumber": 89,
+      "Text": "09:00",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\constants\\quickOptions.ts",
+      "LineNumber": 94,
+      "Text": "wb-sunny",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\constants\\quickOptions.ts",
+      "LineNumber": 95,
+      "Text": "taskManagement.quickOptions.time.afternoon",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\constants\\quickOptions.ts",
+      "LineNumber": 96,
+      "Text": "14:00",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\constants\\quickOptions.ts",
+      "LineNumber": 101,
+      "Text": "nights-stay",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\constants\\quickOptions.ts",
+      "LineNumber": 102,
+      "Text": "taskManagement.quickOptions.time.evening",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\constants\\quickOptions.ts",
+      "LineNumber": 103,
+      "Text": "20:00",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\constants\\quickOptions.ts",
+      "LineNumber": 117,
+      "Text": "5min",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\constants\\quickOptions.ts",
+      "LineNumber": 118,
+      "Text": "5 minutes before",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\constants\\quickOptions.ts",
+      "LineNumber": 120,
+      "Text": "taskManagement.quickOptions.reminder.fiveMin",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\constants\\quickOptions.ts",
+      "LineNumber": 124,
+      "Text": "15min",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\constants\\quickOptions.ts",
+      "LineNumber": 125,
+      "Text": "15 minutes before",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\constants\\quickOptions.ts",
+      "LineNumber": 127,
+      "Text": "taskManagement.quickOptions.reminder.fifteenMin",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\constants\\quickOptions.ts",
+      "LineNumber": 131,
+      "Text": "30min",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\constants\\quickOptions.ts",
+      "LineNumber": 132,
+      "Text": "30 minutes before",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\constants\\quickOptions.ts",
+      "LineNumber": 134,
+      "Text": "taskManagement.quickOptions.reminder.thirtyMin",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\constants\\quickOptions.ts",
+      "LineNumber": 138,
+      "Text": "1hour",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\constants\\quickOptions.ts",
+      "LineNumber": 139,
+      "Text": "1 hour before",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\constants\\quickOptions.ts",
+      "LineNumber": 141,
+      "Text": "taskManagement.quickOptions.reminder.oneHour",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\constants\\quickOptions.ts",
+      "LineNumber": 158,
+      "Text": "Every day",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\constants\\quickOptions.ts",
+      "LineNumber": 160,
+      "Text": "taskManagement.quickOptions.repeat.daily",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\constants\\quickOptions.ts",
+      "LineNumber": 166,
+      "Text": "Every week",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\constants\\quickOptions.ts",
+      "LineNumber": 168,
+      "Text": "taskManagement.quickOptions.repeat.weekly",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\constants\\quickOptions.ts",
+      "LineNumber": 174,
+      "Text": "Every month",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\constants\\quickOptions.ts",
+      "LineNumber": 176,
+      "Text": "taskManagement.quickOptions.repeat.monthly",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\constants\\taskTags.ts",
+      "LineNumber": 25,
+      "Text": "Quick Win",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\constants\\taskTags.ts",
+      "LineNumber": 30,
+      "Text": "Maybe Later",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\constants\\taskTypes.ts",
+      "LineNumber": 30,
+      "Text": "wb-sunny",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\constants\\taskTypes.ts",
+      "LineNumber": 31,
+      "Text": "06:00 - 12:00",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\constants\\taskTypes.ts",
+      "LineNumber": 33,
+      "Text": "taskManagement.periods.morning.title",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\constants\\taskTypes.ts",
+      "LineNumber": 38,
+      "Text": "wb-sunny",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\constants\\taskTypes.ts",
+      "LineNumber": 39,
+      "Text": "12:00 - 18:00",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\constants\\taskTypes.ts",
+      "LineNumber": 41,
+      "Text": "taskManagement.periods.afternoon.title",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\constants\\taskTypes.ts",
+      "LineNumber": 46,
+      "Text": "nights-stay",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\constants\\taskTypes.ts",
+      "LineNumber": 47,
+      "Text": "18:00 - 23:00",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\constants\\taskTypes.ts",
+      "LineNumber": 49,
+      "Text": "taskManagement.periods.evening.title",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\constants\\taskTypes.ts",
+      "LineNumber": 85,
+      "Text": "⚡",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\constants\\taskTypes.ts",
+      "LineNumber": 90,
+      "Text": "⏱️",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\constants\\taskTypes.ts",
+      "LineNumber": 95,
+      "Text": "🕰️",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\contexts\\TaskContext.tsx",
+      "LineNumber": 14,
+      "Text": "Promise",
+      "Context": "Text hardcodat în JSX",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\contexts\\TaskContext.tsx",
+      "LineNumber": 15,
+      "Text": "Promise",
+      "Context": "Text hardcodat în JSX",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\contexts\\TaskContext.tsx",
+      "LineNumber": 16,
+      "Text": "Promise",
+      "Context": "Text hardcodat în JSX",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\contexts\\TaskContext.tsx",
+      "LineNumber": 17,
+      "Text": "Promise",
+      "Context": "Text hardcodat în JSX",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\contexts\\TaskContext.tsx",
+      "LineNumber": 18,
+      "Text": "Promise",
+      "Context": "Text hardcodat în JSX",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\contexts\\TaskContext.tsx",
+      "LineNumber": 26,
+      "Text": "useTaskContext must be used within a TaskProvider",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\contexts\\TaskContext.tsx",
+      "LineNumber": 73,
+      "Text": "(async (taskData: Omit",
+      "Context": "Text hardcodat în JSX",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\contexts\\TaskContext.tsx",
+      "LineNumber": 105,
+      "Text": "(async (taskId: string, updates: Partial",
+      "Context": "Text hardcodat în JSX",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\contexts\\TaskContext.tsx",
+      "LineNumber": 125,
+      "Text": "Task not found",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\contexts\\TaskContext.tsx",
+      "LineNumber": 160,
+      "Text": "Task not found",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\contexts\\TaskContext.tsx",
+      "LineNumber": 192,
+      "Text": "Task not found",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\core\\error\\ErrorBoundary.tsx",
+      "LineNumber": 29,
+      "Text": "🔴 App Error",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\hooks\\useAuth.ts",
+      "LineNumber": 30,
+      "Text": "Promise",
+      "Context": "Text hardcodat în JSX",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\hooks\\useAuth.ts",
+      "LineNumber": 31,
+      "Text": "Promise",
+      "Context": "Text hardcodat în JSX",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\hooks\\useAuth.ts",
+      "LineNumber": 32,
+      "Text": "Promise",
+      "Context": "Text hardcodat în JSX",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\hooks\\useAuth.ts",
+      "LineNumber": 39,
+      "Text": "Promise",
+      "Context": "Text hardcodat în JSX",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\hooks\\useAuth.ts",
+      "LineNumber": 43,
+      "Text": "Operation failed",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\hooks\\useAuth.ts",
+      "LineNumber": 76,
+      "Text": "Promise",
+      "Context": "Text hardcodat în JSX",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\hooks\\useAuth.ts",
+      "LineNumber": 212,
+      "Text": "Authentication error",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\hooks\\useSessionManager.ts",
+      "LineNumber": 13,
+      "Text": "Promise",
+      "Context": "Text hardcodat în JSX",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 5,
+      "Text": "errors.title",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 6,
+      "Text": "errors.generic",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 7,
+      "Text": "errors.oops",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 8,
+      "Text": "errors.tryAgain",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 9,
+      "Text": "common.ok",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 11,
+      "Text": "errors.network.connection",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 12,
+      "Text": "errors.network.timeout",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 13,
+      "Text": "errors.network.server",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 16,
+      "Text": "errors.validation.required",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 17,
+      "Text": "errors.validation.email",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 19,
+      "Text": "errors.validation.password.length",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 20,
+      "Text": "errors.validation.password.match",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 21,
+      "Text": "errors.validation.password.requirements",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 25,
+      "Text": "errors.auth.invalidEmail",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 26,
+      "Text": "errors.auth.wrongPassword",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 27,
+      "Text": "errors.auth.userNotFound",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 28,
+      "Text": "errors.auth.emailInUse",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 29,
+      "Text": "errors.auth.weakPassword",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 30,
+      "Text": "errors.auth.tooManyRequests",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 31,
+      "Text": "errors.auth.default",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 34,
+      "Text": "errors.data.notFound",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 35,
+      "Text": "errors.data.invalidFormat",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 36,
+      "Text": "errors.data.saveFailed",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 44,
+      "Text": "auth.signIn",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 45,
+      "Text": "auth.signUp",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 46,
+      "Text": "auth.signOut",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 47,
+      "Text": "auth.email",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 48,
+      "Text": "auth.password",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 49,
+      "Text": "auth.forgotPassword",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 51,
+      "Text": "auth.fields.email",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 52,
+      "Text": "auth.fields.password",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 53,
+      "Text": "auth.fields.confirmPassword",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 56,
+      "Text": "auth.login.welcome",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 57,
+      "Text": "auth.login.submit",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 58,
+      "Text": "auth.login.noAccount",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 59,
+      "Text": "auth.login.title",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 62,
+      "Text": "auth.success.login",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 63,
+      "Text": "auth.success.register",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 64,
+      "Text": "auth.success.logout",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 73,
+      "Text": "welcome.buttons.emailLogin",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 74,
+      "Text": "welcome.buttons.googleLogin",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 82,
+      "Text": "home.welcome",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 91,
+      "Text": "onboarding.slides.slide1.title",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 92,
+      "Text": "onboarding.slides.slide1.description",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 95,
+      "Text": "onboarding.slides.slide2.title",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 96,
+      "Text": "onboarding.slides.slide2.description",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 99,
+      "Text": "onboarding.slides.slide3.title",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 100,
+      "Text": "onboarding.slides.slide3.description",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 104,
+      "Text": "onboarding.accessibility.slideshow",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 105,
+      "Text": "onboarding.accessibility.pagination",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 106,
+      "Text": "onboarding.accessibility.slide",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 107,
+      "Text": "onboarding.accessibility.next",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 108,
+      "Text": "onboarding.accessibility.previous",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 118,
+      "Text": "taskItem.accessibility.taskStatus",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 119,
+      "Text": "taskItem.accessibility.toggleComplete",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 120,
+      "Text": "taskItem.accessibility.edit",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 121,
+      "Text": "taskItem.accessibility.delete",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 122,
+      "Text": "taskItem.accessibility.editMode",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 123,
+      "Text": "taskItem.accessibility.editTitle",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 124,
+      "Text": "taskItem.accessibility.editTitleHint",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 126,
+      "Text": "taskItem.accessibility.validation.titleTooShort",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 127,
+      "Text": "taskItem.accessibility.validation.titleRequired",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 129,
+      "Text": "taskItem.accessibility.priority",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 132,
+      "Text": "taskItem.placeholder.title",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 135,
+      "Text": "taskItem.metadata.created",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 136,
+      "Text": "taskItem.metadata.updated",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 139,
+      "Text": "taskItem.validation.titleMinLength",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 140,
+      "Text": "taskItem.validation.titleRequired",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 145,
+      "Text": "taskFilter.accessibility.filterButton",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 146,
+      "Text": "taskFilter.accessibility.filterOptions",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 147,
+      "Text": "taskFilter.accessibility.selectedFilter",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 150,
+      "Text": "taskFilter.options.all",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 151,
+      "Text": "taskFilter.options.active",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 152,
+      "Text": "taskFilter.options.completed",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 153,
+      "Text": "taskFilter.options.priority",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 158,
+      "Text": "timeSection.accessibility.timeSection",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 159,
+      "Text": "timeSection.accessibility.timeRemaining",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 160,
+      "Text": "timeSection.accessibility.addTask",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 163,
+      "Text": "timeSection.labels.hours",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 164,
+      "Text": "timeSection.labels.minutes",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 165,
+      "Text": "timeSection.labels.seconds",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 166,
+      "Text": "timeSection.labels.progress",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 167,
+      "Text": "timeSection.labels.timeFrame",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 168,
+      "Text": "timeSection.labels.description",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 171,
+      "Text": "timeSection.periods.morning",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 172,
+      "Text": "timeSection.periods.afternoon",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 173,
+      "Text": "timeSection.periods.evening",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 178,
+      "Text": "tagSelector.accessibility.tagSelector",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 179,
+      "Text": "tagSelector.accessibility.tagOption",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 180,
+      "Text": "tagSelector.accessibility.selectedTags",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 183,
+      "Text": "tagSelector.labels.addTag",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 184,
+      "Text": "tagSelector.labels.removeTag",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 194,
+      "Text": "dateTime.time.hours24",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 195,
+      "Text": "dateTime.time.hours12",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 196,
+      "Text": "dateTime.time.minutes",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 198,
+      "Text": "dateTime.time.period.am",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 199,
+      "Text": "dateTime.time.period.pm",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 202,
+      "Text": "dateTime.time.ranges.morning",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 203,
+      "Text": "dateTime.time.ranges.afternoon",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 204,
+      "Text": "dateTime.time.ranges.evening",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 207,
+      "Text": "dateTime.time.format.short",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 208,
+      "Text": "dateTime.time.format.long",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 209,
+      "Text": "dateTime.time.format.range",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 215,
+      "Text": "dateTime.date.weekday.short.mon",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 216,
+      "Text": "dateTime.date.weekday.short.tue",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 217,
+      "Text": "dateTime.date.weekday.short.wed",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 218,
+      "Text": "dateTime.date.weekday.short.thu",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 219,
+      "Text": "dateTime.date.weekday.short.fri",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 220,
+      "Text": "dateTime.date.weekday.short.sat",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 221,
+      "Text": "dateTime.date.weekday.short.sun",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 224,
+      "Text": "dateTime.date.weekday.long.mon",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 225,
+      "Text": "dateTime.date.weekday.long.tue",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 226,
+      "Text": "dateTime.date.weekday.long.wed",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 227,
+      "Text": "dateTime.date.weekday.long.thu",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 228,
+      "Text": "dateTime.date.weekday.long.fri",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 229,
+      "Text": "dateTime.date.weekday.long.sat",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 230,
+      "Text": "dateTime.date.weekday.long.sun",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 235,
+      "Text": "dateTime.date.month.short.jan",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 236,
+      "Text": "dateTime.date.month.short.feb",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 237,
+      "Text": "dateTime.date.month.short.mar",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 238,
+      "Text": "dateTime.date.month.short.apr",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 239,
+      "Text": "dateTime.date.month.short.may",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 240,
+      "Text": "dateTime.date.month.short.jun",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 241,
+      "Text": "dateTime.date.month.short.jul",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 242,
+      "Text": "dateTime.date.month.short.aug",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 243,
+      "Text": "dateTime.date.month.short.sep",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 244,
+      "Text": "dateTime.date.month.short.oct",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 245,
+      "Text": "dateTime.date.month.short.nov",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 246,
+      "Text": "dateTime.date.month.short.dec",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 249,
+      "Text": "dateTime.date.month.long.jan",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 250,
+      "Text": "dateTime.date.month.long.feb",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 251,
+      "Text": "dateTime.date.month.long.mar",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 252,
+      "Text": "dateTime.date.month.long.apr",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 253,
+      "Text": "dateTime.date.month.long.may",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 254,
+      "Text": "dateTime.date.month.long.jun",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 255,
+      "Text": "dateTime.date.month.long.jul",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 256,
+      "Text": "dateTime.date.month.long.aug",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 257,
+      "Text": "dateTime.date.month.long.sep",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 258,
+      "Text": "dateTime.date.month.long.oct",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 259,
+      "Text": "dateTime.date.month.long.nov",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 260,
+      "Text": "dateTime.date.month.long.dec",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 264,
+      "Text": "dateTime.date.format.short",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 265,
+      "Text": "dateTime.date.format.long",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 267,
+      "Text": "dateTime.date.format.relative.today",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 268,
+      "Text": "dateTime.date.format.relative.yesterday",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 269,
+      "Text": "dateTime.date.format.relative.tomorrow",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 271,
+      "Text": "dateTime.date.format.relative.days.past",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 272,
+      "Text": "dateTime.date.format.relative.days.future",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 284,
+      "Text": "common.save",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 285,
+      "Text": "common.cancel",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 286,
+      "Text": "common.delete",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 287,
+      "Text": "common.edit",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 290,
+      "Text": "common.completed",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 291,
+      "Text": "common.incomplete",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 292,
+      "Text": "common.markComplete",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 293,
+      "Text": "common.markIncomplete",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 302,
+      "Text": "navigation.tabs.tasks",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 303,
+      "Text": "navigation.tabs.calendar",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 304,
+      "Text": "navigation.tabs.focus",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 305,
+      "Text": "navigation.tabs.stats",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 306,
+      "Text": "navigation.tabs.settings",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 309,
+      "Text": "navigation.titles.taskManagement",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 310,
+      "Text": "navigation.titles.login",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 311,
+      "Text": "navigation.titles.register",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 319,
+      "Text": "taskManagement.title",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 321,
+      "Text": "taskManagement.filters.all",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 322,
+      "Text": "taskManagement.filters.active",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 323,
+      "Text": "taskManagement.filters.completed",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 324,
+      "Text": "taskManagement.filters.priority",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 327,
+      "Text": "taskManagement.buttons.addTask",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 328,
+      "Text": "taskManagement.buttons.deleteTask",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 329,
+      "Text": "taskManagement.buttons.addPriority",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 330,
+      "Text": "taskManagement.buttons.removePriority",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 333,
+      "Text": "taskManagement.labels.untitledTask",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 334,
+      "Text": "taskManagement.labels.editTask",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 338,
+      "Text": "taskManagement.alerts.softLimit.title",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 339,
+      "Text": "taskManagement.alerts.softLimit.message",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 340,
+      "Text": "taskManagement.alerts.softLimit.confirm",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 344,
+      "Text": "taskManagement.errors.notAuthenticated",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 345,
+      "Text": "taskManagement.errors.addTask",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 349,
+      "Text": "taskManagement.periods.morning.title",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 350,
+      "Text": "taskManagement.periods.morning.description",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 353,
+      "Text": "taskManagement.periods.afternoon.title",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 354,
+      "Text": "taskManagement.periods.afternoon.description",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 357,
+      "Text": "taskManagement.periods.evening.title",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\i18n\\keys.ts",
+      "LineNumber": 358,
+      "Text": "taskManagement.periods.evening.description",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\navigation\\index.tsx",
+      "LineNumber": 53,
+      "Text": ":",
+      "Context": "Text hardcodat în JSX",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\navigation\\TabNavigator.tsx",
+      "LineNumber": 49,
+      "Text": "check-box",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\navigation\\TabNavigator.tsx",
+      "LineNumber": 60,
+      "Text": "calendar-today",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\navigation\\TabNavigator.tsx",
+      "LineNumber": 71,
+      "Text": "center-focus-strong",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\navigation\\TabNavigator.tsx",
+      "LineNumber": 82,
+      "Text": "insert-chart",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\screens\\task-management\\components\\DateTimeSelector\\Calendar.tsx",
+      "LineNumber": 72,
+      "Text": "en-US",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\screens\\task-management\\components\\DateTimeSelector\\Calendar.tsx",
+      "LineNumber": 147,
+      "Text": "chevron-left",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\screens\\task-management\\components\\DateTimeSelector\\Calendar.tsx",
+      "LineNumber": 163,
+      "Text": "chevron-right",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\screens\\task-management\\components\\DateTimeSelector\\Calendar.tsx",
+      "LineNumber": 200,
+      "Text": "space-between",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\screens\\task-management\\components\\DateTimeSelector\\Calendar.tsx",
+      "LineNumber": 217,
+      "Text": "space-around",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\screens\\task-management\\components\\DateTimeSelector\\CalendarView.tsx",
+      "LineNumber": 85,
+      "Text": "chevron-left",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\screens\\task-management\\components\\DateTimeSelector\\CalendarView.tsx",
+      "LineNumber": 92,
+      "Text": "ro-RO",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\screens\\task-management\\components\\DateTimeSelector\\CalendarView.tsx",
+      "LineNumber": 105,
+      "Text": "chevron-right",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\screens\\task-management\\components\\DateTimeSelector\\CalendarView.tsx",
+      "LineNumber": 160,
+      "Text": "space-between",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\screens\\task-management\\components\\DateTimeSelector\\QuickOptions.tsx",
+      "LineNumber": 22,
+      "Text": "taskManagement.dateTimeSelector.quickOptions.today",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\screens\\task-management\\components\\DateTimeSelector\\QuickOptions.tsx",
+      "LineNumber": 28,
+      "Text": "taskManagement.dateTimeSelector.quickOptions.tomorrow",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\screens\\task-management\\components\\DateTimeSelector\\QuickOptions.tsx",
+      "LineNumber": 37,
+      "Text": "nights-stay",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\screens\\task-management\\components\\DateTimeSelector\\QuickOptions.tsx",
+      "LineNumber": 38,
+      "Text": "taskManagement.dateTimeSelector.quickOptions.tonight",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\screens\\task-management\\components\\DateTimeSelector\\QuickOptions.tsx",
+      "LineNumber": 47,
+      "Text": "taskManagement.dateTimeSelector.quickOptions.weekend",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\screens\\task-management\\components\\DateTimeSelector\\QuickOptions.tsx",
+      "LineNumber": 57,
+      "Text": "date-range",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\screens\\task-management\\components\\DateTimeSelector\\QuickOptions.tsx",
+      "LineNumber": 58,
+      "Text": "taskManagement.dateTimeSelector.quickOptions.nextWeek",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\screens\\task-management\\components\\DateTimeSelector\\TimePicker.tsx",
+      "LineNumber": 20,
+      "Text": "09:00",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\screens\\task-management\\components\\DateTimeSelector\\TimePicker.tsx",
+      "LineNumber": 20,
+      "Text": "wb-sunny",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\screens\\task-management\\components\\DateTimeSelector\\TimePicker.tsx",
+      "LineNumber": 21,
+      "Text": "14:00",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\screens\\task-management\\components\\DateTimeSelector\\TimePicker.tsx",
+      "LineNumber": 21,
+      "Text": "wb-sunny",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\screens\\task-management\\components\\DateTimeSelector\\TimePicker.tsx",
+      "LineNumber": 22,
+      "Text": "20:00",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\screens\\task-management\\components\\DateTimeSelector\\TimePicker.tsx",
+      "LineNumber": 22,
+      "Text": "dark-mode",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\screens\\task-management\\components\\DateTimeSelector\\TimePicker.tsx",
+      "LineNumber": 26,
+      "Text": "taskManagement.dateTimeSelector.reminders.atTime",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\screens\\task-management\\components\\DateTimeSelector\\TimePicker.tsx",
+      "LineNumber": 27,
+      "Text": "taskManagement.dateTimeSelector.reminders.before15m",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\screens\\task-management\\components\\DateTimeSelector\\TimePicker.tsx",
+      "LineNumber": 28,
+      "Text": "taskManagement.dateTimeSelector.reminders.before30m",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\screens\\task-management\\components\\DateTimeSelector\\TimePicker.tsx",
+      "LineNumber": 29,
+      "Text": "taskManagement.dateTimeSelector.reminders.before1h",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\screens\\task-management\\components\\DateTimeSelector\\TimePicker.tsx",
+      "LineNumber": 30,
+      "Text": "taskManagement.dateTimeSelector.reminders.before2h",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\screens\\task-management\\components\\TaskItem.tsx",
+      "LineNumber": 43,
+      "Text": "check-box",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\screens\\task-management\\components\\TaskItem.tsx",
+      "LineNumber": 43,
+      "Text": "check-box-outline-blank",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\screens\\task-management\\components\\TaskItem.tsx",
+      "LineNumber": 86,
+      "Text": "taskManagement.buttons.removePriority",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\screens\\task-management\\components\\TaskItem.tsx",
+      "LineNumber": 87,
+      "Text": "taskManagement.buttons.addPriority",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\screens\\task-management\\components\\TaskItem.tsx",
+      "LineNumber": 91,
+      "Text": "star-outline",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\screens\\task-management\\components\\TaskItem.tsx",
+      "LineNumber": 104,
+      "Text": "delete-outline",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\screens\\task-management\\components\\TaskItem.tsx",
+      "LineNumber": 137,
+      "Text": "space-between",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\screens\\task-management\\components\\TaskItem.tsx",
+      "LineNumber": 150,
+      "Text": "line-through",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\screens\\task-management\\components\\TimeSection.tsx",
+      "LineNumber": 75,
+      "Text": "space-between",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\screens\\task-management\\TaskManagementScreen.tsx",
+      "LineNumber": 12,
+      "Text": "react-native",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\screens\\task-management\\TaskManagementScreen.tsx",
+      "LineNumber": 189,
+      "Text": "space-between",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\screens\\LoginScreen.tsx",
+      "LineNumber": 62,
+      "Text": "email-address",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\screens\\RegisterScreen.tsx",
+      "LineNumber": 83,
+      "Text": "email-address",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\screens\\WelcomeScreen.tsx",
+      "LineNumber": 8,
+      "Text": "react-native",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\services\\__tests__\\rateLimiter.test.ts",
+      "LineNumber": 14,
+      "Text": "ar trebui să permită prima încercare",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\services\\__tests__\\rateLimiter.test.ts",
+      "LineNumber": 20,
+      "Text": "ar trebui să blocheze după depășirea numărului maxim de încercări",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\services\\__tests__\\rateLimiter.test.ts",
+      "LineNumber": 22,
+      "Text": "test@example.com",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\services\\__tests__\\rateLimiter.test.ts",
+      "LineNumber": 35,
+      "Text": "ar trebui să reseteze contorul după expirarea perioadei de timp",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\services\\__tests__\\rateLimiter.test.ts",
+      "LineNumber": 37,
+      "Text": "test@example.com",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\services\\__tests__\\rateLimiter.test.ts",
+      "LineNumber": 52,
+      "Text": "ar trebui să persiste datele în AsyncStorage",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\services\\__tests__\\rateLimiter.test.ts",
+      "LineNumber": 54,
+      "Text": "test@example.com",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\services\\__tests__\\rateLimiter.test.ts",
+      "LineNumber": 61,
+      "Text": "ar trebui să încarce datele din AsyncStorage",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\services\\__tests__\\rateLimiter.test.ts",
+      "LineNumber": 63,
+      "Text": "test@example.com",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\services\\__tests__\\rateLimiter.test.ts",
+      "LineNumber": 79,
+      "Text": "ar trebui să reseteze limita pentru un email specific",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\services\\__tests__\\rateLimiter.test.ts",
+      "LineNumber": 81,
+      "Text": "test@example.com",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\services\\__tests__\\rateLimiter.test.ts",
+      "LineNumber": 95,
+      "Text": "ar trebui să șteargă toate limitele",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\services\\__tests__\\rateLimiter.test.ts",
+      "LineNumber": 98,
+      "Text": "test1@example.com",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\services\\__tests__\\rateLimiter.test.ts",
+      "LineNumber": 99,
+      "Text": "test2@example.com",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\services\\__tests__\\rateLimiter.test.ts",
+      "LineNumber": 100,
+      "Text": "test3@example.com",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\services\\api.ts",
+      "LineNumber": 7,
+      "Text": "firebase/firestore",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\services\\api.ts",
+      "LineNumber": 45,
+      "Text": "convertFirestoreDocument",
+      "Context": "Text hardcodat în JSX",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\services\\taskService.ts",
+      "LineNumber": 39,
+      "Text": "Invalid task data: data must be an object",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\services\\taskService.ts",
+      "LineNumber": 57,
+      "Text": "Invalid task data: title must be a non-empty string",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\services\\taskService.ts",
+      "LineNumber": 61,
+      "Text": "Invalid task data: description must be a string if present",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\services\\taskService.ts",
+      "LineNumber": 65,
+      "Text": "Invalid task data: completed must be a boolean",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\services\\taskService.ts",
+      "LineNumber": 69,
+      "Text": "Invalid task data: isPriority must be a boolean",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\services\\taskService.ts",
+      "LineNumber": 75,
+      "Text": "Invalid task data: invalid period",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\services\\taskService.ts",
+      "LineNumber": 79,
+      "Text": "Invalid task data: userId must be a non-empty string",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\services\\taskService.ts",
+      "LineNumber": 83,
+      "Text": "Invalid task data: createdAt must be a valid timestamp",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\services\\taskService.ts",
+      "LineNumber": 87,
+      "Text": "Invalid task data: updatedAt must be a valid timestamp",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\services\\taskService.ts",
+      "LineNumber": 91,
+      "Text": "Invalid task data: dueDate must be a Date object if present",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\services\\taskService.ts",
+      "LineNumber": 95,
+      "Text": "Invalid task data: reminderMinutes must be a valid number if present",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\services\\taskService.ts",
+      "LineNumber": 99,
+      "Text": "Invalid task data: repeat must be an object with frequency and interval if present",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\services\\taskService.ts",
+      "LineNumber": 103,
+      "Text": "Invalid task data: repeat frequency must be one of daily, weekly, or monthly if present",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\services\\taskService.ts",
+      "LineNumber": 107,
+      "Text": "Invalid task data: repeat interval must be a valid number if present",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\services\\taskService.ts",
+      "LineNumber": 135,
+      "Text": "==",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\services\\taskService.ts",
+      "LineNumber": 169,
+      "Text": "): Promise",
+      "Context": "Text hardcodat în JSX",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\utils\\dateTimeFormat.ts",
+      "LineNumber": 5,
+      "Text": "HH:mm",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    },
+    {
+      "FilePath": "C:\\windsurf repo\\DopaMind\\src\\utils\\dateTimeFormat.ts",
+      "LineNumber": 6,
+      "Text": "HH:mm",
+      "Context": "Posibil text hardcodat",
+      "Level": "Warning"
+    }
+  ],
+  "Summary": {
+    "FilesWithIssues": 27,
+    "TotalFiles": 54,
+    "TotalIssues": 353,
+    "ValidFiles": 27
+  }
+}

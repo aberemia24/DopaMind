@@ -24,6 +24,7 @@ export interface TasksByPeriod {
   MORNING: Task[];
   AFTERNOON: Task[];
   EVENING: Task[];
+  NIGHT: Task[];
 }
 
 type TaskData = Omit<Task, 'id'>;
@@ -70,7 +71,7 @@ const validateTaskData = (data: unknown): TaskData => {
   }
 
   // Verificăm că period este unul din valorile valide din TimePeriodKey
-  if (!['MORNING', 'AFTERNOON', 'EVENING'].includes(period as string)) {
+  if (!['MORNING', 'AFTERNOON', 'EVENING', 'NIGHT'].includes(period as string)) {
     console.error('Invalid period value:', period);
     throw new Error('Invalid task data: invalid period');
   }
@@ -139,7 +140,8 @@ export const fetchTasks = async (userId: string): Promise<TasksByPeriod> => {
     const result: TasksByPeriod = {
       MORNING: [],
       AFTERNOON: [],
-      EVENING: []
+      EVENING: [],
+      NIGHT: []
     };
 
     querySnapshot.forEach((doc) => {

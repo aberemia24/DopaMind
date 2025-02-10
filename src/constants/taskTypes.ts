@@ -1,4 +1,5 @@
 import { MaterialIcons } from '@expo/vector-icons';
+import { DATE_TIME_TRANSLATIONS } from '../i18n/keys';
 
 export interface TimePeriod {
   id: TimePeriodKey;
@@ -21,32 +22,40 @@ interface TimeEstimate {
   icon: string;
 }
 
-export type TimePeriodKey = 'MORNING' | 'AFTERNOON' | 'EVENING';
+export type TimePeriodKey = 'MORNING' | 'AFTERNOON' | 'EVENING' | 'NIGHT';
 
 export const TIME_PERIODS: Record<TimePeriodKey, TimePeriod> = {
   MORNING: {
     id: 'MORNING',
-    label: 'morning',
+    label: DATE_TIME_TRANSLATIONS.TIME.RANGES.MORNING,
     icon: 'wb-sunny',
     timeFrame: '06:00 - 12:00',
-    description: 'morning',
+    description: DATE_TIME_TRANSLATIONS.TIME.RANGES.MORNING,
     titleKey: 'taskManagement.periods.morning.title'
   },
   AFTERNOON: {
     id: 'AFTERNOON',
-    label: 'afternoon',
+    label: DATE_TIME_TRANSLATIONS.TIME.RANGES.AFTERNOON,
     icon: 'wb-sunny',
     timeFrame: '12:00 - 18:00',
-    description: 'afternoon',
+    description: DATE_TIME_TRANSLATIONS.TIME.RANGES.AFTERNOON,
     titleKey: 'taskManagement.periods.afternoon.title'
   },
   EVENING: {
     id: 'EVENING',
-    label: 'evening',
+    label: DATE_TIME_TRANSLATIONS.TIME.RANGES.EVENING,
     icon: 'nights-stay',
     timeFrame: '18:00 - 23:00',
-    description: 'evening',
+    description: DATE_TIME_TRANSLATIONS.TIME.RANGES.EVENING,
     titleKey: 'taskManagement.periods.evening.title'
+  },
+  NIGHT: {
+    id: 'NIGHT',
+    label: DATE_TIME_TRANSLATIONS.TIME.RANGES.NIGHT,
+    icon: 'bedtime',
+    timeFrame: '23:00 - 06:00',
+    description: DATE_TIME_TRANSLATIONS.TIME.RANGES.NIGHT,
+    titleKey: 'taskManagement.periods.night.title'
   }
 } as const;
 

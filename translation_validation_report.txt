@@ -1,29 +1,48 @@
-[2025-02-10 16:30:59] Validare fișiere de traduceri...
-[2025-02-10 16:30:59] WARNING: Valoare identică găsită pentru cheia 'datetime.dateFormat.short': RO='{{day}} {{month}} {{year}}', EN='{{day}} {{month}} {{year}}'
-[2025-02-10 16:30:59] WARNING: Valoare identică găsită pentru cheia 'datetime.timeFormat.full': RO='{{hours}}:{{minutes}} {{period}}', EN='{{hours}}:{{minutes}} {{period}}'
-[2025-02-10 16:30:59] WARNING: Valoare identică găsită pentru cheia 'datetime.monthShort.april': RO='Apr', EN='Apr'
-[2025-02-10 16:30:59] WARNING: Valoare identică găsită pentru cheia 'common.fields.status': RO='Status', EN='Status'
-[2025-02-10 16:30:59] WARNING: Valoare identică găsită pentru cheia 'datetime.monthShort.september': RO='Sep', EN='Sep'
-[2025-02-10 16:30:59] WARNING: Valoare identică găsită pentru cheia 'taskManagement.labels.status': RO='Status', EN='Status'
-[2025-02-10 16:30:59] WARNING: Valoare identică găsită pentru cheia 'taskManagement.actions.markIncomplete': RO='@:common.actions.markIncomplete', EN='@:common.actions.markIncomplete'
-[2025-02-10 16:30:59] WARNING: Valoare identică găsită pentru cheia 'datetime.monthShort.august': RO='Aug', EN='Aug'
-[2025-02-10 16:30:59] WARNING: Valoare identică găsită pentru cheia 'taskManagement.actions.markComplete': RO='@:common.actions.markComplete', EN='@:common.actions.markComplete'
-[2025-02-10 16:30:59] WARNING: Valoare identică găsită pentru cheia 'datetime.monthShort.february': RO='Feb', EN='Feb'
-[2025-02-10 16:30:59] WARNING: Valoare identică găsită pentru cheia 'taskManagement.accessibility.validation.titleRequired': RO='@:common.validation.required', EN='@:common.validation.required'
-[2025-02-10 16:30:59] WARNING: Valoare identică găsită pentru cheia 'datetime.monthShort.march': RO='Mar', EN='Mar'
-[2025-02-10 16:30:59] WARNING: Valoare identică găsită pentru cheia 'taskManagement.filters.active': RO='active', EN='active'
-[2025-02-10 16:30:59] WARNING: Valoare identică găsită pentru cheia 'common.fields.email': RO='Email', EN='Email'
-[2025-02-10 16:30:59] WARNING: Valoare identică găsită pentru cheia 'datetime.monthLong.august': RO='August', EN='August'
-[2025-02-10 16:30:59] WARNING: Valoare identică găsită pentru cheia 'datetime.timeFormat.short': RO='{{hours}}:{{minutes}}', EN='{{hours}}:{{minutes}}'
-[2025-02-10 16:30:59] WARNING: Valoare identică găsită pentru cheia 'datetime.monthShort.october': RO='Oct', EN='Oct'
-[2025-02-10 16:30:59] WARNING: Valoare identică găsită pentru cheia 'datetime.monthShort.december': RO='Dec', EN='Dec'
-[2025-02-10 16:30:59] WARNING: Valoare identică găsită pentru cheia 'datetime.dateFormat.full': RO='{{weekday}}, {{day}} {{month}} {{year}}', EN='{{weekday}}, {{day}} {{month}} {{year}}'
-[2025-02-10 16:30:59] 
+[2025-02-10 17:04:47] Validare fișiere de traduceri...
+[2025-02-10 17:04:47] WARNING: Chei lipsă în en.json:
+[2025-02-10 17:04:47] WARNING:   - datetime.timeFormat.full
+[2025-02-10 17:04:47] WARNING:   - datetime.timeFormat.short
+[2025-02-10 17:04:47] WARNING:   - datetime.timePeriods.afternoon
+[2025-02-10 17:04:47] WARNING:   - datetime.timePeriods.am
+[2025-02-10 17:04:47] WARNING:   - datetime.timePeriods.evening
+[2025-02-10 17:04:47] WARNING:   - datetime.timePeriods.morning
+[2025-02-10 17:04:47] WARNING:   - datetime.timePeriods.night
+[2025-02-10 17:04:47] WARNING:   - datetime.timePeriods.pm
+[2025-02-10 17:04:47] WARNING: Chei lipsă în ro.json:
+[2025-02-10 17:04:47] WARNING:   - dateTime.time.format.full
+[2025-02-10 17:04:47] WARNING:   - dateTime.time.format.short
+[2025-02-10 17:04:47] WARNING:   - dateTime.time.periods.afternoon
+[2025-02-10 17:04:47] WARNING:   - dateTime.time.periods.am
+[2025-02-10 17:04:47] WARNING:   - dateTime.time.periods.evening
+[2025-02-10 17:04:47] WARNING:   - dateTime.time.periods.morning
+[2025-02-10 17:04:47] WARNING:   - dateTime.time.periods.night
+[2025-02-10 17:04:47] WARNING:   - dateTime.time.periods.pm
+[2025-02-10 17:04:47] WARNING: Valoare identică găsită pentru cheia 'datetime.time.default.afternoon': RO='14:00', EN='14:00'
+[2025-02-10 17:04:47] WARNING: Valoare identică găsită pentru cheia 'datetime.time.default.morning': RO='09:00', EN='09:00'
+[2025-02-10 17:04:47] WARNING: Valoare identică găsită pentru cheia 'datetime.dateFormat.short': RO='{{day}} {{month}} {{year}}', EN='{{day}} {{month}} {{year}}'
+[2025-02-10 17:04:47] WARNING: Valoare identică găsită pentru cheia 'app.name': RO='DopaMind', EN='DopaMind'
+[2025-02-10 17:04:47] WARNING: Valoare identică găsită pentru cheia 'datetime.monthShort.april': RO='Apr', EN='Apr'
+[2025-02-10 17:04:47] WARNING: Valoare identică găsită pentru cheia 'common.fields.status': RO='Status', EN='Status'
+[2025-02-10 17:04:47] WARNING: Valoare identică găsită pentru cheia 'datetime.monthShort.september': RO='Sep', EN='Sep'
+[2025-02-10 17:04:47] WARNING: Valoare identică găsită pentru cheia 'taskManagement.labels.status': RO='Status', EN='Status'
+[2025-02-10 17:04:47] WARNING: Valoare identică găsită pentru cheia 'taskManagement.actions.markIncomplete': RO='@:common.actions.markIncomplete', EN='@:common.actions.markIncomplete'
+[2025-02-10 17:04:47] WARNING: Valoare identică găsită pentru cheia 'datetime.monthShort.august': RO='Aug', EN='Aug'
+[2025-02-10 17:04:47] WARNING: Valoare identică găsită pentru cheia 'taskManagement.actions.markComplete': RO='@:common.actions.markComplete', EN='@:common.actions.markComplete'
+[2025-02-10 17:04:47] WARNING: Valoare identică găsită pentru cheia 'datetime.monthShort.february': RO='Feb', EN='Feb'
+[2025-02-10 17:04:47] WARNING: Valoare identică găsită pentru cheia 'taskManagement.accessibility.validation.titleRequired': RO='@:common.validation.required', EN='@:common.validation.required'
+[2025-02-10 17:04:47] WARNING: Valoare identică găsită pentru cheia 'datetime.monthShort.march': RO='Mar', EN='Mar'
+[2025-02-10 17:04:47] WARNING: Valoare identică găsită pentru cheia 'taskManagement.filters.active': RO='active', EN='active'
+[2025-02-10 17:04:47] WARNING: Valoare identică găsită pentru cheia 'common.fields.email': RO='Email', EN='Email'
+[2025-02-10 17:04:47] WARNING: Valoare identică găsită pentru cheia 'datetime.monthLong.august': RO='August', EN='August'
+[2025-02-10 17:04:47] WARNING: Valoare identică găsită pentru cheia 'datetime.time.default.evening': RO='19:00', EN='19:00'
+[2025-02-10 17:04:47] WARNING: Valoare identică găsită pentru cheia 'datetime.monthShort.october': RO='Oct', EN='Oct'
+[2025-02-10 17:04:47] WARNING: Valoare identică găsită pentru cheia 'datetime.monthShort.december': RO='Dec', EN='Dec'
+[2025-02-10 17:04:47] WARNING: Valoare identică găsită pentru cheia 'datetime.dateFormat.full': RO='{{weekday}}, {{day}} {{month}} {{year}}', EN='{{weekday}}, {{day}} {{month}} {{year}}'
+[2025-02-10 17:04:47] 
 Rezultat validare:
-[2025-02-10 16:30:59] Total chei în ro.json: 167
-[2025-02-10 16:30:59] Total chei în en.json: 167
-[2025-02-10 16:30:59] Chei lipsă în en.json: 0
-[2025-02-10 16:30:59] Chei lipsă în ro.json: 0
-[2025-02-10 16:30:59] Chei cu probleme de convenție: 0
-[2025-02-10 16:30:59] 
-Validare completă cu succes!
+[2025-02-10 17:04:47] Total chei în ro.json: 177
+[2025-02-10 17:04:47] Total chei în en.json: 177
+[2025-02-10 17:04:47] Chei lipsă în en.json: 8
+[2025-02-10 17:04:47] Chei lipsă în ro.json: 8
+[2025-02-10 17:04:47] Chei cu probleme de convenție: 0
+[2025-02-10 17:04:47] ERROR: S-au găsit probleme în fișierele de traduceri!

@@ -1,4 +1,6 @@
-export const APP_NAME = 'ADHD Support';
+import { APP_TRANSLATIONS } from '../i18n/keys';
+
+export const APP_NAME_KEY = APP_TRANSLATIONS.NAME;
 
 export const TIME_OF_DAY = {
   MORNING: 'morning',

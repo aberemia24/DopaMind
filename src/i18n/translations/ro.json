@@ -89,13 +89,14 @@
       "serverError": "Eroare de server"
     },
     "auth": {
-      "invalidEmail": "Adresă de email invalidă",
+      "unknown": "A apărut o eroare necunoscută",
+      "invalidEmail": "Adresa de email este invalidă",
       "wrongPassword": "Parolă incorectă",
       "userNotFound": "Utilizatorul nu a fost găsit",
       "emailInUse": "Această adresă de email este deja folosită",
       "weakPassword": "Parola este prea slabă",
-      "tooManyRequests": "Prea multe încercări. Vă rugăm să așteptați",
-      "default": "Eroare de autentificare",
+      "tooManyRequests": "Prea multe încercări. Încearcă din nou mai târziu.",
+      "default": "A apărut o eroare la autentificare",
       "logout": "Nu s-a putut efectua deconectarea. Vă rugăm să încercați din nou.",
       "userDisabled": "Acest cont a fost dezactivat",
       "operationNotAllowed": "Această operațiune nu este permisă"
@@ -121,6 +122,25 @@
       "markIncomplete": "@:common.actions.markIncomplete",
       "addPriority": "Marchează ca prioritară",
       "removePriority": "Elimină prioritatea"
+    },
+    "tags": {
+      "quickWin": "Victorie rapidă",
+      "important": "Importantă",
+      "urgent": "Urgentă",
+      "later": "Mai târziu"
+    },
+    "quickOptions": {
+      "reminder": {
+        "fiveMin": "5 minute înainte",
+        "fifteenMin": "15 minute înainte",
+        "thirtyMin": "30 minute înainte",
+        "oneHour": "1 oră înainte"
+      },
+      "repeat": {
+        "daily": "În fiecare zi",
+        "weekly": "În fiecare săptămână",
+        "monthly": "În fiecare lună"
+      }
     },
     "filters": {
       "all": "toate",
@@ -166,6 +186,11 @@
         "titleRequired": "@:common.validation.required"
       }
     }
+  },
+  "app": {
+    "name": "DopaMind",
+    "title": "Suport ADHD",
+    "description": "Aplicație pentru gestionarea sarcinilor și timpului pentru persoanele cu ADHD"
   },
   "datetime": {
     "timeFormat": {
@@ -236,6 +261,19 @@
       "tomorrow": "mâine",
       "pastDays": "acum {{count}} zile",
       "futureDays": "peste {{count}} zile"
+    },
+    "time": {
+      "default": {
+        "morning": "09:00",
+        "afternoon": "14:00",
+        "evening": "19:00"
+      },
+      "ranges": {
+        "morning": "06:00 - 12:00",
+        "afternoon": "12:00 - 18:00",
+        "evening": "18:00 - 00:00",
+        "night": "00:00 - 06:00"
+      }
     }
   }
 }

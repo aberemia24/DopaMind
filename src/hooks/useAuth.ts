@@ -297,7 +297,7 @@ export function useAuth(): UseAuthReturn {
 
     try {
       await secureStorage.removeItem(AUTH_CREDENTIALS_KEY);
-      const result = await withRetry(() => firebaseSignOut());
+      const result = await withRetry(() => firebaseSignOut(t));
 
       if (result.status === 'error' && result.error) {
         setError(t(ERROR_TRANSLATIONS.AUTH.DEFAULT));
