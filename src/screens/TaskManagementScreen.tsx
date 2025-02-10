@@ -92,18 +92,17 @@ const TaskManagementScreen: React.FC = () => {
     }
 
     showSoftLimitWarning(periodId, async () => {
-      const newTask: Task = {
-        id: Date.now().toString(),
+      const newTask = {
         title: '',
         completed: false,
-        createdAt: new Date().toISOString(),
-        userId: user.uid,
+        createdAt: Date.now(),
+        updatedAt: Date.now(),
         isPriority: false,
-        periodId
+        period: periodId
       };
 
       try {
-        await addTask(periodId, newTask);
+        await addTask(newTask);
       } catch (error) {
         Alert.alert(
           t('common.error'),
@@ -165,9 +164,9 @@ const TaskManagementScreen: React.FC = () => {
               period={period}
               tasks={filterTasks(tasks[id as TimePeriodKey])}
               onAddTask={() => handleAddTask(id as TimePeriodKey)}
-              onToggleTask={(taskId) => toggleTask(id as TimePeriodKey, taskId)}
-              onDeleteTask={(taskId) => deleteTask(id as TimePeriodKey, taskId)}
-              onUpdateTask={(taskId, updatedTask) => updateTask(id as TimePeriodKey, taskId, updatedTask)}
+              onToggleTask={toggleTask}
+              onDeleteTask={deleteTask}
+              onUpdateTask={(taskId, updates) => updateTask(taskId, updates)}
             />
           ))}
         </ScrollView>
