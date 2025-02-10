@@ -1,0 +1,30 @@
+{
+  "network": {
+    "connection": "Nu există conexiune la internet",
+    "timeout": "Timpul de așteptare a expirat",
+    "serverError": "Eroare de server"
+  },
+  "auth": {
+    "invalidEmail": "Adresă de email invalidă",
+    "wrongPassword": "Parolă incorectă",
+    "userNotFound": "Utilizatorul nu a fost găsit",
+    "emailInUse": "Această adresă de email este deja folosită",
+    "weakPassword": "Parola este prea slabă",
+    "tooManyRequests": "Prea multe încercări. Vă rugăm să așteptați",
+    "default": "Eroare de autentificare",
+    "logout": "Nu s-a putut efectua deconectarea. Vă rugăm să încercați din nou.",
+    "userDisabled": "Acest cont a fost dezactivat",
+    "operationNotAllowed": "Această operațiune nu este permisă"
+  },
+  "data": {
+    "notFound": "Datele nu au fost găsite",
+    "invalidFormat": "Format de date invalid",
+    "saveFailed": "Salvarea datelor a eșuat"
+  },
+  "generic": "A apărut o eroare. Te rugăm să încerci din nou.",
+  "title": "Eroare",
+  "oops": "Ups! Ceva nu a mers bine",
+  "tryAgain": "Încearcă din nou",
+  "networkError": "Eroare de rețea. Verificați conexiunea.",
+  "signOutError": "Eroare la deconectare:"
+}

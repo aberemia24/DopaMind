@@ -1,0 +1,443 @@
+{
+  "common": {
+    "loading": "Se încarcă...",
+    "error": "A apărut o eroare",
+    "success": "Succes",
+    "cancel": "Anulează",
+    "save": "Salvează",
+    "delete": "Șterge",
+    "edit": "Editează",
+    "unknownError": "Eroare necunoscută",
+    "buttons": {
+      "cancel": "Nu, renunț"
+    },
+    "firebase": {
+      "initializationStart": "Se inițializează Firebase...",
+      "initializationSuccess": "Firebase a fost inițializat cu succes",
+      "initializationError": "Eroare la inițializarea Firebase:"
+    },
+    "completed": "finalizată",
+    "incomplete": "nefinalizată",
+    "markComplete": "marchează ca finalizată",
+    "markIncomplete": "marchează ca nefinalizată",
+    "signOut": "Deconectare",
+    "ok": "OK",
+    "comingSoon": "În curând..."
+  },
+  "errors": {
+    "network": {
+      "connection": "Nu există conexiune la internet",
+      "timeout": "Timpul de așteptare a expirat",
+      "serverError": "Eroare de server"
+    },
+    "validation": {
+      "required": "Acest câmp este obligatoriu",
+      "email": "Adresă de email invalidă",
+      "password": {
+        "length": "Parola trebuie să aibă cel puțin 8 caractere",
+        "match": "Parolele nu coincid",
+        "requirements": "Parola trebuie să conțină litere, numere și caractere speciale"
+      }
+    },
+    "auth": {
+      "invalidEmail": "Adresă de email invalidă",
+      "wrongPassword": "Parolă incorectă",
+      "userNotFound": "Utilizatorul nu a fost găsit",
+      "emailInUse": "Această adresă de email este deja folosită",
+      "weakPassword": "Parola este prea slabă",
+      "tooManyRequests": "Prea multe încercări. Vă rugăm să așteptați",
+      "default": "Eroare de autentificare",
+      "logout": "Nu s-a putut efectua deconectarea. Vă rugăm să încercați din nou."
+    },
+    "data": {
+      "notFound": "Datele nu au fost găsite",
+      "invalidFormat": "Format de date invalid",
+      "saveFailed": "Salvarea datelor a eșuat"
+    },
+    "title": "Eroare",
+    "generic": "A apărut o eroare. Te rugăm să încerci din nou.",
+    "oops": "Ups! Ceva nu a mers bine",
+    "tryAgain": "Încearcă din nou",
+    "networkError": "Eroare de rețea. Verificați conexiunea.",
+    "tooManyRequests": "Prea multe încercări. Vă rugăm să așteptați.",
+    "signOutError": "Eroare la deconectare:",
+    "userDisabled": "Acest cont a fost dezactivat",
+    "operationNotAllowed": "Această operațiune nu este permisă"
+  },
+  "auth": {
+    "signIn": "Conectare",
+    "signUp": "Înregistrare",
+    "signOut": "Deconectare",
+    "email": "Email",
+    "password": "Parolă",
+    "forgotPassword": "Ai uitat parola?",
+    "fields": {
+      "email": "Email",
+      "password": "Parolă",
+      "confirmPassword": "Confirmă Parola"
+    },
+    "login": {
+      "title": "Autentificare",
+      "welcome": "Bine ai revenit",
+      "email": "Email",
+      "password": "Parolă",
+      "submit": "Autentificare",
+      "forgotPassword": "Ai uitat parola?",
+      "noAccount": "Nu ai cont? Înregistrează-te",
+      "focusEmail": "Se focusează câmpul de email",
+      "focusPassword": "Se încearcă focusarea câmpului de parolă",
+      "focusPasswordSuccess": "Câmpul de parolă a fost focusat",
+      "emailFocus": "Câmpul de email a primit focus",
+      "emailBlur": "Câmpul de email a pierdut focus",
+      "passwordFocus": "Câmpul de parolă a primit focus",
+      "passwordBlur": "Câmpul de parolă a pierdut focus"
+    },
+    "register": {
+      "title": "Înregistrare",
+      "createAccount": "Creează cont",
+      "email": "Email",
+      "password": "Parolă",
+      "confirmPassword": "Confirmă parola",
+      "submit": "Înregistrare",
+      "haveAccount": "Ai deja cont? Conectează-te",
+      "errors": {
+        "fillAllFields": "Te rugăm să completezi toate câmpurile",
+        "passwordsNotMatch": "Parolele nu coincid",
+        "invalidEmail": "Email invalid",
+        "passwordMismatch": "Parolele nu coincid",
+        "weakPassword": "Parola este prea slabă",
+        "emailInUse": "Acest email este deja folosit",
+        "generic": "A apărut o eroare. Te rugăm să încerci din nou."
+      }
+    },
+    "success": {
+      "login": "Autentificare reușită",
+      "register": "Înregistrare reușită",
+      "logout": "Deconectare reușită"
+    },
+    "loading": {
+      "login": "Se conectează...",
+      "register": "Se creează contul...",
+      "logout": "Se deconectează..."
+    }
+  },
+  "welcome": {
+    "buttons": {
+      "emailLogin": "Conectează-te cu email",
+      "googleLogin": "Conectează-te cu Google",
+      "facebookLogin": "Conectează-te cu Facebook",
+      "appleLogin": "Conectează-te cu Apple"
+    },
+    "slides": {
+      "slide1": {
+        "title": "Depășește Overwhelm-ul",
+        "description": "Te ajutăm să transformi lista copleșitoare de sarcini într-un plan clar și realizabil."
+      },
+      "slide2": {
+        "title": "Sistem Adaptat pentru ADHD",
+        "description": "Folosim tehnici dovedite științific pentru a gestiona mai ușor timpul și sarcinile cu ADHD."
+      },
+      "slide3": {
+        "title": "Sprijin în Momente Dificile",
+        "description": "Ai acces instant la tehnici de calmare și focus când te simți copleșit sau blocat."
+      }
+    }
+  },
+  "onboarding": {
+    "slides": {
+      "slide1": {
+        "title": "Bine ai venit la DopaMind",
+        "description": "Companionul tău personal pentru gestionarea ADHD"
+      },
+      "slide2": {
+        "title": "Gestionarea Sarcinilor",
+        "description": "Împarte sarcinile în bucăți ușor de gestionat și urmărește-ți progresul"
+      },
+      "slide3": {
+        "title": "Suport pentru Sănătate Mentală",
+        "description": "Primește suport când ai nevoie cu funcțiile noastre de gestionare a crizelor"
+      }
+    },
+    "accessibility": {
+      "slideshow": "Prezentare de introducere",
+      "pagination": "Paginare slide-uri",
+      "pageIndicator": "Slide-ul {{current}} din {{total}}"
+    }
+  },
+  "home": {
+    "welcome": "Bine ai venit la DopaMind!",
+    "slideshow": {
+      "slide1": {
+        "title": "Depășește Overwhelm-ul",
+        "description": "Împarte sarcinile în pași gestionabili și menține focusul"
+      },
+      "slide2": {
+        "title": "Sistem Adaptat pentru ADHD",
+        "description": "Instrumente și tehnici concepute special pentru mințile cu ADHD"
+      },
+      "slide3": {
+        "title": "Sprijin în Momente Dificile",
+        "description": "Primește ajutor și îndrumare când ai mai mare nevoie"
+      }
+    }
+  },
+  "taskManagement": {
+    "title": "Sarcinile Mele",
+    "filters": {
+      "all": "toate",
+      "active": "active",
+      "completed": "finalizate",
+      "priority": "prioritare"
+    },
+    "buttons": {
+      "addTask": "Adaugă sarcină",
+      "deleteTask": "Șterge sarcina",
+      "addPriority": "Marchează ca prioritară",
+      "removePriority": "Elimină prioritatea",
+      "editTask": "Editează sarcina"
+    },
+    "labels": {
+      "untitledTask": "sarcină fără titlu",
+      "editTask": "editează sarcina",
+      "taskName": "Numele sarcinii",
+      "priority": "Prioritate",
+      "dueDate": "Data scadentă",
+      "status": "Status"
+    },
+    "alerts": {
+      "softLimit": {
+        "title": "Limită de sarcini",
+        "message": "Ai deja multe sarcini active pentru această perioadă. Ești sigur că vrei să adaugi încă una?",
+        "confirm": "Da, adaugă"
+      },
+      "deleteConfirm": {
+        "title": "Confirmare ștergere",
+        "message": "Ești sigur că vrei să ștergi această sarcină?",
+        "confirm": "Da, șterge",
+        "cancel": "Nu, renunță"
+      }
+    },
+    "errors": {
+      "notAuthenticated": "Trebuie să fii conectat pentru a gestiona sarcinile",
+      "addTask": "Nu s-a putut adăuga sarcina. Te rugăm să încerci din nou.",
+      "updateTask": "Nu s-a putut actualiza sarcina. Te rugăm să încerci din nou.",
+      "deleteTask": "Nu s-a putut șterge sarcina. Te rugăm să încerci din nou."
+    },
+    "periods": {
+      "morning": {
+        "title": "dimineață",
+        "description": "Sarcinile tale pentru dimineață"
+      },
+      "afternoon": {
+        "title": "după-amiază",
+        "description": "Sarcinile tale pentru după-amiază"
+      },
+      "evening": {
+        "title": "seară",
+        "description": "Sarcinile tale pentru seară"
+      }
+    },
+    "accessibility": {
+      "taskList": "Listă de sarcini organizate pe perioade de timp",
+      "taskStatus": "Sarcina {{title}} este {{status}}",
+      "toggleComplete": "{{action}} sarcina",
+      "editMode": "Editare sarcină",
+      "editTitle": "Editează titlul sarcinii",
+      "editTitleHint": "Introdu noul titlu al sarcinii",
+      "validation": {
+        "titleTooShort": "Titlul trebuie să aibă cel puțin 3 caractere",
+        "titleRequired": "Titlul este obligatoriu"
+      }
+    }
+  },
+  "taskFilter": {
+    "all": "Toate",
+    "active": "Active",
+    "completed": "Finalizate",
+    "priority": "Prioritare",
+    "accessibility": {
+      "filterList": "Opțiuni de filtrare sarcini",
+      "filterOption": "Filtru {{filter}} ({{count}} sarcini)"
+    }
+  },
+  "taskItem": {
+    "accessibility": {
+      "taskStatus": "Sarcina {{title}} este {{status}}",
+      "toggleComplete": "{{action}} sarcina",
+      "edit": "Editează sarcina",
+      "delete": "Șterge sarcina",
+      "editMode": "Editare sarcină",
+      "editTitle": "Editează titlul sarcinii",
+      "editTitleHint": "Introdu noul titlu al sarcinii",
+      "validation": {
+        "titleTooShort": "Titlul trebuie să aibă cel puțin 3 caractere",
+        "titleRequired": "Titlul este obligatoriu"
+      },
+      "priority": "prioritară"
+    },
+    "placeholder": {
+      "title": "Titlul sarcinii..."
+    },
+    "metadata": {
+      "created": "Creată {{date}}",
+      "updated": "Actualizată {{date}}"
+    },
+    "validation": {
+      "titleMinLength": "Titlul trebuie să aibă cel puțin {{min}} caractere",
+      "titleRequired": "Titlul este obligatoriu"
+    }
+  },
+  "navigation": {
+    "tabs": {
+      "tasks": "Sarcini",
+      "calendar": "Calendar",
+      "focus": "Focus",
+      "stats": "Statistici",
+      "settings": "Setări"
+    },
+    "titles": {
+      "welcome": "Bine ai venit",
+      "login": "Conectare",
+      "register": "Înregistrare",
+      "home": "Acasă",
+      "taskManagement": "Gestionare Sarcini"
+    }
+  },
+  "inputs": {
+    "placeholders": {
+      "email": "Adresa de email",
+      "password": "Parola",
+      "confirmPassword": "Confirmă parola"
+    },
+    "returnKeyTypes": {
+      "next": "next",
+      "done": "done"
+    }
+  },
+  "timeSection": {
+    "progress": "{{completed}} din {{total}} sarcini finalizate",
+    "accessibility": {
+      "addTask": "Adaugă sarcină pentru perioada {{period}}"
+    }
+  },
+  "tagSelector": {
+    "createTag": "Creează etichetă nouă",
+    "placeholder": {
+      "newTag": "Introdu numele etichetei..."
+    },
+    "accessibility": {
+      "tagList": "Lista de etichete disponibile",
+      "tag": "Eticheta {{label}} {{selected ? 'selectată' : 'neselectată'}}",
+      "newTagInput": "Câmp pentru numele noii etichete",
+      "newTagHint": "Introdu un nume pentru noua etichetă",
+      "addTag": "Adaugă etichetă nouă",
+      "createTag": "Creează etichetă nouă"
+    }
+  },
+  "dateTime": {
+    "time": {
+      "hours24": "{{hours}}",
+      "hours12": "{{hours}}",
+      "minutes": "{{minutes}}",
+      "period": {
+        "am": "dimineața",
+        "pm": "după-amiaza"
+      },
+      "ranges": {
+        "morning": "dimineața",
+        "afternoon": "după-amiaza",
+        "evening": "seara"
+      },
+      "format": {
+        "short": "{{hours}}:{{minutes}}",
+        "long": "{{hours}}:{{minutes}} {{period}}",
+        "range": "{{start}} - {{end}}"
+      }
+    },
+    "date": {
+      "weekday": {
+        "short": {
+          "mon": "Lun",
+          "tue": "Mar",
+          "wed": "Mie",
+          "thu": "Joi",
+          "fri": "Vin",
+          "sat": "Sâm",
+          "sun": "Dum"
+        },
+        "long": {
+          "mon": "Luni",
+          "tue": "Marți",
+          "wed": "Miercuri",
+          "thu": "Joi",
+          "fri": "Vineri",
+          "sat": "Sâmbătă",
+          "sun": "Duminică"
+        }
+      },
+      "month": {
+        "short": {
+          "jan": "Ian",
+          "feb": "Feb",
+          "mar": "Mar",
+          "apr": "Apr",
+          "may": "Mai",
+          "jun": "Iun",
+          "jul": "Iul",
+          "aug": "Aug",
+          "sep": "Sep",
+          "oct": "Oct",
+          "nov": "Noi",
+          "dec": "Dec"
+        },
+        "long": {
+          "jan": "Ianuarie",
+          "feb": "Februarie",
+          "mar": "Martie",
+          "apr": "Aprilie",
+          "may": "Mai",
+          "jun": "Iunie",
+          "jul": "Iulie",
+          "aug": "August",
+          "sep": "Septembrie",
+          "oct": "Octombrie",
+          "nov": "Noiembrie",
+          "dec": "Decembrie"
+        }
+      },
+      "format": {
+        "short": "{{day}} {{month}} {{year}}",
+        "long": "{{weekday}}, {{day}} {{month}} {{year}}",
+        "relative": {
+          "today": "astăzi",
+          "yesterday": "ieri",
+          "tomorrow": "mâine",
+          "days": {
+            "past": "acum {{count}} zile",
+            "future": "peste {{count}} zile"
+          }
+        }
+      }
+    }
+  },
+  "calendar": {
+    "title": "Calendar",
+    "description": "Vizualizează și planifică-ți sarcinile în calendar"
+  },
+  "focus": {
+    "title": "Focus Mode",
+    "description": "Concentrează-te pe sarcinile importante folosind timer-ul și sunetele ambientale"
+  },
+  "stats": {
+    "title": "Statistici",
+    "description": "Vizualizează progresul și obiceiurile tale"
+  },
+  "settings": {
+    "title": "Setări",
+    "account": "Cont",
+    "preferences": "Preferințe",
+    "theme": "Temă",
+    "notifications": "Notificări",
+    "language": "Limbă"
+  }
+}

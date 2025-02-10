@@ -1,0 +1,251 @@
+Raport duplicate în fișierul de traduceri
+=======================================
+Data generării: 2025-02-10 16:12:43
+Fișier analizat: src/i18n/translations/ro.json
+
+Valoarea: '2'
+Apare în 4 locații:
+  - 
+  - 
+  - 
+  - 
+--------------------------------------------------
+
+Valoarea: 'Deconectare'
+Apare în 2 locații:
+  - common.signOut
+  - auth.signOut
+--------------------------------------------------
+
+Valoarea: 'Adresă de email invalidă'
+Apare în 2 locații:
+  - errors.validation.email
+  - errors.auth.invalidEmail
+--------------------------------------------------
+
+Valoarea: 'Parolele nu coincid'
+Apare în 3 locații:
+  - errors.validation.password.match
+  - auth.register.errors.passwordsNotMatch
+  - auth.register.errors.passwordMismatch
+--------------------------------------------------
+
+Valoarea: 'Parola este prea slabă'
+Apare în 2 locații:
+  - errors.auth.weakPassword
+  - auth.register.errors.weakPassword
+--------------------------------------------------
+
+Valoarea: 'A apărut o eroare. Te rugăm să încerci din nou.'
+Apare în 2 locații:
+  - errors.generic
+  - auth.register.errors.generic
+--------------------------------------------------
+
+Valoarea: 'Conectare'
+Apare în 2 locații:
+  - auth.signIn
+  - navigation.titles.login
+--------------------------------------------------
+
+Valoarea: 'Înregistrare'
+Apare în 4 locații:
+  - auth.signUp
+  - auth.register.title
+  - auth.register.submit
+  - navigation.titles.register
+--------------------------------------------------
+
+Valoarea: 'Email'
+Apare în 4 locații:
+  - auth.email
+  - auth.fields.email
+  - auth.login.email
+  - auth.register.email
+--------------------------------------------------
+
+Valoarea: 'Parolă'
+Apare în 4 locații:
+  - auth.password
+  - auth.fields.password
+  - auth.login.password
+  - auth.register.password
+--------------------------------------------------
+
+Valoarea: 'Ai uitat parola?'
+Apare în 2 locații:
+  - auth.forgotPassword
+  - auth.login.forgotPassword
+--------------------------------------------------
+
+Valoarea: 'Confirmă Parola'
+Apare în 3 locații:
+  - auth.fields.confirmPassword
+  - auth.register.confirmPassword
+  - inputs.placeholders.confirmPassword
+--------------------------------------------------
+
+Valoarea: 'Autentificare'
+Apare în 2 locații:
+  - auth.login.title
+  - auth.login.submit
+--------------------------------------------------
+
+Valoarea: 'Depășește Overwhelm-ul'
+Apare în 2 locații:
+  - welcome.slides.slide1.title
+  - home.slideshow.slide1.title
+--------------------------------------------------
+
+Valoarea: 'Sistem Adaptat pentru ADHD'
+Apare în 2 locații:
+  - welcome.slides.slide2.title
+  - home.slideshow.slide2.title
+--------------------------------------------------
+
+Valoarea: 'Sprijin în Momente Dificile'
+Apare în 2 locații:
+  - welcome.slides.slide3.title
+  - home.slideshow.slide3.title
+--------------------------------------------------
+
+Valoarea: 'toate'
+Apare în 2 locații:
+  - taskManagement.filters.all
+  - taskFilter.all
+--------------------------------------------------
+
+Valoarea: 'active'
+Apare în 2 locații:
+  - taskManagement.filters.active
+  - taskFilter.active
+--------------------------------------------------
+
+Valoarea: 'finalizate'
+Apare în 2 locații:
+  - taskManagement.filters.completed
+  - taskFilter.completed
+--------------------------------------------------
+
+Valoarea: 'prioritare'
+Apare în 2 locații:
+  - taskManagement.filters.priority
+  - taskFilter.priority
+--------------------------------------------------
+
+Valoarea: 'Șterge sarcina'
+Apare în 2 locații:
+  - taskManagement.buttons.deleteTask
+  - taskItem.accessibility.delete
+--------------------------------------------------
+
+Valoarea: 'Editează sarcina'
+Apare în 3 locații:
+  - taskManagement.buttons.editTask
+  - taskManagement.labels.editTask
+  - taskItem.accessibility.edit
+--------------------------------------------------
+
+Valoarea: 'Sarcina {{title}} este {{status}}'
+Apare în 2 locații:
+  - taskManagement.accessibility.taskStatus
+  - taskItem.accessibility.taskStatus
+--------------------------------------------------
+
+Valoarea: '{{action}} sarcina'
+Apare în 2 locații:
+  - taskManagement.accessibility.toggleComplete
+  - taskItem.accessibility.toggleComplete
+--------------------------------------------------
+
+Valoarea: 'Editare sarcină'
+Apare în 2 locații:
+  - taskManagement.accessibility.editMode
+  - taskItem.accessibility.editMode
+--------------------------------------------------
+
+Valoarea: 'Editează titlul sarcinii'
+Apare în 2 locații:
+  - taskManagement.accessibility.editTitle
+  - taskItem.accessibility.editTitle
+--------------------------------------------------
+
+Valoarea: 'Introdu noul titlu al sarcinii'
+Apare în 2 locații:
+  - taskManagement.accessibility.editTitleHint
+  - taskItem.accessibility.editTitleHint
+--------------------------------------------------
+
+Valoarea: 'Titlul trebuie să aibă cel puțin 3 caractere'
+Apare în 2 locații:
+  - taskManagement.accessibility.validation.titleTooShort
+  - taskItem.accessibility.validation.titleTooShort
+--------------------------------------------------
+
+Valoarea: 'Titlul este obligatoriu'
+Apare în 3 locații:
+  - taskManagement.accessibility.validation.titleRequired
+  - taskItem.accessibility.validation.titleRequired
+  - taskItem.validation.titleRequired
+--------------------------------------------------
+
+Valoarea: 'Calendar'
+Apare în 2 locații:
+  - navigation.tabs.calendar
+  - calendar.title
+--------------------------------------------------
+
+Valoarea: 'Statistici'
+Apare în 2 locații:
+  - navigation.tabs.stats
+  - stats.title
+--------------------------------------------------
+
+Valoarea: 'Setări'
+Apare în 2 locații:
+  - navigation.tabs.settings
+  - settings.title
+--------------------------------------------------
+
+Valoarea: 'Creează etichetă nouă'
+Apare în 2 locații:
+  - tagSelector.createTag
+  - tagSelector.accessibility.createTag
+--------------------------------------------------
+
+Valoarea: '{{hours}}'
+Apare în 2 locații:
+  - dateTime.time.hours24
+  - dateTime.time.hours12
+--------------------------------------------------
+
+Valoarea: 'dimineața'
+Apare în 2 locații:
+  - dateTime.time.period.am
+  - dateTime.time.ranges.morning
+--------------------------------------------------
+
+Valoarea: 'după-amiaza'
+Apare în 2 locații:
+  - dateTime.time.period.pm
+  - dateTime.time.ranges.afternoon
+--------------------------------------------------
+
+Valoarea: 'Mar'
+Apare în 2 locații:
+  - dateTime.date.weekday.short.tue
+  - dateTime.date.month.short.mar
+--------------------------------------------------
+
+Valoarea: 'Joi'
+Apare în 2 locații:
+  - dateTime.date.weekday.short.thu
+  - dateTime.date.weekday.long.thu
+--------------------------------------------------
+
+Valoarea: 'Mai'
+Apare în 2 locații:
+  - dateTime.date.month.short.may
+  - dateTime.date.month.long.may
+--------------------------------------------------
+

@@ -1,0 +1,40 @@
+{
+  "login": {
+    "title": "Autentificare",
+    "welcome": "Bine ai revenit",
+    "submit": "Autentificare",
+    "noAccount": "Nu ai cont? Înregistrează-te",
+    "accessibility": {
+      "focusEmail": "Se focusează câmpul de email",
+      "focusPassword": "Se încearcă focusarea câmpului de parolă",
+      "focusPasswordSuccess": "Câmpul de parolă a fost focusat",
+      "emailFocus": "Câmpul de email a primit focus",
+      "emailBlur": "Câmpul de email a pierdut focus",
+      "passwordFocus": "Câmpul de parolă a primit focus",
+      "passwordBlur": "Câmpul de parolă a pierdut focus"
+    }
+  },
+  "register": {
+    "title": "Înregistrare",
+    "createAccount": "Creează cont",
+    "submit": "Înregistrare",
+    "haveAccount": "Ai deja cont? Conectează-te",
+    "errors": {
+      "fillAllFields": "Te rugăm să completezi toate câmpurile",
+      "passwordsNotMatch": "Parolele nu coincid",
+      "weakPassword": "Parola este prea slabă",
+      "emailInUse": "Acest email este deja folosit",
+      "generic": "A apărut o eroare. Te rugăm să încerci din nou."
+    }
+  },
+  "success": {
+    "login": "Autentificare reușită",
+    "register": "Înregistrare reușită",
+    "logout": "Deconectare reușită"
+  },
+  "loading": {
+    "login": "Se conectează...",
+    "register": "Se creează contul...",
+    "logout": "Se deconectează..."
+  }
+}

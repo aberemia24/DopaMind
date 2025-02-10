@@ -1,129 +1,80 @@
 {
   "common": {
-    "loading": "Loading...",
-    "error": "An error occurred",
-    "success": "Success",
-    "cancel": "Cancel",
-    "save": "Save",
-    "delete": "Delete",
-    "edit": "Edit",
-    "unknownError": "Unknown error",
-    "buttons": {
-      "cancel": "No, cancel"
+    "actions": {
+      "save": "Save",
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "edit": "Edit",
+      "signOut": "Sign Out",
+      "markComplete": "mark as complete",
+      "markIncomplete": "mark as incomplete"
     },
-    "firebase": {
-      "initializationStart": "Starting Firebase initialization...",
-      "initializationSuccess": "Firebase initialized successfully",
-      "initializationError": "Error initializing Firebase:"
-    },
-    "completed": "completed",
-    "incomplete": "incomplete",
-    "markComplete": "mark as complete",
-    "markIncomplete": "mark as incomplete",
-    "signOut": "Sign Out",
-    "ok": "OK"
-  },
-  "errors": {
-    "network": {
-      "connection": "Network connection error",
-      "timeout": "Request timed out",
-      "server": "Server error"
+    "fields": {
+      "email": "Email",
+      "password": "Password",
+      "confirmPassword": "Confirm Password",
+      "title": "Title",
+      "description": "Description",
+      "date": "Date",
+      "time": "Time",
+      "status": "Status",
+      "priority": "Priority"
     },
     "validation": {
       "required": "This field is required",
       "email": "Invalid email address",
       "password": {
-        "length": "Password must be at least 8 characters",
+        "length": "Password must be at least 8 characters long",
         "match": "Passwords do not match",
         "requirements": "Password must contain letters, numbers, and special characters"
-      }
+      },
+      "minLength": "Must be at least {{count}} characters",
+      "maxLength": "Cannot exceed {{count}} characters"
     },
-    "auth": {
-      "invalidEmail": "Invalid email address",
-      "wrongPassword": "Incorrect password",
-      "userNotFound": "User not found",
-      "emailInUse": "Email is already in use",
-      "weakPassword": "Password is too weak",
-      "tooManyRequests": "Too many attempts. Please try again later",
-      "default": "Authentication error"
-    },
-    "data": {
-      "notFound": "Data not found",
-      "invalidFormat": "Invalid data format",
-      "saveFailed": "Failed to save data"
-    },
-    "generic": "An error occurred. Please try again",
-    "title": "Error",
-    "oops": "Oops! Something went wrong",
-    "tryAgain": "Try again"
+    "status": {
+      "loading": "Loading...",
+      "error": "An error occurred",
+      "success": "Success",
+      "completed": "completed",
+      "incomplete": "incomplete",
+      "active": "active",
+      "inactive": "inactive",
+      "pending": "pending"
+    }
   },
   "auth": {
-    "signIn": "Sign In",
-    "signUp": "Sign Up",
-    "signOut": "Sign Out",
-    "email": "Email",
-    "password": "Password",
-    "forgotPassword": "Forgot Password?",
-    "fields": {
-      "email": "Email",
-      "password": "Password",
-      "confirmPassword": "Confirm Password"
-    },
     "login": {
-      "welcome": "Welcome Back",
-      "submit": "Login",
-      "noAccount": "Don't have an account? Register",
-      "focusEmail": "Focusing email input",
-      "focusPassword": "Attempting to focus password input",
-      "focusPasswordSuccess": "Password input focused",
-      "emailFocus": "Email input focused",
-      "emailBlur": "Email input lost focus",
-      "passwordFocus": "Password input focused",
-      "passwordBlur": "Password input lost focus",
       "title": "Login",
-      "forgotPassword": "Forgot Password?"
+      "welcome": "Welcome back",
+      "submit": "Login",
+      "noAccount": "Don't have an account? Sign up",
+      "accessibility": {
+        "focusEmail": "Focusing email field",
+        "focusPassword": "Attempting to focus password field",
+        "focusPasswordSuccess": "Password field was focused",
+        "emailFocus": "Email field received focus",
+        "emailBlur": "Email field lost focus",
+        "passwordFocus": "Password field received focus",
+        "passwordBlur": "Password field lost focus"
+      }
     },
     "register": {
-      "title": "Create Account",
-      "createAccount": "Create Account",
+      "title": "Register",
+      "createAccount": "Create account",
       "submit": "Register",
       "haveAccount": "Already have an account? Login",
       "errors": {
         "fillAllFields": "Please fill in all fields",
-        "passwordsNotMatch": "Passwords do not match"
-      },
-      "accessibility": {
-        "form": "Registration form",
-        "emailInput": "Email input field",
-        "emailHint": "Enter your email address",
-        "passwordInput": "Password input field",
-        "passwordHint": "Enter your password",
-        "confirmPasswordInput": "Confirm password input field",
-        "confirmPasswordHint": "Re-enter your password",
-        "registerButton": "Register button",
-        "loginLink": "Go to login page"
+        "passwordsNotMatch": "Passwords do not match",
+        "weakPassword": "Password is too weak",
+        "emailInUse": "This email is already in use",
+        "generic": "An error occurred. Please try again."
       }
     },
-    "errors": {
-      "signOutError": "Error signing out:",
-      "invalidEmail": "Invalid email address",
-      "userDisabled": "This account has been disabled",
-      "userNotFound": "No account exists with this email",
-      "wrongPassword": "Incorrect password",
-      "emailInUse": "An account already exists with this email",
-      "weakPassword": "Password is too weak",
-      "operationNotAllowed": "This operation is not allowed",
-      "tooManyRequests": "Too many attempts. Please wait a moment",
-      "unknownError": "An unexpected error occurred",
-      "generic": "An error occurred. Please try again.",
-      "passwordMismatch": "Passwords don't match",
-      "logout": "Could not log out. Please try again.",
-      "networkError": "Network error. Please check your connection."
-    },
     "success": {
-      "login": "Successfully logged in",
-      "register": "Successfully registered",
-      "logout": "Successfully logged out"
+      "login": "Login successful",
+      "register": "Registration successful",
+      "logout": "Logout successful"
     },
     "loading": {
       "login": "Logging in...",
@@ -131,82 +82,54 @@
       "logout": "Logging out..."
     }
   },
-  "home": {
-    "welcome": "Welcome to DopaMind!",
-    "slideshow": {
-      "slide1": {
-        "title": "Overcome Overwhelm",
-        "description": "Break down tasks into manageable steps and stay focused"
-      },
-      "slide2": {
-        "title": "ADHD-Adapted System",
-        "description": "Tools and techniques specifically designed for ADHD minds"
-      },
-      "slide3": {
-        "title": "Support in Difficult Moments",
-        "description": "Get help and guidance when you need it most"
-      }
-    }
-  },
-  "welcome": {
-    "buttons": {
-      "emailLogin": "Sign in with Email",
-      "googleLogin": "Sign in with Google"
+  "errors": {
+    "network": {
+      "connection": "No internet connection",
+      "timeout": "Request timed out",
+      "serverError": "Server error"
     },
-    "slides": {
-      "slide1": {
-        "title": "Overcome Overwhelm",
-        "description": "We help you transform your overwhelming task list into a clear, achievable plan."
-      },
-      "slide2": {
-        "title": "ADHD-Adapted System",
-        "description": "We use scientifically proven techniques to make time and task management easier with ADHD."
-      },
-      "slide3": {
-        "title": "Support in Difficult Moments",
-        "description": "Get instant access to calming and focusing techniques when you feel overwhelmed or stuck."
-      }
-    }
-  },
-  "onboarding": {
-    "slides": {
-      "slide1": {
-        "title": "Welcome to DopaMind",
-        "description": "Your personal ADHD management companion"
-      },
-      "slide2": {
-        "title": "Task Management",
-        "description": "Break down your tasks into manageable chunks and track your progress"
-      },
-      "slide3": {
-        "title": "Mental Health Support",
-        "description": "Get support when you need it with our crisis management features"
-      }
+    "auth": {
+      "invalidEmail": "Invalid email address",
+      "wrongPassword": "Incorrect password",
+      "userNotFound": "User not found",
+      "emailInUse": "This email address is already in use",
+      "weakPassword": "Password is too weak",
+      "tooManyRequests": "Too many attempts. Please wait",
+      "default": "Authentication error",
+      "logout": "Could not log out. Please try again.",
+      "userDisabled": "This account has been disabled",
+      "operationNotAllowed": "This operation is not allowed"
     },
-    "accessibility": {
-      "slideshow": "Onboarding slideshow",
-      "pagination": "Slide pagination",
-      "pageIndicator": "Slide {{current}} of {{total}}"
-    }
+    "data": {
+      "notFound": "Data not found",
+      "invalidFormat": "Invalid data format",
+      "saveFailed": "Failed to save data"
+    },
+    "generic": "An error occurred. Please try again.",
+    "title": "Error",
+    "oops": "Oops! Something went wrong",
+    "tryAgain": "Try again",
+    "networkError": "Network error. Check your connection.",
+    "signOutError": "Sign out error:"
   },
   "taskManagement": {
-    "title": "My Tasks",
+    "actions": {
+      "create": "Create new task",
+      "edit": "Edit task",
+      "delete": "Delete task",
+      "markComplete": "@:common.actions.markComplete",
+      "markIncomplete": "@:common.actions.markIncomplete",
+      "addPriority": "Mark as priority",
+      "removePriority": "Remove priority"
+    },
     "filters": {
       "all": "all",
       "active": "active",
       "completed": "completed",
       "priority": "priority"
     },
-    "buttons": {
-      "addTask": "Add task",
-      "deleteTask": "Delete task",
-      "addPriority": "Mark as priority",
-      "removePriority": "Remove priority",
-      "editTask": "Edit task"
-    },
     "labels": {
       "untitledTask": "untitled task",
-      "editTask": "edit task",
       "taskName": "Task name",
       "priority": "Priority",
       "dueDate": "Due date",
@@ -214,39 +137,25 @@
     },
     "alerts": {
       "softLimit": {
-        "title": "Task Limit",
+        "title": "Task limit",
         "message": "You already have many active tasks for this period. Are you sure you want to add another one?",
-        "confirm": "Yes, add it"
+        "confirm": "Yes, add"
       },
       "deleteConfirm": {
-        "title": "Delete Confirmation",
+        "title": "Delete confirmation",
         "message": "Are you sure you want to delete this task?",
         "confirm": "Yes, delete",
         "cancel": "No, cancel"
       }
     },
     "errors": {
-      "notAuthenticated": "You need to be logged in to manage tasks",
+      "notAuthenticated": "You must be logged in to manage tasks",
       "addTask": "Could not add task. Please try again.",
       "updateTask": "Could not update task. Please try again.",
       "deleteTask": "Could not delete task. Please try again."
     },
-    "periods": {
-      "morning": {
-        "title": "morning",
-        "description": "Your morning tasks"
-      },
-      "afternoon": {
-        "title": "afternoon",
-        "description": "Your afternoon tasks"
-      },
-      "evening": {
-        "title": "evening",
-        "description": "Your evening tasks"
-      }
-    },
     "accessibility": {
-      "taskList": "List of tasks organized by time periods",
+      "taskList": "Task list organized by time periods",
       "taskStatus": "Task {{title}} is {{status}}",
       "toggleComplete": "{{action}} task",
       "editMode": "Edit task",
@@ -254,178 +163,79 @@
       "editTitleHint": "Enter new task title",
       "validation": {
         "titleTooShort": "Title must be at least 3 characters long",
-        "titleRequired": "Title is required"
+        "titleRequired": "@:common.validation.required"
       }
     }
   },
-  "taskFilter": {
-    "all": "All",
-    "active": "Active",
-    "completed": "Completed",
-    "priority": "Priority",
-    "accessibility": {
-      "filterList": "Task filter options",
-      "filterOption": "{{filter}} filter ({{count}} tasks)"
-    }
-  },
-  "taskItem": {
-    "placeholder": {
-      "title": "Enter task title..."
+  "datetime": {
+    "timeFormat": {
+      "full": "{{hours}}:{{minutes}} {{period}}",
+      "short": "{{hours}}:{{minutes}}"
     },
-    "accessibility": {
-      "taskStatus": "Task {{title}} is {{status}}",
-      "toggleComplete": "{{action}} task",
-      "edit": "Edit task",
-      "delete": "Delete task",
-      "editMode": "Edit task",
-      "editTitle": "Edit task title",
-      "editTitleHint": "Enter new task title",
-      "validation": {
-        "titleTooShort": "Title must be at least 3 characters long",
-        "titleRequired": "Title is required"
-      },
-      "priority": "priority"
+    "timePeriods": {
+      "morning": "morning",
+      "afternoon": "afternoon",
+      "evening": "evening",
+      "night": "night",
+      "am": "AM",
+      "pm": "PM"
     },
-    "metadata": {
-      "created": "Created {{date}}",
-      "updated": "Updated {{date}}"
+    "weekdayShort": {
+      "monday": "Mon",
+      "tuesday": "Tue",
+      "wednesday": "Wed",
+      "thursday": "Thu",
+      "friday": "Fri",
+      "saturday": "Sat",
+      "sunday": "Sun"
     },
-    "validation": {
-      "titleMinLength": "Title must be at least {{min}} characters long",
-      "titleRequired": "Title is required"
-    }
-  },
-  "tagSelector": {
-    "createTag": "Create new tag",
-    "placeholder": {
-      "newTag": "Enter tag name..."
+    "weekdayLong": {
+      "monday": "Monday",
+      "tuesday": "Tuesday",
+      "wednesday": "Wednesday",
+      "thursday": "Thursday",
+      "friday": "Friday",
+      "saturday": "Saturday",
+      "sunday": "Sunday"
     },
-    "accessibility": {
-      "tagList": "List of available tags",
-      "tag": "{{label}} tag {{selected ? 'selected' : 'not selected'}}",
-      "newTagInput": "New tag name input",
-      "newTagHint": "Enter a name for the new tag",
-      "addTag": "Add new tag",
-      "createTag": "Create new tag"
-    }
-  },
-  "navigation": {
-    "tabs": {
-      "tasks": "Tasks",
-      "calendar": "Calendar",
-      "focus": "Focus",
-      "stats": "Stats",
-      "settings": "Settings"
+    "monthShort": {
+      "january": "Jan",
+      "february": "Feb",
+      "march": "Mar",
+      "april": "Apr",
+      "may": "May",
+      "june": "Jun",
+      "july": "Jul",
+      "august": "Aug",
+      "september": "Sep",
+      "october": "Oct",
+      "november": "Nov",
+      "december": "Dec"
     },
-    "titles": {
-      "welcome": "Welcome",
-      "login": "Login",
-      "register": "Register",
-      "home": "Home",
-      "taskManagement": "Task Management"
-    }
-  },
-  "inputs": {
-    "placeholders": {
-      "email": "Email address",
-      "password": "Password",
-      "confirmPassword": "Confirm password"
+    "monthLong": {
+      "january": "January",
+      "february": "February",
+      "march": "March",
+      "april": "April",
+      "may": "May",
+      "june": "June",
+      "july": "July",
+      "august": "August",
+      "september": "September",
+      "october": "October",
+      "november": "November",
+      "december": "December"
     },
-    "returnKeyTypes": {
-      "next": "next",
-      "done": "done"
-    }
-  },
-  "timeSection": {
-    "progress": "{{completed}} of {{total}} tasks completed",
-    "accessibility": {
-      "addTask": "Add task to {{period}} period"
-    }
-  },
-  "dateTime": {
-    "time": {
-      "hours24": "{{hours}}",
-      "hours12": "{{hours}}",
-      "minutes": "{{minutes}}",
-      "period": {
-        "am": "AM",
-        "pm": "PM"
-      },
-      "ranges": {
-        "morning": "morning",
-        "afternoon": "afternoon",
-        "evening": "evening"
-      },
-      "format": {
-        "short": "{{hours}}:{{minutes}}",
-        "long": "{{hours}}:{{minutes}} {{period}}",
-        "range": "{{start}} - {{end}}"
-      }
+    "dateFormat": {
+      "full": "{{weekday}}, {{day}} {{month}} {{year}}",
+      "short": "{{day}} {{month}} {{year}}"
     },
-    "date": {
-      "weekday": {
-        "short": {
-          "mon": "Mon",
-          "tue": "Tue",
-          "wed": "Wed",
-          "thu": "Thu",
-          "fri": "Fri",
-          "sat": "Sat",
-          "sun": "Sun"
-        },
-        "long": {
-          "mon": "Monday",
-          "tue": "Tuesday",
-          "wed": "Wednesday",
-          "thu": "Thursday",
-          "fri": "Friday",
-          "sat": "Saturday",
-          "sun": "Sunday"
-        }
-      },
-      "month": {
-        "short": {
-          "jan": "Jan",
-          "feb": "Feb",
-          "mar": "Mar",
-          "apr": "Apr",
-          "may": "May",
-          "jun": "Jun",
-          "jul": "Jul",
-          "aug": "Aug",
-          "sep": "Sep",
-          "oct": "Oct",
-          "nov": "Nov",
-          "dec": "Dec"
-        },
-        "long": {
-          "jan": "January",
-          "feb": "February",
-          "mar": "March",
-          "apr": "April",
-          "may": "May",
-          "jun": "June",
-          "jul": "July",
-          "aug": "August",
-          "sep": "September",
-          "oct": "October",
-          "nov": "November",
-          "dec": "December"
-        }
-      },
-      "format": {
-        "short": "{{day}} {{month}} {{year}}",
-        "long": "{{weekday}}, {{day}} {{month}} {{year}}",
-        "relative": {
-          "today": "today",
-          "yesterday": "yesterday",
-          "tomorrow": "tomorrow",
-          "days": {
-            "past": "{{count}} days ago",
-            "future": "in {{count}} days"
-          }
-        }
-      }
+    "dateRelative": {
+      "today": "today",
+      "yesterday": "yesterday",
+      "tomorrow": "tomorrow",
+      "pastDays": "{{count}} days ago",
+      "futureDays": "in {{count}} days"
     }
   }
 }

@@ -120,7 +120,6 @@ export function initializeFirebaseApp(): FirebaseApp {
 
 // Inițializare Firebase Auth
 export function initializeFirebaseAuth(): Auth {
-  console.log('Inițializare Firebase Auth...');
   if (!auth) {
     const app = initializeFirebaseApp();
     console.log('Got Firebase App instance, initializing Auth...');

@@ -12,6 +12,12 @@ export interface Task {
   userId: string;
   createdAt: number;
   updatedAt: number;
+  dueDate?: Date;
+  reminderMinutes?: number;
+  repeat?: {
+    frequency: 'daily' | 'weekly' | 'monthly';
+    interval: number;
+  };
 }
 
 export interface TasksByPeriod {
@@ -20,9 +26,7 @@ export interface TasksByPeriod {
   EVENING: Task[];
 }
 
-interface TaskData extends Omit<Task, 'id'> {
-  // Toate câmpurile din Task exceptând id, care este adăugat de Firestore
-}
+type TaskData = Omit<Task, 'id'>;
 
 const TASKS_COLLECTION = 'tasks';
 
@@ -43,7 +47,10 @@ const validateTaskData = (data: unknown): TaskData => {
     period,
     userId,
     createdAt,
-    updatedAt
+    updatedAt,
+    dueDate,
+    reminderMinutes,
+    repeat
   } = data as Record<string, unknown>;
 
   if (typeof title !== 'string' || !title) {
@@ -62,7 +69,9 @@ const validateTaskData = (data: unknown): TaskData => {
     throw new Error('Invalid task data: isPriority must be a boolean');
   }
 
+  // Verificăm că period este unul din valorile valide din TimePeriodKey
   if (!['MORNING', 'AFTERNOON', 'EVENING'].includes(period as string)) {
+    console.error('Invalid period value:', period);
     throw new Error('Invalid task data: invalid period');
   }
 
@@ -78,6 +87,28 @@ const validateTaskData = (data: unknown): TaskData => {
     throw new Error('Invalid task data: updatedAt must be a valid timestamp');
   }
 
+  if (dueDate !== undefined && !(dueDate instanceof Date)) {
+    throw new Error('Invalid task data: dueDate must be a Date object if present');
+  }
+
+  if (reminderMinutes !== undefined && (typeof reminderMinutes !== 'number' || !Number.isFinite(reminderMinutes))) {
+    throw new Error('Invalid task data: reminderMinutes must be a valid number if present');
+  }
+
+  if (repeat !== undefined && (typeof repeat !== 'object' || !repeat || typeof (repeat as any).frequency !== 'string' || typeof (repeat as any).interval !== 'number')) {
+    throw new Error('Invalid task data: repeat must be an object with frequency and interval if present');
+  }
+
+  if (repeat !== undefined && !['daily', 'weekly', 'monthly'].includes((repeat as any).frequency)) {
+    throw new Error('Invalid task data: repeat frequency must be one of daily, weekly, or monthly if present');
+  }
+
+  if (repeat !== undefined && (typeof (repeat as any).interval !== 'number' || !Number.isFinite((repeat as any).interval))) {
+    throw new Error('Invalid task data: repeat interval must be a valid number if present');
+  }
+
+  const validatedRepeat = repeat as Task['repeat'];
+
   return {
     title,
     description,
@@ -86,7 +117,10 @@ const validateTaskData = (data: unknown): TaskData => {
     period: period as TimePeriodKey,
     userId,
     createdAt,
-    updatedAt
+    updatedAt,
+    dueDate,
+    reminderMinutes,
+    repeat: validatedRepeat
   };
 };
 

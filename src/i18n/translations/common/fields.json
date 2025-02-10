@@ -1,0 +1,11 @@
+{
+  "email": "Email",
+  "password": "Parolă",
+  "confirmPassword": "Confirmă Parola",
+  "title": "Titlu",
+  "description": "Descriere",
+  "date": "Dată",
+  "time": "Oră",
+  "status": "Status",
+  "priority": "Prioritate"
+}

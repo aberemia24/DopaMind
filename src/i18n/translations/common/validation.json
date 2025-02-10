@@ -1,0 +1,11 @@
+{
+  "required": "Acest câmp este obligatoriu",
+  "email": "Adresă de email invalidă",
+  "password": {
+    "length": "Parola trebuie să aibă cel puțin 8 caractere",
+    "match": "Parolele nu coincid",
+    "requirements": "Parola trebuie să conțină litere, numere și caractere speciale"
+  },
+  "minLength": "Trebuie să aibă cel puțin {{count}} caractere",
+  "maxLength": "Nu poate depăși {{count}} caractere"
+}

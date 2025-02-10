@@ -1,0 +1,79 @@
+{
+  "time": {
+    "format": {
+      "full": "{{hours}}:{{minutes}} {{period}}",
+      "short": "{{hours}}:{{minutes}}"
+    },
+    "periods": {
+      "morning": "dimineața",
+      "afternoon": "după-amiaza",
+      "evening": "seara",
+      "night": "noaptea",
+      "am": "dimineața",
+      "pm": "după-amiaza"
+    }
+  },
+  "date": {
+    "weekdays": {
+      "short": {
+        "monday": "Lun",
+        "tuesday": "Mar",
+        "wednesday": "Mie",
+        "thursday": "Joi",
+        "friday": "Vin",
+        "saturday": "Sâm",
+        "sunday": "Dum"
+      },
+      "long": {
+        "monday": "Luni",
+        "tuesday": "Marți",
+        "wednesday": "Miercuri",
+        "thursday": "Joi",
+        "friday": "Vineri",
+        "saturday": "Sâmbătă",
+        "sunday": "Duminică"
+      }
+    },
+    "months": {
+      "short": {
+        "january": "Ian",
+        "february": "Feb",
+        "march": "Mar",
+        "april": "Apr",
+        "may": "Mai",
+        "june": "Iun",
+        "july": "Iul",
+        "august": "Aug",
+        "september": "Sep",
+        "october": "Oct",
+        "november": "Noi",
+        "december": "Dec"
+      },
+      "long": {
+        "january": "Ianuarie",
+        "february": "Februarie",
+        "march": "Martie",
+        "april": "Aprilie",
+        "may": "Mai",
+        "june": "Iunie",
+        "july": "Iulie",
+        "august": "August",
+        "september": "Septembrie",
+        "october": "Octombrie",
+        "november": "Noiembrie",
+        "december": "Decembrie"
+      }
+    },
+    "format": {
+      "full": "{{weekday}}, {{day}} {{month}} {{year}}",
+      "short": "{{day}} {{month}} {{year}}"
+    },
+    "relative": {
+      "today": "astăzi",
+      "yesterday": "ieri",
+      "tomorrow": "mâine",
+      "pastDays": "acum {{count}} zile",
+      "futureDays": "peste {{count}} zile"
+    }
+  }
+}

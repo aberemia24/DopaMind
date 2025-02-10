@@ -1,0 +1,10 @@
+{
+  "loading": "Se încarcă...",
+  "error": "A apărut o eroare",
+  "success": "Succes",
+  "completed": "finalizată",
+  "incomplete": "nefinalizată",
+  "active": "activă",
+  "inactive": "inactivă",
+  "pending": "în așteptare"
+}

@@ -25,7 +25,13 @@ export function LoginScreen() {
 
     setLoading(true);
     try {
-      await login(email, password);
+      const success = await login(email, password);
+      if (!success) {
+        Alert.alert(
+          t('common.error'),
+          t('auth.errors.invalidCredentials')
+        );
+      }
     } catch (error) {
       Alert.alert(
         t('common.error'),

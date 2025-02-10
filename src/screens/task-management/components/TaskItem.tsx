@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, TextInput } from 'react-nativ
 import { MaterialIcons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { ACCESSIBILITY } from '../../../constants/accessibility';
+import { DateTimeSelector } from './DateTimeSelector';
 import type { Task } from '../../../services/taskService';
 
 interface TaskItemProps {
@@ -105,6 +106,12 @@ const TaskItem: React.FC<TaskItemProps> = ({
               color={ACCESSIBILITY.COLORS.TEXT.SECONDARY}
             />
           </TouchableOpacity>
+
+          <DateTimeSelector
+            dueDate={task.dueDate}
+            reminderMinutes={task.reminderMinutes}
+            onDateTimeChange={(updates) => onUpdate(updates)}
+          />
         </View>
       </View>
     </View>

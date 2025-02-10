@@ -229,16 +229,20 @@ export function useAuth(): UseAuthReturn {
     try {
       setError(null);
       setLoading(true);
+      console.log('useAuth: Attempting login...');
 
       const result = await withRetry(() => signInWithEmail(email, password, t));
+      console.log('useAuth: Login result:', { status: result.status, hasData: !!result.data });
       
       if (result.status === 'error') {
         if (result.error) {
+          console.log('useAuth: Login error:', result.error);
           setError(result.error.message);
         }
         return false;
       }
       if (result.status === 'success' && result.data) {
+        console.log('useAuth: Login successful, updating state...');
         handleUserStateChange(result.data.user);
         await persistCredentials(email, password);
         return true;
@@ -251,7 +255,7 @@ export function useAuth(): UseAuthReturn {
     } finally {
       setLoading(false);
     }
-  }, [t, persistCredentials, handleUserStateChange]);
+  }, [t, handleUserStateChange, persistCredentials]);
 
   /**
    * Register cu retry în caz de eșec

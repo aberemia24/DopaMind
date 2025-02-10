@@ -98,7 +98,8 @@ const TaskManagementScreen: React.FC = () => {
         createdAt: Date.now(),
         updatedAt: Date.now(),
         isPriority: false,
-        period: periodId
+        period: periodId,
+        userId: user.uid
       };
 
       try {
