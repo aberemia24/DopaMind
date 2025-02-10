@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { User, onAuthStateChanged } from 'firebase/auth';
 import { 
   getFirebaseAuth, 
@@ -33,6 +33,32 @@ export interface UseAuthReturn {
 }
 
 /**
+ * Utilitar pentru reîncercarea operațiilor eșuate cu exponential backoff
+ */
+const withRetry = async <T>(
+  operation: () => Promise<T>,
+  maxAttempts = 3,
+  baseDelay = 1000
+): Promise<T> => {
+  let lastError: Error = new Error('Operation failed');
+  
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      return await operation();
+    } catch (error) {
+      lastError = error instanceof Error ? error : new Error(String(error));
+      if (attempt === maxAttempts) break;
+      
+      const delay = baseDelay * Math.pow(2, attempt - 1);
+      await new Promise(resolve => setTimeout(resolve, delay));
+      console.log(`useAuth: Retry attempt ${attempt} after ${delay}ms`);
+    }
+  }
+  
+  throw lastError;
+};
+
+/**
  * Hook principal pentru gestionarea autentificării și a stării user-ului.
  * Folosește useSessionManager pentru timeout/refresh și onAuthStateChanged pentru actualizarea locală.
  */
@@ -46,23 +72,44 @@ export function useAuth(): UseAuthReturn {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [sessionExpired, setSessionExpired] = useState(false);
 
-  /**
-   * Funcție de expirare sesiune:
-   * E apelată de useSessionManager când detectează un timeout.
-   */
-  const handleSessionExpired = useCallback(async () => {
-    console.log('useAuth: Session expired. Logging out...');
-    setSessionExpired(true);
-    await logout();
-  }, []);
+  // Referință pentru funcția logout pentru a evita dependența circulară
+  const logoutRef = useRef<() => Promise<boolean>>();
 
   // Din useSessionManager, obținem un callback pentru update activitate
   const { updateLastActivity } = useSessionManager({
-    onSessionExpired: handleSessionExpired,
+    onSessionExpired: async () => {
+      console.log('useAuth: Session expired. Logging out...');
+      setSessionExpired(true);
+      if (logoutRef.current) {
+        await logoutRef.current();
+      }
+    },
     onTokenRefreshed: () => {
       console.log('useAuth: Token refreshed via useSessionManager');
     },
   });
+
+  /**
+   * Handler centralizat pentru actualizarea stării utilizatorului
+   */
+  const handleUserStateChange = useCallback((newUser: User | null) => {
+    setUser(newUser);
+    setIsAuthenticated(!!newUser);
+    if (newUser) {
+      updateLastActivity();
+      setSessionExpired(false);
+    }
+    setLoading(false);
+  }, [updateLastActivity]);
+
+  /**
+   * Handler centralizat pentru erori de autentificare
+   */
+  const handleAuthError = useCallback((error: unknown) => {
+    console.error('useAuth: Auth error:', error);
+    setError(t(ERROR_TRANSLATIONS.AUTH.DEFAULT));
+    setLoading(false);
+  }, [t]);
 
   // Salvăm credențialele la login
   const persistCredentials = useCallback(
@@ -86,9 +133,8 @@ export function useAuth(): UseAuthReturn {
 
   /**
    * Încearcă reautentificarea cu credențialele salvate.
-   * Gestionează loading state și curăță credențialele în caz de eșec.
    */
-  const attemptReauthentication = useCallback(async (t: TFunction): Promise<boolean> => {
+  const attemptReauthentication = useCallback(async (): Promise<boolean> => {
     setLoading(true);
     try {
       const credsString = await secureStorage.getItem(AUTH_CREDENTIALS_KEY);
@@ -100,7 +146,6 @@ export function useAuth(): UseAuthReturn {
       const { email, password, timestamp } = JSON.parse(credsString);
       const now = Date.now();
       
-      // Verificăm dacă credențialele sunt prea vechi
       if (now - timestamp > AUTH_CONFIG.CREDENTIALS_MAX_AGE_MS) {
         console.log(`useAuth: Saved credentials from ${formatLogTimestamp(timestamp)} are too old, clearing`);
         await secureStorage.removeItem(AUTH_CREDENTIALS_KEY);
@@ -109,10 +154,10 @@ export function useAuth(): UseAuthReturn {
       }
 
       console.log(`useAuth: Attempting reauth with credentials saved at ${formatLogTimestamp(timestamp)}`);
-      const result = await signInWithEmail(email, password, t);
+      const result = await withRetry(() => signInWithEmail(email, password, t));
+      
       if (result.status === 'success' && result.data) {
-        setUser(result.data.user);
-        setIsAuthenticated(true);
+        handleUserStateChange(result.data.user);
         await updateLastActivity();
         return true;
       } else {
@@ -127,13 +172,12 @@ export function useAuth(): UseAuthReturn {
     } finally {
       setLoading(false);
     }
-  }, [updateLastActivity]);
+  }, [t, updateLastActivity, handleUserStateChange]);
 
-  // Inițializează listener pe starea de autentificare
+  // Inițializare și subscripție la schimbări de autentificare
   useEffect(() => {
-    console.log('useAuth: Initializing...');
     let unsubscribe: () => void;
-
+    
     const initAuth = async () => {
       try {
         console.log('useAuth: Initializing Firebase Auth...');
@@ -149,51 +193,44 @@ export function useAuth(): UseAuthReturn {
             });
             
             if (!firebaseUser) {
-              // Doar încercăm reautentificarea dacă nu avem user
-              const reauthed = await attemptReauthentication(t);
+              const reauthed = await attemptReauthentication();
               if (!reauthed) {
-                setUser(null);
-                setIsAuthenticated(false);
+                handleUserStateChange(null);
               }
             } else {
-              setUser(firebaseUser);
-              setIsAuthenticated(true);
-              await updateLastActivity();
+              handleUserStateChange(firebaseUser);
             }
-            setLoading(false);
           }, 
-          (error) => {
-            console.error('useAuth: Auth error:', error);
-            setError(error.message);
-            setLoading(false);
-          }
+          handleAuthError
         );
+
+        // Încercăm reautentificarea inițială doar dacă nu avem user
+        if (!auth.currentUser) {
+          await attemptReauthentication();
+        }
       } catch (error) {
-        console.error('useAuth: Initialization error:', error);
-        setError(error instanceof Error ? error.message : 'Authentication error');
-        setLoading(false);
+        handleAuthError(error instanceof Error ? error : new Error('Authentication error'));
       }
     };
 
     initAuth();
-
     return () => {
       if (unsubscribe) {
         console.log('useAuth: Cleaning up auth listener...');
         unsubscribe();
       }
     };
-  }, [t, attemptReauthentication, updateLastActivity]);
+  }, [attemptReauthentication, handleUserStateChange, handleAuthError]);
 
   /**
-   * Login
+   * Login cu retry în caz de eșec
    */
   const login = useCallback(async (email: string, password: string): Promise<boolean> => {
     try {
       setError(null);
       setLoading(true);
 
-      const result = await signInWithEmail(email, password, t);
+      const result = await withRetry(() => signInWithEmail(email, password, t));
       
       if (result.status === 'error') {
         if (result.error) {
@@ -202,10 +239,8 @@ export function useAuth(): UseAuthReturn {
         return false;
       }
       if (result.status === 'success' && result.data) {
-        setUser(result.data.user);
-        setIsAuthenticated(true);
+        handleUserStateChange(result.data.user);
         await persistCredentials(email, password);
-        await updateLastActivity();
         return true;
       }
       return false;
@@ -216,17 +251,17 @@ export function useAuth(): UseAuthReturn {
     } finally {
       setLoading(false);
     }
-  }, [t, persistCredentials, updateLastActivity]);
+  }, [t, persistCredentials, handleUserStateChange]);
 
   /**
-   * Register
+   * Register cu retry în caz de eșec
    */
   const register = useCallback(async (email: string, password: string): Promise<boolean> => {
     try {
       setError(null);
       setLoading(true);
 
-      const result = await signUpWithEmail(email, password, t);
+      const result = await withRetry(() => signUpWithEmail(email, password, t));
       
       if (result.status === 'error') {
         if (result.error) {
@@ -235,10 +270,8 @@ export function useAuth(): UseAuthReturn {
         return false;
       }
       if (result.status === 'success' && result.data) {
-        setUser(result.data.user);
-        setIsAuthenticated(true);
+        handleUserStateChange(result.data.user);
         await persistCredentials(email, password);
-        await updateLastActivity();
         return true;
       }
       return false;
@@ -249,30 +282,25 @@ export function useAuth(): UseAuthReturn {
     } finally {
       setLoading(false);
     }
-  }, [t, persistCredentials, updateLastActivity]);
+  }, [t, persistCredentials, handleUserStateChange]);
 
   /**
-   * Deconectează utilizatorul și curăță datele locale.
-   * Gestionează loading state și traduce mesajele de eroare.
+   * Logout cu curățarea datelor locale
    */
   const logout = useCallback(async () => {
     setLoading(true);
     setError(null);
 
     try {
-      // Ștergem credențialele din SecureStorage
       await secureStorage.removeItem(AUTH_CREDENTIALS_KEY);
-
-      // Deconectăm din Firebase
-      const result = await firebaseSignOut();
+      const result = await withRetry(() => firebaseSignOut());
 
       if (result.status === 'error' && result.error) {
         setError(t(ERROR_TRANSLATIONS.AUTH.DEFAULT));
         return false;
       }
 
-      setUser(null);
-      setIsAuthenticated(false);
+      handleUserStateChange(null);
       return true;
     } catch (error) {
       setError(t(ERROR_TRANSLATIONS.GENERIC));
@@ -280,29 +308,12 @@ export function useAuth(): UseAuthReturn {
     } finally {
       setLoading(false);
     }
-  }, [t]);
+  }, [t, handleUserStateChange]);
 
-  // Inițializare și subscripție la schimbări de autentificare
+  // Setăm referința pentru logout
   useEffect(() => {
-    const auth = initializeFirebaseAuth();
-    
-    // Încercăm reautentificarea la pornire
-    attemptReauthentication(t);
-
-    // Subscripție la schimbări de autentificare
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
-      setIsAuthenticated(!!user);
-      if (user) {
-        updateLastActivity();
-        setLoading(false);
-      }
-    });
-
-    return () => {
-      unsubscribe();
-    };
-  }, [attemptReauthentication, t, updateLastActivity]);
+    logoutRef.current = logout;
+  }, [logout]);
 
   return {
     user,
