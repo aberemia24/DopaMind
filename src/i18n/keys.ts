@@ -293,3 +293,69 @@ export const COMMON_TRANSLATIONS = {
     MARK_INCOMPLETE: 'common.markIncomplete',
   },
 } as const;
+
+/**
+ * Chei pentru navigare
+ */
+export const NAVIGATION_TRANSLATIONS = {
+  TABS: {
+    TASKS: 'navigation.tabs.tasks',
+    CALENDAR: 'navigation.tabs.calendar',
+    FOCUS: 'navigation.tabs.focus',
+    STATS: 'navigation.tabs.stats',
+    SETTINGS: 'navigation.tabs.settings',
+  },
+  TITLES: {
+    TASK_MANAGEMENT: 'navigation.titles.taskManagement',
+    LOGIN: 'navigation.titles.login',
+    REGISTER: 'navigation.titles.register',
+  },
+} as const;
+
+/**
+ * Chei pentru task management
+ */
+export const TASK_MANAGEMENT_TRANSLATIONS = {
+  TITLE: 'taskManagement.title',
+  FILTERS: {
+    ALL: 'taskManagement.filters.all',
+    ACTIVE: 'taskManagement.filters.active',
+    COMPLETED: 'taskManagement.filters.completed',
+    PRIORITY: 'taskManagement.filters.priority',
+  },
+  BUTTONS: {
+    ADD_TASK: 'taskManagement.buttons.addTask',
+    DELETE_TASK: 'taskManagement.buttons.deleteTask',
+    ADD_PRIORITY: 'taskManagement.buttons.addPriority',
+    REMOVE_PRIORITY: 'taskManagement.buttons.removePriority',
+  },
+  LABELS: {
+    UNTITLED_TASK: 'taskManagement.labels.untitledTask',
+    EDIT_TASK: 'taskManagement.labels.editTask',
+  },
+  ALERTS: {
+    SOFT_LIMIT: {
+      TITLE: 'taskManagement.alerts.softLimit.title',
+      MESSAGE: 'taskManagement.alerts.softLimit.message',
+      CONFIRM: 'taskManagement.alerts.softLimit.confirm',
+    },
+  },
+  ERRORS: {
+    NOT_AUTHENTICATED: 'taskManagement.errors.notAuthenticated',
+    ADD_TASK: 'taskManagement.errors.addTask',
+  },
+  PERIODS: {
+    MORNING: {
+      TITLE: 'taskManagement.periods.morning.title',
+      DESCRIPTION: 'taskManagement.periods.morning.description',
+    },
+    AFTERNOON: {
+      TITLE: 'taskManagement.periods.afternoon.title',
+      DESCRIPTION: 'taskManagement.periods.afternoon.description',
+    },
+    EVENING: {
+      TITLE: 'taskManagement.periods.evening.title',
+      DESCRIPTION: 'taskManagement.periods.evening.description',
+    },
+  },
+} as const;

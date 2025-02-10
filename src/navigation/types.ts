@@ -1,15 +1,29 @@
-import { AuthStackParamList } from './AuthStack';
+import { NavigationProp } from '@react-navigation/native';
 import { AppStackParamList } from './AppStack';
+import { AuthStackParamList } from './AuthStack';
+import { TabParamList } from './TabNavigator';
 
-// Tipuri pentru întregul sistem de navigare
-export type RootStackParamList = AuthStackParamList & AppStackParamList;
+// Tipul pentru navigarea în întreaga aplicație
+export type RootStackParamList = {
+  App: AppStackParamList;
+  Auth: AuthStackParamList;
+};
 
-// Re-exportăm tipurile specifice pentru stive
-export type { AuthStackParamList } from './AuthStack';
-export type { AppStackParamList } from './AppStack';
+// Tipul pentru navigarea în stack-ul autentificat
+export type AppNavigationProp = NavigationProp<AppStackParamList>;
 
+// Tipul pentru navigarea în stack-ul de autentificare
+export type AuthNavigationProp = NavigationProp<AuthStackParamList>;
+
+// Tipul pentru navigarea în tab-uri
+export type TabNavigationProp = NavigationProp<TabParamList>;
+
+// Declarații globale pentru TypeScript
 declare global {
   namespace ReactNavigation {
-    interface RootParamList extends RootStackParamList {}
+    interface RootParamList extends RootStackParamList {
+      App: undefined;
+      Auth: undefined;
+    }
   }
 }

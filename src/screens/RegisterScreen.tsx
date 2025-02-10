@@ -1,34 +1,24 @@
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-  ActivityIndicator,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-} from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../hooks/useAuth';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../navigation/types';
 import { useTranslation } from 'react-i18next';
+import { AuthNavigationProp } from '../navigation/types';
 import { ACCESSIBILITY } from '../constants/accessibility';
 import { AUTH_TRANSLATIONS, ERROR_TRANSLATIONS } from '../i18n/keys';
 
 type Props = {
-  navigation: NativeStackNavigationProp<RootStackParamList, 'Register'>;
 };
 
-export function RegisterScreen({ navigation }: Props) {
+export function RegisterScreen({ }: Props) {
+  const navigation = useNavigation<AuthNavigationProp>();
+  const { t } = useTranslation();
+  const { register, error: authError } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [localError, setLocalError] = useState<string | null>(null);
-  const { register, error: authError } = useAuth();
-  const { t } = useTranslation();
 
   const handleRegister = async () => {
     if (!email || !password || !confirmPassword) {

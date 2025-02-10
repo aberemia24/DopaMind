@@ -1,69 +1,38 @@
-import React, { useState, useRef, useEffect } from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-  ActivityIndicator,
-  KeyboardAvoidingView,
-  Platform,
-  Keyboard,
-  ReturnKeyType,
-} from 'react-native';
-import { useAuth } from '../hooks/useAuth';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../navigation/types';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, Alert, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
+import { useAuth } from '../hooks/useAuth';
 import { ACCESSIBILITY } from '../constants/accessibility';
-import { AUTH_TRANSLATIONS } from '../i18n/keys';
+import { AuthNavigationProp } from '../navigation/types';
 
-type Props = {
-  navigation: NativeStackNavigationProp<RootStackParamList, 'Login'>;
-};
-
-export function LoginScreen({ navigation }: Props) {
+export function LoginScreen() {
+  const navigation = useNavigation<AuthNavigationProp>();
+  const { t } = useTranslation();
+  const { login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [shouldFocusEmail, setShouldFocusEmail] = useState(true);
-  const { login, error } = useAuth();
-  const emailInputRef = useRef<TextInput>(null);
-  const passwordInputRef = useRef<TextInput>(null);
-  const { t } = useTranslation();
-
-  const getReturnKeyType = (key: string): ReturnKeyType => {
-    const map: { [key: string]: ReturnKeyType } = {
-      next: 'next',
-      done: 'done',
-    };
-    return map[key] || 'done';
-  };
-
-  useEffect(() => {
-    console.log('LoginScreen: Se încearcă focusarea email input-ului');
-    emailInputRef.current?.focus();
-  }, []);
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = async () => {
-    if (!email || !password) return;
-    
-    Keyboard.dismiss();
-    setIsLoading(true);
-    const success = await login(email, password);
-    setIsLoading(false);
-    
-    if (success) {
-      setEmail('');
-      setPassword('');
+    if (!email || !password) {
+      Alert.alert(
+        t('common.error'),
+        t('auth.errors.emptyFields')
+      );
+      return;
     }
-  };
 
-  const focusPasswordInput = () => {
-    console.log('LoginScreen: Încercare focusare password input');
-    if (passwordInputRef.current) {
-      passwordInputRef.current.focus();
-      console.log('LoginScreen: Focus executat pe password');
+    setLoading(true);
+    try {
+      await login(email, password);
+    } catch (error) {
+      Alert.alert(
+        t('common.error'),
+        t('auth.errors.invalidCredentials')
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -71,68 +40,58 @@ export function LoginScreen({ navigation }: Props) {
     <KeyboardAvoidingView 
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.container}
-      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
     >
-      <View style={styles.form}>
-        <Text style={styles.title}>{t(AUTH_TRANSLATIONS.LOGIN.WELCOME)}</Text>
+      <ScrollView 
+        contentContainerStyle={styles.scrollContent}
+        keyboardShouldPersistTaps="handled"
+      >
+        <Text style={styles.title}>{t('auth.login.title')}</Text>
         
-        <View style={styles.inputContainer}>
+        <View style={styles.form}>
           <TextInput
-            ref={emailInputRef}
             style={styles.input}
+            placeholder={t('auth.fields.email')}
             value={email}
             onChangeText={setEmail}
-            placeholder={t(AUTH_TRANSLATIONS.FIELDS.EMAIL)}
-            autoCapitalize="none"
             keyboardType="email-address"
-            returnKeyType={getReturnKeyType('next')}
-            onSubmitEditing={focusPasswordInput}
-            blurOnSubmit={false}
-            autoFocus
-            onFocus={() => {
-              console.log('LoginScreen: Email input a primit focus');
-              setShouldFocusEmail(false);
-            }}
-            onBlur={() => console.log('LoginScreen: Email input a pierdut focus')}
+            autoCapitalize="none"
+            autoCorrect={false}
+            accessibilityLabel={t('auth.fields.email')}
           />
-        </View>
-
-        <View style={styles.inputContainer}>
+          
           <TextInput
-            ref={passwordInputRef}
             style={styles.input}
+            placeholder={t('auth.fields.password')}
             value={password}
             onChangeText={setPassword}
-            placeholder={t(AUTH_TRANSLATIONS.FIELDS.PASSWORD)}
             secureTextEntry
-            returnKeyType={getReturnKeyType('done')}
-            onSubmitEditing={handleLogin}
-            onFocus={() => console.log('LoginScreen: Password input a primit focus')}
-            onBlur={() => console.log('LoginScreen: Password input a pierdut focus')}
+            accessibilityLabel={t('auth.fields.password')}
           />
+          
+          <TouchableOpacity
+            style={[styles.button, loading && styles.buttonDisabled]}
+            onPress={handleLogin}
+            disabled={loading}
+            accessibilityRole="button"
+            accessibilityLabel={t('auth.buttons.login')}
+            accessibilityState={{ disabled: loading }}
+          >
+            <Text style={styles.buttonText}>
+              {loading ? t('common.loading') : t('auth.buttons.login')}
+            </Text>
+          </TouchableOpacity>
         </View>
         
-        {error && <Text style={styles.error}>{error}</Text>}
-        
-        <TouchableOpacity 
-          style={[styles.button, isLoading && styles.buttonDisabled]}
-          onPress={handleLogin}
-          disabled={isLoading}
-        >
-          {isLoading ? (
-            <ActivityIndicator color="#fff" />
-          ) : (
-            <Text style={styles.buttonText}>{t(AUTH_TRANSLATIONS.LOGIN.SUBMIT)}</Text>
-          )}
-        </TouchableOpacity>
-
-        <TouchableOpacity 
-          style={styles.registerButton}
+        <TouchableOpacity
           onPress={() => navigation.navigate('Register')}
+          accessibilityRole="button"
+          accessibilityLabel={t('auth.buttons.createAccount')}
         >
-          <Text style={styles.registerText}>{t(AUTH_TRANSLATIONS.LOGIN.NO_ACCOUNT)}</Text>
+          <Text style={styles.registerText}>
+            {t('auth.login.noAccount')}
+          </Text>
         </TouchableOpacity>
-      </View>
+      </ScrollView>
     </KeyboardAvoidingView>
   );
 }
@@ -142,53 +101,52 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: ACCESSIBILITY.COLORS.BACKGROUND.PRIMARY,
   },
-  form: {
-    flex: 1,
-    padding: 20,
+  scrollContent: {
+    flexGrow: 1,
     justifyContent: 'center',
+    padding: ACCESSIBILITY.SPACING.XL,
   },
   title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#1F2937',
-    marginBottom: 24,
+    fontSize: ACCESSIBILITY.TYPOGRAPHY.SIZES.XXL,
+    fontWeight: ACCESSIBILITY.TYPOGRAPHY.WEIGHTS.BOLD,
+    color: ACCESSIBILITY.COLORS.TEXT.PRIMARY,
+    marginBottom: ACCESSIBILITY.SPACING.XL,
     textAlign: 'center',
   },
-  inputContainer: {
-    marginBottom: 16,
+  form: {
+    width: '100%',
+    maxWidth: 400,
+    alignSelf: 'center',
   },
   input: {
-    backgroundColor: '#F3F4F6',
+    backgroundColor: ACCESSIBILITY.COLORS.BACKGROUND.SECONDARY,
     borderRadius: 8,
-    padding: 16,
-    fontSize: 16,
+    padding: ACCESSIBILITY.SPACING.MD,
+    marginBottom: ACCESSIBILITY.SPACING.MD,
+    minHeight: ACCESSIBILITY.TOUCH_TARGET.MIN_HEIGHT,
+    fontSize: ACCESSIBILITY.TYPOGRAPHY.SIZES.BASE,
   },
   button: {
-    backgroundColor: '#7C3AED',
+    backgroundColor: ACCESSIBILITY.COLORS.INTERACTIVE.PRIMARY,
+    padding: ACCESSIBILITY.SPACING.MD,
     borderRadius: 8,
-    padding: 16,
+    minHeight: ACCESSIBILITY.TOUCH_TARGET.MIN_HEIGHT,
+    justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 8,
+    marginTop: ACCESSIBILITY.SPACING.MD,
   },
   buttonDisabled: {
-    backgroundColor: '#9CA3AF',
+    opacity: 0.7,
   },
   buttonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  error: {
-    color: '#EF4444',
-    marginBottom: 16,
-    textAlign: 'center',
-  },
-  registerButton: {
-    marginTop: 16,
-    alignItems: 'center',
+    color: '#FFFFFF',
+    fontSize: ACCESSIBILITY.TYPOGRAPHY.SIZES.LG,
+    fontWeight: ACCESSIBILITY.TYPOGRAPHY.WEIGHTS.MEDIUM,
   },
   registerText: {
-    color: '#7C3AED',
-    fontSize: 14,
+    color: ACCESSIBILITY.COLORS.INTERACTIVE.PRIMARY,
+    fontSize: ACCESSIBILITY.TYPOGRAPHY.SIZES.BASE,
+    textAlign: 'center',
+    marginTop: ACCESSIBILITY.SPACING.XL,
   },
 });

@@ -10,11 +10,20 @@ export type RouteConfig = {
  * Configurare rute cu reguli de acces
  */
 export const routeConfigs: RouteConfig[] = [
-  { name: 'Home', requiresAuth: true },
-  { name: 'TaskManagement', requiresAuth: true },
-  { name: 'Profile', requiresAuth: true },
+  // Tab Routes
+  { name: 'Tasks', requiresAuth: true },
+  { name: 'Calendar', requiresAuth: true },
+  { name: 'Focus', requiresAuth: true },
+  { name: 'Stats', requiresAuth: true },
   { name: 'Settings', requiresAuth: true },
+  
+  // Stack Routes
+  { name: 'MainTabs', requiresAuth: true },
+  { name: 'TaskManagement', requiresAuth: true }, // Pentru backwards compatibility
   { name: 'CrisisButton', requiresAuth: true, allowedPlatforms: ['ios', 'android'] },
+  
+  // Auth Routes
+  { name: 'Welcome', requiresAuth: false },
   { name: 'Login', requiresAuth: false },
   { name: 'Register', requiresAuth: false }
 ];

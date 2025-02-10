@@ -1,9 +1,12 @@
+import { MaterialIcons } from '@expo/vector-icons';
+
 export interface TimePeriod {
-  id: string;
+  id: TimePeriodKey;
   label: string;
-  icon: string;
+  icon: keyof typeof MaterialIcons.glyphMap;
   timeFrame: string;
   description: string;
+  titleKey: string;
 }
 
 interface TaskPriority {
@@ -18,31 +21,34 @@ interface TimeEstimate {
   icon: string;
 }
 
-export const TIME_PERIODS = {
+export type TimePeriodKey = 'MORNING' | 'AFTERNOON' | 'EVENING';
+
+export const TIME_PERIODS: Record<TimePeriodKey, TimePeriod> = {
   MORNING: {
-    id: 'morning',
+    id: 'MORNING',
     label: 'morning',
-    icon: '🌅',
+    icon: 'wb-sunny',
     timeFrame: '06:00 - 12:00',
-    description: 'morning'
+    description: 'morning',
+    titleKey: 'taskManagement.periods.morning.title'
   },
   AFTERNOON: {
-    id: 'afternoon',
+    id: 'AFTERNOON',
     label: 'afternoon',
-    icon: '☀️',
+    icon: 'wb-sunny',
     timeFrame: '12:00 - 18:00',
-    description: 'afternoon'
+    description: 'afternoon',
+    titleKey: 'taskManagement.periods.afternoon.title'
   },
   EVENING: {
-    id: 'evening',
+    id: 'EVENING',
     label: 'evening',
-    icon: '🌙',
+    icon: 'nights-stay',
     timeFrame: '18:00 - 23:00',
-    description: 'evening'
+    description: 'evening',
+    titleKey: 'taskManagement.periods.evening.title'
   }
 } as const;
-
-export type TimePeriodKey = keyof typeof TIME_PERIODS;
 
 export const TASK_STATUS = {
   NOT_STARTED: 'not_started',

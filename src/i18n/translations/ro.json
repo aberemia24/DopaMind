@@ -21,7 +21,8 @@
     "markComplete": "marchează ca finalizată",
     "markIncomplete": "marchează ca nefinalizată",
     "signOut": "Deconectare",
-    "ok": "OK"
+    "ok": "OK",
+    "comingSoon": "În curând..."
   },
   "errors": {
     "network": {
@@ -181,35 +182,72 @@
     }
   },
   "taskManagement": {
-    "title": "Gestionare Sarcini",
-    "addTask": "Adaugă Sarcină",
-    "editTask": "Editează Sarcina",
-    "deleteTask": "Șterge Sarcina",
-    "taskName": "Numele Sarcinii",
-    "priority": "Prioritate",
-    "dueDate": "Data Scadentă",
-    "status": "Status",
-    "timeSlots": {
-      "morning": "Dimineață",
-      "afternoon": "După-amiază",
-      "evening": "Seară"
+    "title": "Sarcinile Mele",
+    "filters": {
+      "all": "toate",
+      "active": "active",
+      "completed": "finalizate",
+      "priority": "prioritare"
     },
-    "addPriorityTask": "Adaugă un task prioritar",
-    "errors": {
-      "notAuthenticated": "Trebuie să fii autentificat pentru a gestiona sarcini",
-      "addTaskFailed": "Nu s-a putut adăuga sarcina",
-      "updateTaskFailed": "Nu s-a putut actualiza sarcina",
-      "deleteTaskFailed": "Nu s-a putut șterge sarcina"
+    "buttons": {
+      "addTask": "Adaugă sarcină",
+      "deleteTask": "Șterge sarcina",
+      "addPriority": "Marchează ca prioritară",
+      "removePriority": "Elimină prioritatea",
+      "editTask": "Editează sarcina"
+    },
+    "labels": {
+      "untitledTask": "sarcină fără titlu",
+      "editTask": "editează sarcina",
+      "taskName": "Numele sarcinii",
+      "priority": "Prioritate",
+      "dueDate": "Data scadentă",
+      "status": "Status"
     },
     "alerts": {
       "softLimit": {
-        "title": "Ești sigur?",
-        "message": "Ai deja 3 sau mai multe task-uri. Este recomandat să nu ai prea multe task-uri simultan pentru a evita supraîncărcarea. Vrei să continui?",
-        "confirm": "Da, adaug task"
+        "title": "Limită de sarcini",
+        "message": "Ai deja multe sarcini active pentru această perioadă. Ești sigur că vrei să adaugi încă una?",
+        "confirm": "Da, adaugă"
+      },
+      "deleteConfirm": {
+        "title": "Confirmare ștergere",
+        "message": "Ești sigur că vrei să ștergi această sarcină?",
+        "confirm": "Da, șterge",
+        "cancel": "Nu, renunță"
+      }
+    },
+    "errors": {
+      "notAuthenticated": "Trebuie să fii conectat pentru a gestiona sarcinile",
+      "addTask": "Nu s-a putut adăuga sarcina. Te rugăm să încerci din nou.",
+      "updateTask": "Nu s-a putut actualiza sarcina. Te rugăm să încerci din nou.",
+      "deleteTask": "Nu s-a putut șterge sarcina. Te rugăm să încerci din nou."
+    },
+    "periods": {
+      "morning": {
+        "title": "dimineață",
+        "description": "Sarcinile tale pentru dimineață"
+      },
+      "afternoon": {
+        "title": "după-amiază",
+        "description": "Sarcinile tale pentru după-amiază"
+      },
+      "evening": {
+        "title": "seară",
+        "description": "Sarcinile tale pentru seară"
       }
     },
     "accessibility": {
-      "taskList": "Listă de sarcini organizate pe perioade de timp"
+      "taskList": "Listă de sarcini organizate pe perioade de timp",
+      "taskStatus": "Sarcina {{title}} este {{status}}",
+      "toggleComplete": "{{action}} sarcina",
+      "editMode": "Editare sarcină",
+      "editTitle": "Editează titlul sarcinii",
+      "editTitleHint": "Introdu noul titlu al sarcinii",
+      "validation": {
+        "titleTooShort": "Titlul trebuie să aibă cel puțin 3 caractere",
+        "titleRequired": "Titlul este obligatoriu"
+      }
     }
   },
   "taskFilter": {
@@ -250,6 +288,13 @@
     }
   },
   "navigation": {
+    "tabs": {
+      "tasks": "Sarcini",
+      "calendar": "Calendar",
+      "focus": "Focus",
+      "stats": "Statistici",
+      "settings": "Setări"
+    },
     "titles": {
       "welcome": "Bine ai venit",
       "login": "Conectare",
@@ -374,5 +419,25 @@
         }
       }
     }
+  },
+  "calendar": {
+    "title": "Calendar",
+    "description": "Vizualizează și planifică-ți sarcinile în calendar"
+  },
+  "focus": {
+    "title": "Focus Mode",
+    "description": "Concentrează-te pe sarcinile importante folosind timer-ul și sunetele ambientale"
+  },
+  "stats": {
+    "title": "Statistici",
+    "description": "Vizualizează progresul și obiceiurile tale"
+  },
+  "settings": {
+    "title": "Setări",
+    "account": "Cont",
+    "preferences": "Preferințe",
+    "theme": "Temă",
+    "notifications": "Notificări",
+    "language": "Limbă"
   }
 }

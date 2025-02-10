@@ -15,6 +15,7 @@ export const ACCESSIBILITY = {
       PRIMARY: '#111827',    // Contrast ratio 16:1
       SECONDARY: '#4B5563',  // Contrast ratio 9:1
       DISABLED: '#6B7280',   // Contrast ratio 7:1
+      ON_INTERACTIVE: '#FFFFFF',
     },
     
     // Background colors
@@ -70,9 +71,10 @@ export const ACCESSIBILITY = {
   SPACING: {
     XS: 4,
     SM: 8,
-    MD: 16,
-    LG: 24,
-    XL: 32,
-    XXL: 40,
+    BASE: 16,
+    MD: 24, 
+    LG: 32,
+    XL: 48,
+    XXL: 64,
   },
-};
+} as const;

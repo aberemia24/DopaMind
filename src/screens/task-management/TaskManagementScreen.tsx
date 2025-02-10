@@ -1,24 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { 
-  View,
-  ScrollView,
-  StyleSheet,
-  SafeAreaView,
-  KeyboardAvoidingView,
+  View, 
+  StyleSheet, 
+  ScrollView, 
+  SafeAreaView, 
+  KeyboardAvoidingView, 
   Platform,
   Alert,
   TouchableOpacity,
-  Text,
+  Text 
 } from 'react-native';
-import TimeSection from '../components/TaskManagement/TimeSection';
-import TaskFilter, { FilterOption } from '../components/TaskManagement/TaskFilter';
-import { TIME_PERIODS, type TimePeriodKey } from '../constants/taskTypes';
-import { useAuth } from '../hooks/useAuth';
 import { useTranslation } from 'react-i18next';
 import { MaterialIcons } from '@expo/vector-icons';
-import type { Task } from '../services/taskService';
-import { ACCESSIBILITY } from '../constants/accessibility';
-import { useTaskContext } from '../contexts/TaskContext';
+import TimeSection from './components/TimeSection';
+import TaskFilter, { FilterOption } from './components/TaskFilter';
+import { TIME_PERIODS, type TimePeriodKey } from '../../constants/taskTypes';
+import { useTaskContext } from '../../contexts/TaskContext';
+import { ACCESSIBILITY } from '../../constants/accessibility';
+import { useAuth } from '../../hooks/useAuth';
+import type { Task } from '../../services/taskService';
 
 const TaskManagementScreen: React.FC = () => {
   const { logout, user, isAuthenticated } = useAuth();

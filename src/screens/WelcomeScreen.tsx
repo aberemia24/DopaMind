@@ -9,17 +9,14 @@ import {
 import { MaterialIcons } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
 import { OnboardingSlides } from '../components/Onboarding/OnboardingSlides';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../navigation/types';
+import { useNavigation } from '@react-navigation/native';
+import { AuthNavigationProp } from '../navigation/types';
 import { useTranslation } from 'react-i18next';
 import { ACCESSIBILITY } from '../constants/accessibility';
 import { WELCOME_TRANSLATIONS } from '../i18n/keys';
 
-type Props = {
-  navigation: NativeStackNavigationProp<RootStackParamList, 'Welcome'>;
-};
-
-export function WelcomeScreen({ navigation }: Props) {
+export function WelcomeScreen() {
+  const navigation = useNavigation<AuthNavigationProp>();
   const { t } = useTranslation();
   
   const handleEmailLogin = () => {
