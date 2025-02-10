@@ -10,7 +10,13 @@ interface TimePickerProps {
   onReminderChange: (minutes: number) => void;
 }
 
-const TIME_SLOTS = [
+type TimeSlot = {
+  period: string;
+  time: string;
+  icon: keyof typeof MaterialIcons.glyphMap;
+};
+
+const TIME_SLOTS: TimeSlot[] = [
   { period: 'morning', time: '09:00', icon: 'wb-sunny' },
   { period: 'afternoon', time: '14:00', icon: 'wb-sunny' },
   { period: 'evening', time: '20:00', icon: 'dark-mode' }

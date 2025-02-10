@@ -88,20 +88,20 @@ function Test-KeyNamingConvention {
         }
         
         if ($segment -cmatch '^[A-Z]' -or $segment -match '[^a-zA-Z0-9\[\]]') {
-            Log-Report "WARNING: Segmentul '$segment' din cheia '$Key' nu respectă convenția camelCase."
+            Write-TranslationLog "WARNING: Segmentul '$segment' din cheia '$Key' nu respectă convenția camelCase." -Warning
             $isValid = $false
         }
     }
     
     if ($segments.Count -gt 4) {
-        Log-Report "WARNING: Cheia '$Key' depășește adâncimea maximă permisă (4 nivele)."
+        Write-TranslationLog "WARNING: Cheia '$Key' depășește adâncimea maximă permisă (4 nivele)." -Warning
         $isValid = $false
     }
     
     return $isValid
 }
 
-function Log-Report {
+function Write-TranslationLog {
     param (
         [Parameter(Mandatory=$true)]
         [string]$Message,
@@ -172,7 +172,7 @@ function Compare-TranslationValues {
         $enValue = $enValues[$key]
         
         if ($roValue -eq $enValue) {
-            Log-Report "WARNING: Valoare identică găsită pentru cheia '$key': RO='$roValue', EN='$enValue'" -Warning
+            Write-TranslationLog "WARNING: Valoare identică găsită pentru cheia '$key': RO='$roValue', EN='$enValue'" -Warning
         }
     }
 }
@@ -181,7 +181,7 @@ function Compare-TranslationValues {
 $script:reportPath = "translation_validation_report.txt"
 Remove-Item $script:reportPath -ErrorAction SilentlyContinue
 
-Log-Report "Validare fișiere de traduceri..."
+Write-TranslationLog "Validare fișiere de traduceri..."
 
 try {
     # Citire fișiere JSON
@@ -197,16 +197,16 @@ try {
     $missingInRo = $enKeys | Where-Object { $_ -notin $roKeys }
     
     if ($missingInEn) {
-        Log-Report "WARNING: Chei lipsă în en.json:" -Warning
+        Write-TranslationLog "WARNING: Chei lipsă în en.json:" -Warning
         foreach ($key in $missingInEn) {
-            Log-Report "WARNING:   - $key" -Warning
+            Write-TranslationLog "WARNING:   - $key" -Warning
         }
     }
     
     if ($missingInRo) {
-        Log-Report "WARNING: Chei lipsă în ro.json:" -Warning
+        Write-TranslationLog "WARNING: Chei lipsă în ro.json:" -Warning
         foreach ($key in $missingInRo) {
-            Log-Report "WARNING:   - $key" -Warning
+            Write-TranslationLog "WARNING:   - $key" -Warning
         }
     }
     
@@ -222,24 +222,24 @@ try {
     Compare-TranslationValues -RoContent $roContent -EnContent $enContent
     
     # Raport final
-    Log-Report "`nRezultat validare:"
-    Log-Report "Total chei în ro.json: $($roKeys.Count)"
-    Log-Report "Total chei în en.json: $($enKeys.Count)"
-    Log-Report "Chei lipsă în en.json: $($missingInEn.Count)"
-    Log-Report "Chei lipsă în ro.json: $($missingInRo.Count)"
-    Log-Report "Chei cu probleme de convenție: $($invalidKeys.Count)"
+    Write-TranslationLog "`nRezultat validare:"
+    Write-TranslationLog "Total chei în ro.json: $($roKeys.Count)"
+    Write-TranslationLog "Total chei în en.json: $($enKeys.Count)"
+    Write-TranslationLog "Chei lipsă în en.json: $($missingInEn.Count)"
+    Write-TranslationLog "Chei lipsă în ro.json: $($missingInRo.Count)"
+    Write-TranslationLog "Chei cu probleme de convenție: $($invalidKeys.Count)"
     
     # Verificare succes/eșec
     $hasErrors = $missingInEn.Count -gt 0 -or $missingInRo.Count -gt 0 -or $invalidKeys.Count -gt 0
     
     if ($hasErrors) {
-        Log-Report "ERROR: S-au găsit probleme în fișierele de traduceri!" -Error
+        Write-TranslationLog "ERROR: S-au găsit probleme în fișierele de traduceri!" -Error
         exit 1
     } else {
-        Log-Report "`nValidare completă cu succes!"
+        Write-TranslationLog "`nValidare completă cu succes!"
         exit 0
     }
 } catch {
-    Log-Report "ERROR: A apărut o eroare în timpul validării: $_" -Error
+    Write-TranslationLog "ERROR: A apărut o eroare în timpul validării: $_" -Error
     exit 1
 }
