@@ -1,23 +1,17 @@
-import { collection, addDoc, updateDoc, deleteDoc, doc, query, where, getDocs } from 'firebase/firestore';
+import { getDocs, query, collection, where, addDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore';
 import { getFirebaseFirestore } from '../config/firebase';
-import { TimePeriodKey } from '../constants/taskTypes';
-import { TaskTagKey } from '../constants/taskTags';
-
-const COLLECTION_NAME = 'tasks';
+import type { TimePeriodKey } from '../constants/taskTypes';
 
 export interface Task {
   id: string;
   title: string;
   description?: string;
   completed: boolean;
+  isPriority: boolean;
+  period: TimePeriodKey;
   userId: string;
-  periodId: TimePeriodKey;
-  tags?: TaskTagKey[];
-  estimatedTime?: number;
-  actualTime?: number;
-  createdAt: string;
-  updatedAt?: string;
-  isPriority?: boolean;
+  createdAt: number;
+  updatedAt: number;
 }
 
 export interface TasksByPeriod {
@@ -26,79 +20,160 @@ export interface TasksByPeriod {
   EVENING: Task[];
 }
 
-export type TaskInput = Omit<Task, 'id' | 'userId' | 'periodId' | 'createdAt' | 'updatedAt'>;
-export type TaskUpdate = Partial<Omit<Task, 'id' | 'userId' | 'createdAt' | 'updatedAt'>>;
+interface TaskData extends Omit<Task, 'id'> {
+  // Toate câmpurile din Task exceptând id, care este adăugat de Firestore
+}
 
+const TASKS_COLLECTION = 'tasks';
+
+/**
+ * Validează datele unui task primite de la Firestore
+ * @throws Error dacă datele nu sunt valide
+ */
+const validateTaskData = (data: unknown): TaskData => {
+  if (!data || typeof data !== 'object') {
+    throw new Error('Invalid task data: data must be an object');
+  }
+
+  const {
+    title,
+    description,
+    completed,
+    isPriority,
+    period,
+    userId,
+    createdAt,
+    updatedAt
+  } = data as Record<string, unknown>;
+
+  if (typeof title !== 'string' || !title) {
+    throw new Error('Invalid task data: title must be a non-empty string');
+  }
+
+  if (description !== undefined && typeof description !== 'string') {
+    throw new Error('Invalid task data: description must be a string if present');
+  }
+
+  if (typeof completed !== 'boolean') {
+    throw new Error('Invalid task data: completed must be a boolean');
+  }
+
+  if (typeof isPriority !== 'boolean') {
+    throw new Error('Invalid task data: isPriority must be a boolean');
+  }
+
+  if (!['MORNING', 'AFTERNOON', 'EVENING'].includes(period as string)) {
+    throw new Error('Invalid task data: invalid period');
+  }
+
+  if (typeof userId !== 'string' || !userId) {
+    throw new Error('Invalid task data: userId must be a non-empty string');
+  }
+
+  if (typeof createdAt !== 'number' || !Number.isFinite(createdAt)) {
+    throw new Error('Invalid task data: createdAt must be a valid timestamp');
+  }
+
+  if (typeof updatedAt !== 'number' || !Number.isFinite(updatedAt)) {
+    throw new Error('Invalid task data: updatedAt must be a valid timestamp');
+  }
+
+  return {
+    title,
+    description,
+    completed,
+    isPriority,
+    period: period as TimePeriodKey,
+    userId,
+    createdAt,
+    updatedAt
+  };
+};
+
+/**
+ * Preia task-urile unui utilizator grupate pe perioade
+ */
 export const fetchTasks = async (userId: string): Promise<TasksByPeriod> => {
   try {
     const db = getFirebaseFirestore();
     const tasksQuery = query(
-      collection(db, COLLECTION_NAME),
+      collection(db, TASKS_COLLECTION),
       where('userId', '==', userId)
     );
-    
+
     const querySnapshot = await getDocs(tasksQuery);
-    const tasks: TasksByPeriod = {
+    const result: TasksByPeriod = {
       MORNING: [],
       AFTERNOON: [],
       EVENING: []
     };
 
     querySnapshot.forEach((doc) => {
-      const task = { id: doc.id, ...doc.data() } as Task;
-      tasks[task.periodId].push(task);
+      try {
+        const validatedData = validateTaskData(doc.data());
+        const task: Task = {
+          id: doc.id,
+          ...validatedData
+        };
+        result[task.period].push(task);
+      } catch (error) {
+        console.error(`Error processing task ${doc.id}:`, error);
+        // Continuăm cu următorul task în caz de eroare
+      }
     });
 
-    return tasks;
+    return result;
   } catch (error) {
     console.error('Error fetching tasks:', error);
     throw error;
   }
 };
 
-export const addTask = async (
-  userId: string, 
-  periodId: TimePeriodKey, 
-  task: TaskInput
-): Promise<Task> => {
+/**
+ * Adaugă un task nou
+ */
+export const addTask = async (taskData: Omit<Task, 'id'>): Promise<Task> => {
   try {
     const db = getFirebaseFirestore();
-    const taskData = {
-      ...task,
-      userId,
-      periodId,
-      createdAt: new Date().toISOString()
+    const docRef = await addDoc(collection(db, TASKS_COLLECTION), taskData);
+    return {
+      id: docRef.id,
+      ...taskData
     };
-    
-    const docRef = await addDoc(collection(db, COLLECTION_NAME), taskData);
-    return { id: docRef.id, ...taskData } as Task;
   } catch (error) {
     console.error('Error adding task:', error);
     throw error;
   }
 };
 
-export const updateTask = async (taskId: string, updates: TaskUpdate): Promise<Task> => {
+/**
+ * Actualizează un task existent
+ */
+export const updateTask = async (
+  taskId: string,
+  updates: Partial<Omit<Task, 'id'>>
+): Promise<void> => {
   try {
     const db = getFirebaseFirestore();
-    const taskRef = doc(db, COLLECTION_NAME, taskId);
-    const updateData = {
+    const taskRef = doc(db, TASKS_COLLECTION, taskId);
+    await updateDoc(taskRef, {
       ...updates,
-      updatedAt: new Date().toISOString()
-    };
-    await updateDoc(taskRef, updateData);
-    return { id: taskId, ...updates } as Task;
+      updatedAt: Date.now()
+    });
   } catch (error) {
     console.error('Error updating task:', error);
     throw error;
   }
 };
 
-export const deleteTask = async (taskId: string): Promise<string> => {
+/**
+ * Șterge un task
+ */
+export const deleteTask = async (taskId: string): Promise<void> => {
   try {
     const db = getFirebaseFirestore();
-    await deleteDoc(doc(db, COLLECTION_NAME, taskId));
-    return taskId;
+    const taskRef = doc(db, TASKS_COLLECTION, taskId);
+    await deleteDoc(taskRef);
   } catch (error) {
     console.error('Error deleting task:', error);
     throw error;

@@ -191,13 +191,13 @@ const TaskItem: React.FC<TaskItemProps> = React.memo(({
             </Text>
             <Text style={styles.metadata}>
               {t(TASK_TRANSLATIONS.ITEM.METADATA.CREATED, {
-                date: formatRelativeTime(t, task.createdAt)
+                date: formatRelativeTime(t, task.createdAt.toString())
               })}
               {task.updatedAt && (
                 <>
                   {' • '}
                   {t(TASK_TRANSLATIONS.ITEM.METADATA.UPDATED, {
-                    date: formatRelativeTime(t, task.updatedAt)
+                    date: formatRelativeTime(t, task.updatedAt.toString())
                   })}
                 </>
               )}
