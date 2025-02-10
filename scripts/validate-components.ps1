@@ -9,19 +9,19 @@ function Test-ComponentNaming {
     
     # Verifică dacă numele componentei începe cu literă mare
     if ($fileName -cmatch '^[a-z]') {
-        Write-Warning "Componenta $fileName ar trebui să înceapă cu literă mare"
+        Write-Warning "Componenta '$fileName' ar trebui să înceapă cu literă mare"
         return $false
     }
     
     # Verifică dacă componenta are Props interface
     if (-not ($content -match 'interface\s+\w+Props')) {
-        Write-Warning "Componenta $fileName ar trebui să aibă o interfață Props definită"
+        Write-Warning "Componenta '$fileName' ar trebui să aibă o interfață Props definită"
         return $false
     }
     
     # Verifică dacă componenta folosește React.FC
     if (-not ($content -match 'React\.FC<\w+Props>')) {
-        Write-Warning "Componenta $fileName ar trebui să folosească React.FC cu Props"
+        Write-Warning "Componenta '$fileName' ar trebui să folosească React.FC cu Props"
         return $false
     }
     
@@ -50,7 +50,7 @@ function Test-AccessibilityProps {
     }
     
     if ($missingProps.Count -gt 0) {
-        Write-Warning "Lipsesc următoarele props-uri de accesibilitate în $FilePath: $($missingProps -join ', ')"
+        Write-Warning ("Lipsesc următoarele props-uri de accesibilitate în '{0}': {1}" -f $FilePath, ($missingProps -join ', '))
         return $false
     }
     
@@ -66,14 +66,14 @@ function Test-TranslationUsage {
     
     # Verifică dacă se folosește useTranslation
     if (-not ($content -match 'useTranslation')) {
-        Write-Warning "Componenta nu folosește hook-ul useTranslation în $FilePath"
+        Write-Warning "Componenta nu folosește hook-ul useTranslation în '$FilePath'"
         return $false
     }
     
     # Verifică dacă există text hardcodat
     $hardcodedTextPattern = '>[^{]+<'
     if ($content -match $hardcodedTextPattern) {
-        Write-Warning "Text hardcodat găsit în $FilePath"
+        Write-Warning "Text hardcodat găsit în '$FilePath'"
         return $false
     }
     
@@ -91,7 +91,7 @@ $validComponents = 0
 
 foreach ($file in $componentFiles) {
     $isValid = $true
-    Write-Host "`nValidare $($file.Name)..."
+    Write-Host "`nValidare '$($file.Name)'..."
     
     if (-not (Test-ComponentNaming -FilePath $file.FullName)) {
         $isValid = $false
