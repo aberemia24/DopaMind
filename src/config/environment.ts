@@ -90,6 +90,7 @@ export const SESSION_CONFIG = {
 export const AUTH_CONFIG = {
   CREDENTIALS_MAX_AGE_MS: 30 * 24 * 60 * 60 * 1000, // 30 zile
   TOKEN_REFRESH_INTERVAL_MS: 60 * 60 * 1000, // 1 oră
+  AUTH_SALT: 'DopaMind_v1', // Salt pentru criptare
 } as const;
 
 /**
