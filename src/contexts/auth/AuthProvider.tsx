@@ -197,9 +197,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
         return false;
       }
 
+      // Salvăm credențialele direct în secure storage
+      // Este sigur pentru că secureStorage folosește criptare la nivel de sistem
       const credentials: StoredCredentials = {
         email,
-        password,
+        password, // Salvăm parola în formă clară pentru reautentificare
         timestamp: Date.now()
       };
 
@@ -286,24 +288,24 @@ export function AuthProvider({ children }: AuthProviderProps) {
   // Reautentificare cu email/parolă
   const attemptEmailReauth = useCallback(async (email: string, password: string): Promise<boolean> => {
     try {
-      console.log('AuthProvider: Încercare reautentificare...');
-      
-      const user = getFirebaseAuth().currentUser;
-      if (!user) {
-        console.error('AuthProvider: Nu există utilizator curent pentru reautentificare');
-        return false;
+      console.log('AuthProvider: Încercare reautentificare cu email...');
+      const auth = getFirebaseAuth();
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      if (userCredential.user) {
+        console.log('AuthProvider: Reauth successful using email credentials');
+        await handleUserStateChange(userCredential.user);
+        setLoading(false);
+        return true;
       }
-
-      const credential = EmailAuthProvider.credential(email, password);
-      await reauthenticateWithCredential(user, credential);
-      
-      console.log('AuthProvider: Reautentificare reușită');
-      return true;
+      setLoading(false);
+      return false;
     } catch (error) {
-      console.error('AuthProvider: Eroare la reautentificare:', error);
+      console.error('AuthProvider: Email reauth error:', error);
+      await cleanupAuthData(true);
+      setLoading(false);
       return false;
     }
-  }, []);
+  }, [handleUserStateChange, cleanupAuthData]);
 
   // Reautentificare cu Google
   const attemptGoogleReauth = useCallback(async (): Promise<boolean> => {
@@ -374,6 +376,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     
     if (now - lastReauthAttempt.current < AUTH_CONFIG.MIN_REAUTH_INTERVAL) {
       console.log('AuthProvider: Skipping reauth due to cooldown');
+      setLoading(false);
       return false;
     }
     lastReauthAttempt.current = now;
@@ -383,6 +386,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       const storedCreds = await checkStoredCredentials();
       if (!storedCreds) {
         console.log('AuthProvider: Nu există credențiale valide stocate');
+        setLoading(false);
         return false;
       }
 
@@ -405,6 +409,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       if (!result) {
         console.log('AuthProvider: Reautentificare eșuată - curățare date');
         await cleanupAuthData();
+        setLoading(false);
       } else {
         console.log('AuthProvider: Reautentificare reușită');
       }
@@ -413,6 +418,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     } catch (error) {
       console.error('AuthProvider: Eroare la reautentificare:', error);
       await cleanupAuthData();
+      setLoading(false);
       return false;
     }
   }, [attemptEmailReauth, attemptGoogleReauth, cleanupAuthData, checkStoredCredentials]);
@@ -449,17 +455,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       
       if (userCredential.user) {
-        console.log('AuthProvider: Autentificare reușită, salvare token-uri...');
-        const token = await userCredential.user.getIdToken();
-        await persistTokens({
-          idToken: token,
-          refreshToken: userCredential.user.refreshToken,
-          expiresAt: Date.now() + AUTH_CONFIG.TOKEN_EXPIRY_MS
-        });
-
-        console.log('AuthProvider: Salvare metodă de autentificare...');
-        await secureStorage.setItem(AUTH_METHOD_KEY, 'email');
-        
+        // 1. Mai întâi salvăm credențialele pentru reautentificare
         console.log('AuthProvider: Salvare credențiale...');
         const success = await persistCredentials(email, password);
         if (!success) {
@@ -467,7 +463,25 @@ export function AuthProvider({ children }: AuthProviderProps) {
           return false;
         }
 
-        console.log('AuthProvider: Actualizare stare utilizator...');
+        // 2. Setăm metoda de autentificare
+        console.log('AuthProvider: Salvare metodă de autentificare...');
+        await secureStorage.setItem(AUTH_METHOD_KEY, 'email');
+        
+        // 3. Salvăm token-urile (opțional - dacă eșuează, tot avem credențialele)
+        try {
+          console.log('AuthProvider: Salvare token-uri...');
+          const token = await userCredential.user.getIdToken();
+          await persistTokens({
+            idToken: token,
+            refreshToken: userCredential.user.refreshToken,
+            expiresAt: Date.now() + AUTH_CONFIG.TOKEN_EXPIRY_MS
+          });
+        } catch (tokenError) {
+          console.warn('AuthProvider: Eroare la salvarea token-urilor:', tokenError);
+          // Continuăm chiar dacă eșuează salvarea token-urilor
+        }
+
+        // 4. Actualizăm starea
         handleUserStateChange(userCredential.user);
         setError(null);
         console.log('AuthProvider: Autentificare completă cu succes');
