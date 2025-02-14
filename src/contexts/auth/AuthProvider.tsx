@@ -338,6 +338,36 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }, [getTokens, clearTokens, handleUserStateChange]);
 
+  // Verificare credențiale
+  const checkStoredCredentials = useCallback(async (): Promise<StoredCredentials | null> => {
+    try {
+      console.log('AuthProvider: Verificare credențiale stocate...');
+      
+      const storedCredentialsJson = await secureStorage.getItem(AUTH_CREDENTIALS_KEY);
+      if (!storedCredentialsJson) {
+        console.log('AuthProvider: Nu există credențiale stocate');
+        return null;
+      }
+
+      const storedCredentials: StoredCredentials = JSON.parse(storedCredentialsJson);
+      const currentTime = Date.now();
+      const credentialAge = currentTime - storedCredentials.timestamp;
+      
+      // Verifică dacă credențialele au expirat (30 zile)
+      if (credentialAge > 30 * 24 * 60 * 60 * 1000) {
+        console.log('AuthProvider: Credențialele au expirat');
+        await cleanupAuthData(false);
+        return null;
+      }
+
+      console.log('AuthProvider: Credențiale valide găsite');
+      return storedCredentials;
+    } catch (error) {
+      console.error('AuthProvider: Eroare la verificarea credențialelor:', error);
+      return null;
+    }
+  }, [cleanupAuthData]);
+
   // Reautentificare consolidată
   const attemptReauthentication = useCallback(async (): Promise<boolean> => {
     const now = Date.now();
@@ -599,36 +629,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
       timestamp: Date.now()
     }));
   }, [isAuthenticated]);
-
-  // Verificare credențiale
-  const checkStoredCredentials = useCallback(async (): Promise<StoredCredentials | null> => {
-    try {
-      console.log('AuthProvider: Verificare credențiale stocate...');
-      
-      const storedCredentialsJson = await secureStorage.getItem(AUTH_CREDENTIALS_KEY);
-      if (!storedCredentialsJson) {
-        console.log('AuthProvider: Nu există credențiale stocate');
-        return null;
-      }
-
-      const storedCredentials: StoredCredentials = JSON.parse(storedCredentialsJson);
-      const currentTime = Date.now();
-      const credentialAge = currentTime - storedCredentials.timestamp;
-      
-      // Verifică dacă credențialele au expirat (30 zile)
-      if (credentialAge > 30 * 24 * 60 * 60 * 1000) {
-        console.log('AuthProvider: Credențialele au expirat');
-        await cleanupAuthData(false);
-        return null;
-      }
-
-      console.log('AuthProvider: Credențiale valide găsite');
-      return storedCredentials;
-    } catch (error) {
-      console.error('AuthProvider: Eroare la verificarea credențialelor:', error);
-      return null;
-    }
-  }, [cleanupAuthData]);
 
   // Pentru moment, vom expune state-ul și funcțiile de bază
   const contextValue: AuthContextValue = {
