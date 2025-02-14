@@ -1,5 +1,6 @@
 import { NavigationState } from '@react-navigation/native';
-import { useAuth } from '../../hooks/useAuth';
+import { useEffect } from 'react';
+import { useAuth } from '../../contexts/auth';
 import { routeConfigs } from '../routeConfigs';
 
 interface AuthMiddlewareProps {

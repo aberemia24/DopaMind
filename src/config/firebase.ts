@@ -27,6 +27,7 @@ let app: FirebaseApp | null = null;
 let auth: Auth | null = null;
 let firestore: Firestore | null = null;
 let appCheck: AppCheck | null = null;
+let firebasePersistenceSet = false;
 
 // Configurare Firebase cu variabile de mediu validate
 const env = getValidatedEnv();
@@ -123,23 +124,32 @@ export function initializeFirebaseApp(): FirebaseApp {
 }
 
 // Inițializare Firebase Auth
-export function initializeFirebaseAuth(): Auth {
+export async function initializeFirebaseAuth(): Promise<Auth> {
   if (!auth) {
     const app = initializeFirebaseApp();
     console.log('Got Firebase App instance, initializing Auth...');
     
     auth = initializeAuth(app);
-    
-    // Setăm persistența pentru React Native
-    setPersistence(auth, inMemoryPersistence)
-      .then(() => {
-        console.log('Firebase Auth persistence set to inMemory');
-      })
-      .catch((error) => {
-        console.error('Error setting persistence:', error);
-      });
   }
   return auth;
+}
+
+// Inițializare persistenței pentru Firebase Auth
+export async function initializeFirebaseAuthPersistence(): Promise<void> {
+  if (firebasePersistenceSet) {
+    console.log('Firebase Auth persistence already set, skipping...');
+    return;
+  }
+
+  try {
+    const auth = await initializeFirebaseAuth();
+    await setPersistence(auth, inMemoryPersistence);
+    console.log('Firebase Auth persistence set to inMemory');
+    firebasePersistenceSet = true;
+  } catch (error) {
+    console.error('Error setting Firebase Auth persistence:', error);
+    throw error;
+  }
 }
 
 // Inițializare Firestore
@@ -183,7 +193,7 @@ export interface AuthResponse<T> {
 }
 
 // Helper pentru traducerea erorilor Firebase
-function getFirebaseErrorMessage(error: FirebaseError, t: TFunction): string {
+export function getFirebaseErrorMessage(error: FirebaseError, t: TFunction): string {
   switch (error.code) {
     case 'auth/invalid-email':
       return t('auth.errors.invalidEmail');

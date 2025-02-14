@@ -1,6 +1,6 @@
 import React, { useRef, useCallback } from 'react';
 import { NavigationContainer, NavigationState } from '@react-navigation/native';
-import { useAuth } from '../hooks/useAuth';
+import { useAuth } from '../contexts/auth';
 import { ActivityIndicator, View } from 'react-native';
 import { AuthStack } from './AuthStack';
 import { AppStack } from './AppStack';

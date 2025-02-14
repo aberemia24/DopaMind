@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { useAuth } from '../../hooks/useAuth';
+import { useAuth } from '../../contexts/auth';
 import { ACCESSIBILITY } from '../../constants/accessibility';
 
 const SettingsScreen: React.FC = () => {

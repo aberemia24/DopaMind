@@ -275,5 +275,19 @@
       "pastDays": "{{count}} days ago",
       "futureDays": "in {{count}} days"
     }
+  },
+  "datetime": {
+    "timeFormat": {
+      "full": "hh:mm:ss a",
+      "short": "hh:mm a"
+    },
+    "timePeriods": {
+      "morning": "morning",
+      "afternoon": "afternoon",
+      "evening": "evening",
+      "night": "night",
+      "am": "AM",
+      "pm": "PM"
+    }
   }
 }

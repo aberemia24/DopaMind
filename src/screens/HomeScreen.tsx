@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useAuth } from '../hooks/useAuth';
+import { useAuth } from '../contexts/auth';
 import { useTranslation } from 'react-i18next';
 import { ACCESSIBILITY } from '../constants/accessibility';
 import { AUTH_TRANSLATIONS, ERROR_TRANSLATIONS, HOME_TRANSLATIONS } from '../i18n/keys';

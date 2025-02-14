@@ -194,16 +194,16 @@
   },
   "datetime": {
     "timeFormat": {
-      "full": "{{hours}}:{{minutes}} {{period}}",
-      "short": "{{hours}}:{{minutes}}"
+      "full": "HH:mm:ss",
+      "short": "HH:mm"
     },
     "timePeriods": {
-      "morning": "dimineața",
-      "afternoon": "după-amiaza",
-      "evening": "seara",
-      "night": "noaptea",
-      "am": "dimineața",
-      "pm": "după-amiaza"
+      "morning": "dimineață",
+      "afternoon": "după-amiază",
+      "evening": "seară",
+      "night": "noapte",
+      "am": "AM",
+      "pm": "PM"
     },
     "weekdayShort": {
       "monday": "Lun",

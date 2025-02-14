@@ -5,7 +5,7 @@ import { taskCacheService } from '../services/taskCacheService';
 import type { TimePeriodKey } from '../constants/taskTypes';
 import { useTranslation } from 'react-i18next';
 import type { TFunction } from 'i18next';
-import { useAuth } from '../hooks/useAuth';
+import { useAuth } from './auth';
 
 interface TaskContextType {
   tasks: TasksByPeriod;

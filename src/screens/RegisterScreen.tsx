@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { useAuth } from '../hooks/useAuth';
 import { useTranslation } from 'react-i18next';
 import { AuthNavigationProp } from '../navigation/types';
 import { ACCESSIBILITY } from '../constants/accessibility';
 import { AUTH_TRANSLATIONS, ERROR_TRANSLATIONS } from '../i18n/keys';
+import { useAuth } from '../contexts/auth'; // Actualizăm importul useAuth
 
 type Props = {
 };

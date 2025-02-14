@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput, Alert, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
-import { useAuth } from '../hooks/useAuth';
+import { useAuth } from '../contexts/auth';
 import { ACCESSIBILITY } from '../constants/accessibility';
 import { AuthNavigationProp } from '../navigation/types';
 

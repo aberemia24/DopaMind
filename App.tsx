@@ -6,6 +6,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Navigation } from './src/navigation';
 import { GlobalErrorBoundary } from './src/core/error/ErrorBoundary';
 import { TaskProvider } from './src/contexts/TaskContext';
+import { AuthProvider } from './src/contexts/auth';
 import './src/i18n';  // Import i18n configuration
 
 export default function App() {
@@ -50,9 +51,11 @@ export default function App() {
   return (
     <GlobalErrorBoundary>
       <SafeAreaProvider>
-        <TaskProvider>
-          <Navigation />
-        </TaskProvider>
+        <AuthProvider>
+          <TaskProvider>
+            <Navigation />
+          </TaskProvider>
+        </AuthProvider>
         <StatusBar style="auto" />
       </SafeAreaProvider>
     </GlobalErrorBoundary>

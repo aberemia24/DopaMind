@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { 
   View, 
   StyleSheet, 
@@ -17,7 +17,7 @@ import TaskFilter, { FilterOption } from './components/TaskFilter';
 import { TIME_PERIODS, type TimePeriodKey } from '../../constants/taskTypes';
 import { useTaskContext } from '../../contexts/TaskContext';
 import { ACCESSIBILITY } from '../../constants/accessibility';
-import { useAuth } from '../../hooks/useAuth';
+import { useAuth } from '../../contexts/auth';
 import type { Task } from '../../services/taskService';
 
 const TaskManagementScreen: React.FC = () => {
