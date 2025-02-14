@@ -4,7 +4,7 @@ import {
   getFirebaseAuth, 
   signInWithEmail, 
   signUpWithEmail, 
-  signOut as firebaseSignOut,
+  signOut, 
   AuthError,
   AuthResponse,
   initializeFirebaseAuth 
@@ -20,29 +20,6 @@ import * as Crypto from 'expo-crypto';
 
 // Singleton pentru inițializarea Firebase Auth
 let authInitialized = false;
-let authListenerRef: (() => void) | null = null;
-
-const AUTH_STATE_KEY = '@auth_state';
-const AUTH_CREDENTIALS_KEY = 'AUTH_CREDENTIALS_KEY';
-
-interface StoredCredentials {
-  email: string;
-  password: string;
-  salt: string;
-  timestamp: number;
-}
-
-export interface UseAuthReturn {
-  user: User | null;
-  loading: boolean;
-  error: string | null;
-  isAuthenticated: boolean;
-  sessionExpired: boolean;
-  setIsAuthenticated: (value: boolean) => void;
-  login: (email: string, password: string) => Promise<boolean>;
-  register: (email: string, password: string) => Promise<boolean>;
-  logout: () => Promise<boolean>;
-}
 
 /**
  * Utilitar pentru reîncercarea operațiilor eșuate cu exponential backoff
@@ -84,6 +61,7 @@ export const useAuth = (): UseAuthReturn => {
   const userRef = useRef<User | null>(null);
   const isAuthenticatedRef = useRef<boolean>(false);
   const loadingRef = useRef<boolean>(true);
+  const authListenerRef = useRef<(() => void) | null>(null);
 
   // Referință pentru funcția logout pentru a evita dependența circulară
   const logoutRef = useRef<() => Promise<boolean>>();
@@ -107,26 +85,27 @@ export const useAuth = (): UseAuthReturn => {
    */
   const handleUserStateChange = useCallback((newUser: User | null) => {
     const prevUser = userRef.current;
-    if (prevUser === newUser) {
-      return; // Evităm actualizări inutile
+    if (prevUser?.uid === newUser?.uid) {
+      return; // Evităm actualizări inutile verificând și UID-ul
     }
 
     userRef.current = newUser;
-    setUser(newUser);
-
     const newAuthState = !!newUser;
+
+    // Actualizăm starea doar dacă s-a schimbat efectiv
     if (isAuthenticatedRef.current !== newAuthState) {
       isAuthenticatedRef.current = newAuthState;
       setIsAuthenticated(newAuthState);
     }
-    
-    if (newUser) {
-      updateLastActivity();
-      setSessionExpired(false);
-    }
-    
-    // Logăm doar când starea se schimbă efectiv
+
+    // Setăm user-ul doar dacă s-a schimbat
     if (prevUser !== newUser) {
+      setUser(newUser);
+      if (newUser) {
+        updateLastActivity();
+        setSessionExpired(false);
+      }
+      
       const changeType = prevUser === null ? 'login' : newUser === null ? 'logout' : 'update';
       console.log(`useAuth: User state changed (${changeType}) - ${newUser ? 'authenticated' : 'unauthenticated'}`);
     }
@@ -155,7 +134,10 @@ export const useAuth = (): UseAuthReturn => {
   const generateSalt = async (): Promise<string> => {
     try {
       const randomBytes = await Crypto.getRandomBytesAsync(8);
-      return Buffer.from(randomBytes).toString('hex');
+      // Convertim direct la hex fără a folosi Buffer
+      return Array.from(randomBytes)
+        .map(b => b.toString(16).padStart(2, '0'))
+        .join('');
     } catch (error) {
       console.error('useAuth: Error generating salt:', error);
       throw new Error('Failed to generate secure salt');
@@ -260,63 +242,74 @@ export const useAuth = (): UseAuthReturn => {
     }
   }, [t, updateLastActivity, handleUserStateChange]);
 
-  /**
-   * Actualizează starea de loading în mod optimizat
-   */
-  const updateLoadingState = useCallback(() => {
-    if (user === null && !loading && !loadingRef.current) {
-      loadingRef.current = true;
-      setLoading(true);
-    } else if ((user !== null || loadingRef.current) && loading) {
-      loadingRef.current = false;
-      setLoading(false);
-    }
-  }, [user, loading]);
+  // Folosim useRef pentru a urmări inițializarea
+  const authInitializedRef = useRef(false);
 
-  // Aplicăm actualizarea stării de loading
+  // Efect pentru inițializare și listener
   useEffect(() => {
-    updateLoadingState();
-  }, [updateLoadingState]);
-
-  // Efect pentru inițializarea Firebase Auth și setarea listener-ului
-  useEffect(() => {
-    const initializeAuth = async () => {
+    const initAndListen = async () => {
       try {
         if (!authInitialized) {
           console.log('useAuth: Initializing Firebase Auth...');
           await initializeFirebaseAuth();
           authInitialized = true;
         }
-
-        // Curățăm listener-ul existent înainte de a adăuga unul nou
-        if (authListenerRef) {
-          console.log('useAuth: Removing existing listener before adding a new one');
-          authListenerRef();
-          authListenerRef = null;
-        }
-
-        const auth = getFirebaseAuth();
+        
         console.log('useAuth: Setting up auth state listener...');
-        authListenerRef = onAuthStateChanged(auth, handleUserStateChange);
-
-        setLoading(false);
+        if (authListenerRef.current) {
+          console.log('useAuth: Removing existing listener before adding a new one');
+          authListenerRef.current();
+          authListenerRef.current = null;
+        }
+        
+        const auth = getFirebaseAuth();
+        authListenerRef.current = onAuthStateChanged(auth, (newUser) => {
+          handleUserStateChange(newUser);
+          if (loadingRef.current) {
+            loadingRef.current = false;
+            setLoading(false);
+          }
+        });
       } catch (error) {
-        console.error('useAuth: Error initializing auth:', error);
-        setError(t(ERROR_TRANSLATIONS.AUTH.DEFAULT));
-        setLoading(false);
+        console.error('useAuth: Error in initialization:', error);
+        handleAuthError(error);
       }
     };
 
-    initializeAuth();
+    initAndListen();
 
     return () => {
-      if (authListenerRef) {
+      if (authListenerRef.current) {
         console.log('useAuth: Cleaning up auth listener...');
-        authListenerRef();
-        authListenerRef = null;
+        authListenerRef.current();
+        authListenerRef.current = null;
       }
     };
-  }, [handleUserStateChange, t]);
+  }, [handleUserStateChange, handleAuthError]);
+
+  /**
+   * Curăță datele de autentificare și starea
+   */
+  const cleanupAuthData = useCallback(async () => {
+    try {
+      // Curățăm credențialele stocate
+      await withRetry(async () => {
+        await secureStorage.removeItem(AUTH_CREDENTIALS_KEY);
+        await secureStorage.removeItem(AUTH_STATE_KEY);
+      }, 3, 500);
+      
+      // Resetăm starea locală
+      userRef.current = null;
+      isAuthenticatedRef.current = false;
+      setUser(null);
+      setIsAuthenticated(false);
+      setError(null);
+      setSessionExpired(false);
+    } catch (error) {
+      console.error('useAuth: Error cleaning up auth data:', error);
+      // Nu aruncăm eroarea mai departe pentru a permite continuarea logout-ului
+    }
+  }, []);
 
   /**
    * Login cu retry în caz de eșec
@@ -382,48 +375,34 @@ export const useAuth = (): UseAuthReturn => {
   }, [t, persistCredentials, handleUserStateChange]);
 
   /**
-   * Deconectare și curățare completă a stării de autentificare
+   * Logout cu retry și curățare completă
    */
-  const logout = useCallback(async () => {
+  const logout = useCallback(async (): Promise<boolean> => {
     setLoading(true);
     setError(null);
-    setSessionExpired(false);
-
+    
     try {
-      const result = await withRetry(() => firebaseSignOut(t));
-      if (result.status === 'error' && result.error) {
-        setError(t(ERROR_TRANSLATIONS.AUTH.DEFAULT));
-        return false;
-      }
-
-      // Eliminăm listener-ul Firebase pentru a preveni probleme de stare
-      if (authListenerRef) {
-        console.log('useAuth: Removing Firebase Auth listener on logout...');
-        authListenerRef();
-        authListenerRef = null;
-      }
-
-      // Curățăm datele stocate și resetăm starea
-      await secureStorage.removeItem(AUTH_CREDENTIALS_KEY);
-      await secureStorage.removeItem(AUTH_STATE_KEY);
+      // Mai întâi curățăm datele locale
+      await cleanupAuthData();
       
-      userRef.current = null;
-      isAuthenticatedRef.current = false;
-      setUser(null);
-      setIsAuthenticated(false);
-      setSessionExpired(false);
-      setError(null);
-
-      console.log('useAuth: Logged out successfully and cleared all auth state');
+      // Apoi deconectăm din Firebase cu retry
+      await withRetry(async () => {
+        const result = await signOut(t);
+        if (result.status === 'error') {
+          throw new Error(result.error?.message || t(ERROR_TRANSLATIONS.AUTH.DEFAULT));
+        }
+      }, 3, 500);
+      
+      console.log('useAuth: Logout successful');
       return true;
     } catch (error) {
       console.error('useAuth: Error during logout:', error);
-      setError(t(ERROR_TRANSLATIONS.GENERIC));
+      handleAuthError(error);
       return false;
     } finally {
       setLoading(false);
     }
-  }, [t]);
+  }, [cleanupAuthData, handleAuthError, t]);
 
   // Setăm referința pentru logout
   useEffect(() => {
@@ -442,3 +421,25 @@ export const useAuth = (): UseAuthReturn => {
     register
   };
 }
+
+interface StoredCredentials {
+  email: string;
+  password: string;
+  salt: string;
+  timestamp: number;
+}
+
+export interface UseAuthReturn {
+  user: User | null;
+  loading: boolean;
+  error: string | null;
+  isAuthenticated: boolean;
+  sessionExpired: boolean;
+  setIsAuthenticated: (value: boolean) => void;
+  login: (email: string, password: string) => Promise<boolean>;
+  register: (email: string, password: string) => Promise<boolean>;
+  logout: () => Promise<boolean>;
+}
+
+const AUTH_STATE_KEY = 'auth_state';
+const AUTH_CREDENTIALS_KEY = 'auth_credentials';
