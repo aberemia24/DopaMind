@@ -466,6 +466,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         // 2. Setăm metoda de autentificare
         console.log('AuthProvider: Salvare metodă de autentificare...');
         await secureStorage.setItem(AUTH_METHOD_KEY, 'email');
+        console.log('AuthProvider: Metoda de autentificare (email) salvată în secure storage');
         
         // 3. Salvăm token-urile (opțional - dacă eșuează, tot avem credențialele)
         try {
@@ -544,6 +545,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
           expiresAt: Date.now() + AUTH_CONFIG.TOKEN_EXPIRY_MS
         });
         await secureStorage.setItem(AUTH_METHOD_KEY, 'google');
+        console.log('AuthProvider: Metoda de autentificare (google) salvată în secure storage');
         
         // Verificare persistență Google auth
         const verifyMethod = await secureStorage.getItem(AUTH_METHOD_KEY);
