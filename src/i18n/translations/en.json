@@ -229,7 +229,8 @@
       "softLimit": {
         "title": "Task limit",
         "message": "You already have many active tasks for this period. Are you sure you want to add another one?",
-        "confirm": "Yes, add"
+        "confirm": "Yes, add",
+        "cancel": "No, cancel"
       },
       "deleteConfirm": {
         "title": "Delete confirmation",

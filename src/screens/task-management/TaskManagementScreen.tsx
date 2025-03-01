@@ -61,8 +61,8 @@ const TaskManagementScreen: React.FC = () => {
     };
   };
 
-  const getTotalTaskCount = (): number => {
-    return tasks.MORNING.length + tasks.AFTERNOON.length + tasks.EVENING.length;
+  const getActiveTasksCountForPeriod = (periodId: TimePeriodKey): number => {
+    return tasks[periodId].filter(task => !task.completed).length;
   };
 
   const getAllCompletedTasks = (): Task[] => {
@@ -70,13 +70,13 @@ const TaskManagementScreen: React.FC = () => {
   };
 
   const showSoftLimitWarning = (periodId: TimePeriodKey, onConfirm: () => void): void => {
-    if (getTotalTaskCount() >= 3) {
+    if (getActiveTasksCountForPeriod(periodId) >= 3) {
       Alert.alert(
         t('taskManagement.alerts.softLimit.title'),
         t('taskManagement.alerts.softLimit.message'),
         [
           {
-            text: t('common.buttons.cancel'),
+            text: t('taskManagement.alerts.softLimit.cancel'),
             style: "cancel"
           },
           {

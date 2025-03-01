@@ -240,7 +240,8 @@
       "softLimit": {
         "title": "Limită de sarcini",
         "message": "Ai deja multe sarcini active pentru această perioadă. Ești sigur că vrei să adaugi încă una?",
-        "confirm": "Da, adaugă"
+        "confirm": "Da, adaugă",
+        "cancel": "Nu, renunță"
       },
       "deleteConfirm": {
         "title": "Confirmare ștergere",

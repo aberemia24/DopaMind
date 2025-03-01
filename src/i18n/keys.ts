@@ -407,6 +407,7 @@ export const TASK_MANAGEMENT_TRANSLATIONS = {
       TITLE: 'taskManagement.alerts.softLimit.title',
       MESSAGE: 'taskManagement.alerts.softLimit.message',
       CONFIRM: 'taskManagement.alerts.softLimit.confirm',
+      CANCEL: 'taskManagement.alerts.softLimit.cancel',
     },
   },
   ERRORS: {
