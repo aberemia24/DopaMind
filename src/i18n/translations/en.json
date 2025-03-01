@@ -40,14 +40,16 @@
       "active": "active",
       "inactive": "inactive",
       "pending": "pending"
-    }
+    },
+    "error": "Error",
+    "comingSoon": "Coming Soon"
   },
   "auth": {
     "login": {
-      "title": "Login",
+      "title": "Welcome Back",
       "welcome": "Welcome back",
       "submit": "Login",
-      "noAccount": "Don't have an account? Sign up",
+      "noAccount": "Don't have an account? Create one",
       "accessibility": {
         "focusEmail": "Focusing email field",
         "focusPassword": "Attempting to focus password field",
@@ -58,18 +60,31 @@
         "passwordBlur": "Password field lost focus"
       }
     },
+    "buttons": {
+      "login": "Log In",
+      "googleLogin": "Sign in with Google",
+      "createAccount": "Create Account"
+    },
+    "fields": {
+      "email": "Email",
+      "password": "Password"
+    },
+    "errors": {
+      "fillAllFields": "Please fill in all fields",
+      "passwordsNotMatch": "Passwords do not match",
+      "weakPassword": "Password is too weak",
+      "emailInUse": "This email is already in use",
+      "generic": "An error occurred. Please try again.",
+      "emptyFields": "Please fill in all fields",
+      "invalidCredentials": "Invalid email or password",
+      "googleSignInFailed": "Google sign-in failed. Please try again.",
+      "logout": "Error logging out"
+    },
     "register": {
       "title": "Register",
       "createAccount": "Create account",
       "submit": "Register",
-      "haveAccount": "Already have an account? Login",
-      "errors": {
-        "fillAllFields": "Please fill in all fields",
-        "passwordsNotMatch": "Passwords do not match",
-        "weakPassword": "Password is too weak",
-        "emailInUse": "This email is already in use",
-        "generic": "An error occurred. Please try again."
-      }
+      "haveAccount": "Already have an account? Login"
     },
     "success": {
       "login": "Login successful",
@@ -80,6 +95,16 @@
       "login": "Logging in...",
       "register": "Creating account...",
       "logout": "Logging out..."
+    },
+    "signOut": "Sign Out",
+    "google": {
+      "errors": {
+        "missingClientId": "Google client ID is not configured",
+        "authFailed": "Google authentication failed",
+        "unknown": "An unexpected error occurred",
+        "missingTokens": "Authentication tokens are missing",
+        "requestNotReady": "Google authentication request is not ready"
+      }
     }
   },
   "errors": {
@@ -119,6 +144,45 @@
     "description": "Task and time management app for people with ADHD"
   },
   "taskManagement": {
+    "title": "Task Management",
+    "dateTimeSelector": {
+      "tabs": {
+        "date": "Date",
+        "duration": "Duration"
+      },
+      "calendar": {
+        "previousMonth": "Previous month",
+        "nextMonth": "Next month"
+      },
+      "quickOptions": {
+        "today": "Today",
+        "tomorrow": "Tomorrow",
+        "tonight": "Tonight",
+        "weekend": "Weekend",
+        "nextWeek": "Next week"
+      },
+      "timePicker": {
+        "title": "Select time",
+        "morning": "Morning",
+        "afternoon": "Afternoon",
+        "evening": "Evening",
+        "custom": "Custom"
+      },
+      "reminders": {
+        "title": "Reminder",
+        "atTime": "At time",
+        "before15m": "15 minutes before",
+        "before30m": "30 minutes before",
+        "before1h": "1 hour before",
+        "before2h": "2 hours before"
+      }
+    },
+    "buttons": {
+      "addTask": "Add task",
+      "deleteTask": "Delete task",
+      "editTask": "Edit task",
+      "setDateTime": "Set date and time"
+    },
     "actions": {
       "create": "Create new task",
       "edit": "Edit task",
@@ -148,10 +212,11 @@
       }
     },
     "filters": {
-      "all": "all",
-      "active": "active",
-      "completed": "completed",
-      "priority": "priority"
+      "all": "All",
+      "active": "Active",
+      "completed": "Completed",
+      "priority": "Priority",
+      "completedTasks": "Completed Tasks"
     },
     "labels": {
       "untitledTask": "untitled task",
@@ -189,6 +254,24 @@
       "validation": {
         "titleTooShort": "Title must be at least 3 characters long",
         "titleRequired": "@:common.validation.required"
+      }
+    },
+    "periods": {
+      "morning": {
+        "title": "Morning",
+        "description": "Morning period"
+      },
+      "afternoon": {
+        "title": "Afternoon",
+        "description": "Afternoon period"
+      },
+      "evening": {
+        "title": "Evening",
+        "description": "Evening period"
+      },
+      "night": {
+        "title": "Night",
+        "description": "Night period"
       }
     }
   },
@@ -289,5 +372,49 @@
       "am": "AM",
       "pm": "PM"
     }
+  },
+  "welcome": {
+    "buttons": {
+      "emailLogin": "Continue with email",
+      "googleLogin": "Continue with Google",
+      "googleSignIn": "Sign in with Google"
+    }
+  },
+  "navigation": {
+    "tabs": {
+      "tasks": "Tasks",
+      "calendar": "Calendar",
+      "focus": "Focus",
+      "stats": "Stats",
+      "settings": "Settings"
+    },
+    "titles": {
+      "taskManagement": "Task Management",
+      "login": "Login",
+      "register": "Register"
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "sections": {
+      "general": "General",
+      "account": "Account",
+      "notifications": "Notifications",
+      "appearance": "Appearance",
+      "language": "Language",
+      "about": "About"
+    }
+  },
+  "calendar": {
+    "title": "Calendar",
+    "description": "View and manage your tasks in a calendar format. This feature will be available soon."
+  },
+  "focus": {
+    "title": "Focus",
+    "description": "Use focus and concentration techniques to improve your productivity. This feature will be available soon."
+  },
+  "stats": {
+    "title": "Statistics",
+    "description": "View statistics about your tasks and activities. This feature will be available soon."
   }
 }

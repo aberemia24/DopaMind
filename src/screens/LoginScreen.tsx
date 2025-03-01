@@ -5,11 +5,16 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/auth';
 import { ACCESSIBILITY } from '../constants/accessibility';
 import { AuthNavigationProp } from '../navigation/types';
+import * as WebBrowser from 'expo-web-browser';
+import { useGoogleAuth } from '../hooks/useGoogleAuth';
+
+WebBrowser.maybeCompleteAuthSession();
 
 export function LoginScreen() {
   const navigation = useNavigation<AuthNavigationProp>();
   const { t } = useTranslation();
   const { login } = useAuth();
+  const { signInWithGoogle, isLoading: googleLoading, error: googleError, isReady } = useGoogleAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -39,6 +44,18 @@ export function LoginScreen() {
       );
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    try {
+      await signInWithGoogle();
+    } catch (error) {
+      Alert.alert(
+        t('common.error'),
+        t('auth.errors.googleSignInFailed')
+      );
+      console.error('Google Sign-In Error:', error);
     }
   };
 
@@ -86,6 +103,19 @@ export function LoginScreen() {
               {loading ? t('common.loading') : t('auth.buttons.login')}
             </Text>
           </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.googleButton, (googleLoading || !isReady) && styles.buttonDisabled]}
+            onPress={handleGoogleLogin}
+            disabled={googleLoading || !isReady}
+            accessibilityRole="button"
+            accessibilityLabel={t('auth.buttons.googleLogin')}
+            accessibilityState={{ disabled: googleLoading || !isReady }}
+          >
+            <Text style={styles.buttonText}>
+              {googleLoading ? t('common.loading') : t('auth.buttons.googleLogin')}
+            </Text>
+          </TouchableOpacity>
         </View>
         
         <TouchableOpacity
@@ -113,41 +143,42 @@ const styles = StyleSheet.create({
     padding: ACCESSIBILITY.SPACING.XL,
   },
   title: {
-    fontSize: ACCESSIBILITY.TYPOGRAPHY.SIZES.XXL,
+    fontSize: ACCESSIBILITY.TYPOGRAPHY.SIZES.XL,
     fontWeight: ACCESSIBILITY.TYPOGRAPHY.WEIGHTS.BOLD,
     color: ACCESSIBILITY.COLORS.TEXT.PRIMARY,
-    marginBottom: ACCESSIBILITY.SPACING.XL,
     textAlign: 'center',
+    marginBottom: ACCESSIBILITY.SPACING.XL,
   },
   form: {
-    width: '100%',
-    maxWidth: 400,
-    alignSelf: 'center',
+    gap: ACCESSIBILITY.SPACING.BASE,
   },
   input: {
     backgroundColor: ACCESSIBILITY.COLORS.BACKGROUND.SECONDARY,
-    borderRadius: 8,
-    padding: ACCESSIBILITY.SPACING.MD,
-    marginBottom: ACCESSIBILITY.SPACING.MD,
+    padding: ACCESSIBILITY.SPACING.BASE,
+    color: ACCESSIBILITY.COLORS.TEXT.PRIMARY,
     minHeight: ACCESSIBILITY.TOUCH_TARGET.MIN_HEIGHT,
-    fontSize: ACCESSIBILITY.TYPOGRAPHY.SIZES.BASE,
   },
   button: {
     backgroundColor: ACCESSIBILITY.COLORS.INTERACTIVE.PRIMARY,
-    padding: ACCESSIBILITY.SPACING.MD,
-    borderRadius: 8,
-    minHeight: ACCESSIBILITY.TOUCH_TARGET.MIN_HEIGHT,
-    justifyContent: 'center',
+    padding: ACCESSIBILITY.SPACING.BASE,
     alignItems: 'center',
-    marginTop: ACCESSIBILITY.SPACING.MD,
+    justifyContent: 'center',
+    minHeight: ACCESSIBILITY.TOUCH_TARGET.MIN_HEIGHT,
+  },
+  googleButton: {
+    backgroundColor: '#4285F4',
+    padding: ACCESSIBILITY.SPACING.BASE,
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: ACCESSIBILITY.TOUCH_TARGET.MIN_HEIGHT,
   },
   buttonDisabled: {
-    opacity: 0.7,
+    opacity: 0.5,
   },
   buttonText: {
-    color: '#FFFFFF',
-    fontSize: ACCESSIBILITY.TYPOGRAPHY.SIZES.LG,
-    fontWeight: ACCESSIBILITY.TYPOGRAPHY.WEIGHTS.MEDIUM,
+    color: ACCESSIBILITY.COLORS.TEXT.ON_INTERACTIVE,
+    fontSize: ACCESSIBILITY.TYPOGRAPHY.SIZES.BASE,
+    fontWeight: ACCESSIBILITY.TYPOGRAPHY.WEIGHTS.SEMIBOLD,
   },
   registerText: {
     color: ACCESSIBILITY.COLORS.INTERACTIVE.PRIMARY,

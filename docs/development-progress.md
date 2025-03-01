@@ -19,6 +19,10 @@ Task Management este o componentă centrală a aplicației DopaMind, proiectată
 
 ### Task Management Core
 - [x] Structură de bază pentru managementul task-urilor
+- [x] Îmbunătățiri în flow-ul de reautentificare
+- [x] Optimizarea funcționalității de logout cu gestionare corectă a stării de autentificare și navigare automată
+- [x] Refactorizare pentru a preveni problemele cu inițializarea multiplă a listener-elor de autentificare
+- [x] Îmbunătățirea performanței și securității hook-ului useAuth
 - [x] Implementare CRUD pentru task-uri
 - [x] Interfață de utilizator pentru lista de task-uri
 - [x] Sistem de prioritizare task-uri

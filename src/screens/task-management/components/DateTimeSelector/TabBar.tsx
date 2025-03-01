@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { ACCESSIBILITY } from '../../../../constants/accessibility';
+import { TASK_TRANSLATIONS } from '../../../../i18n/keys';
 
 interface TabBarProps {
   activeTab: 'date' | 'duration';
@@ -26,7 +27,7 @@ export const TabBar: React.FC<TabBarProps> = ({ activeTab, onTabChange }) => {
           styles.tabText,
           activeTab === 'date' && styles.activeTabText
         ]}>
-          {t('taskManagement.dateTimeSelector.tabs.date')}
+          {t(TASK_TRANSLATIONS.DATE_TIME_SELECTOR.TABS.DATE)}
         </Text>
       </TouchableOpacity>
 
@@ -43,7 +44,7 @@ export const TabBar: React.FC<TabBarProps> = ({ activeTab, onTabChange }) => {
           styles.tabText,
           activeTab === 'duration' && styles.activeTabText
         ]}>
-          {t('taskManagement.dateTimeSelector.tabs.duration')}
+          {t(TASK_TRANSLATIONS.DATE_TIME_SELECTOR.TABS.DURATION)}
         </Text>
       </TouchableOpacity>
     </View>
