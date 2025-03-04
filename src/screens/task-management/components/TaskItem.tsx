@@ -126,6 +126,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: ACCESSIBILITY.SPACING.SM,
     minHeight: ACCESSIBILITY.TOUCH_TARGET.MIN_HEIGHT,
+    backgroundColor: ACCESSIBILITY.COLORS.BACKGROUND.PRIMARY,
+    borderRadius: ACCESSIBILITY.SPACING.SM,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3,
+    marginHorizontal: ACCESSIBILITY.SPACING.XS,
+    marginVertical: ACCESSIBILITY.SPACING.XS,
   },
   completedContainer: {
     opacity: 0.5, // Creștem efectul de estompare (mai faded out)
