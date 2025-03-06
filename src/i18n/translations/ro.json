@@ -9,6 +9,10 @@
       "markComplete": "marchează ca finalizată",
       "markIncomplete": "marchează ca nefinalizată"
     },
+    "buttons": {
+      "ok": "OK",
+      "back": "Înapoi"
+    },
     "fields": {
       "email": "Email",
       "password": "Parolă",
@@ -153,7 +157,13 @@
     "oops": "Ups! Ceva nu a mers bine",
     "tryAgain": "Încearcă din nou",
     "networkError": "Eroare de rețea. Verificați conexiunea.",
-    "signOutError": "Eroare la deconectare:"
+    "signOutError": "Eroare la deconectare:",
+    "fetchTasks": "Nu s-au putut încărca sarcinile",
+    "addTask": "Nu s-a putut adăuga sarcina",
+    "updateTask": "Nu s-a putut actualiza sarcina",
+    "deleteTask": "Nu s-a putut șterge sarcina",
+    "invalidTime": "Vă rugăm să introduceți o oră validă",
+    "requiredFields": "Vă rugăm să completați toate câmpurile obligatorii"
   },
   "taskManagement": {
     "title": "Gestionare Sarcini",
@@ -195,7 +205,12 @@
       "addTask": "Adaugă sarcină",
       "deleteTask": "Șterge sarcina",
       "editTask": "Editează sarcina",
-      "setDateTime": "Setează data și ora"
+      "setDateTime": "Setează data și ora",
+      "close": "Închide",
+      "ok": "OK",
+      "back": "Înapoi",
+      "expandSection": "Extinde secțiunea {{section}}",
+      "collapseSection": "Restrânge secțiunea {{section}}"
     },
     "actions": {
       "create": "Creează sarcină nouă",
@@ -416,5 +431,8 @@
   "stats": {
     "title": "Statistici",
     "description": "Vizualizează statistici despre sarcinile și activitățile tale. Această funcționalitate va fi disponibilă în curând."
+  },
+  "confirmations": {
+    "timeSet": "Ora a fost setată cu succes"
   }
 }

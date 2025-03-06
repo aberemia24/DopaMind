@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
@@ -22,28 +22,6 @@ interface QuickOptionsProps {
  * pentru setarea rapidă a termenelor limită
  */
 const QUICK_OPTIONS: QuickOption[] = [
-  {
-    id: 'today',
-    icon: 'today',
-    titleKey: TASK_TRANSLATIONS.DATE_TIME_SELECTOR.QUICK_OPTIONS.TODAY,
-    getDate: () => ({ 
-      date: new Date(),
-      time: { hours: 12, minutes: 0 }, // Ora implicită pentru "astăzi" - prânz
-    }),
-  },
-  {
-    id: 'tomorrow',
-    icon: 'event',
-    titleKey: TASK_TRANSLATIONS.DATE_TIME_SELECTOR.QUICK_OPTIONS.TOMORROW,
-    getDate: () => {
-      const tomorrow = new Date();
-      tomorrow.setDate(tomorrow.getDate() + 1);
-      return { 
-        date: tomorrow,
-        time: { hours: 12, minutes: 0 }, // Ora implicită pentru "mâine" - prânz
-      };
-    },
-  },
   {
     id: 'morning',
     icon: 'wb-sunny',
@@ -71,10 +49,29 @@ const QUICK_OPTIONS: QuickOption[] = [
       time: { hours: 20, minutes: 0 }, // Ora implicită pentru seară - 20:00
     }),
   },
+  {
+    id: 'tomorrow',
+    icon: 'event',
+    titleKey: TASK_TRANSLATIONS.DATE_TIME_SELECTOR.QUICK_OPTIONS.TOMORROW,
+    getDate: () => {
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      return { 
+        date: tomorrow,
+        time: { hours: 12, minutes: 0 }, // Ora implicită pentru "mâine" - prânz
+      };
+    },
+  },
 ];
 
 export const QuickOptions: React.FC<QuickOptionsProps> = ({ onOptionSelect }) => {
   const { t } = useTranslation();
+  const [selectedOption, setSelectedOption] = useState<string | null>(null);
+
+  const handleOptionSelect = (option: QuickOption) => {
+    setSelectedOption(option.id);
+    onOptionSelect(option.getDate());
+  };
 
   return (
     <ScrollView
@@ -86,18 +83,29 @@ export const QuickOptions: React.FC<QuickOptionsProps> = ({ onOptionSelect }) =>
       {QUICK_OPTIONS.map((option) => (
         <TouchableOpacity
           key={option.id}
-          style={styles.option}
-          onPress={() => onOptionSelect(option.getDate())}
+          style={[
+            styles.option,
+            selectedOption === option.id && styles.selectedOption
+          ]}
+          onPress={() => handleOptionSelect(option)}
           accessibilityRole="button"
           accessibilityLabel={t(option.titleKey)}
+          accessibilityState={{ selected: selectedOption === option.id }}
         >
           <MaterialIcons
             name={option.icon}
             size={24}
-            color={ACCESSIBILITY.COLORS.TEXT.PRIMARY}
+            color={selectedOption === option.id 
+              ? ACCESSIBILITY.COLORS.TEXT.ON_INTERACTIVE 
+              : ACCESSIBILITY.COLORS.TEXT.PRIMARY}
             style={styles.icon}
           />
-          <Text style={styles.text}>{t(option.titleKey)}</Text>
+          <Text style={[
+            styles.text,
+            selectedOption === option.id && styles.selectedText
+          ]}>
+            {t(option.titleKey)}
+          </Text>
         </TouchableOpacity>
       ))}
     </ScrollView>
@@ -117,9 +125,15 @@ const styles = StyleSheet.create({
     backgroundColor: ACCESSIBILITY.COLORS.BACKGROUND.SECONDARY,
     borderRadius: ACCESSIBILITY.SPACING.SM,
     padding: ACCESSIBILITY.SPACING.SM,
-    marginHorizontal: ACCESSIBILITY.SPACING.XS,
+    marginRight: ACCESSIBILITY.SPACING.SM,
     minHeight: ACCESSIBILITY.TOUCH_TARGET.MIN_HEIGHT,
     minWidth: ACCESSIBILITY.TOUCH_TARGET.MIN_WIDTH * 2,
+  },
+  selectedOption: {
+    backgroundColor: ACCESSIBILITY.COLORS.INTERACTIVE.PRIMARY,
+  },
+  selectedText: {
+    color: ACCESSIBILITY.COLORS.TEXT.ON_INTERACTIVE,
   },
   icon: {
     marginRight: ACCESSIBILITY.SPACING.SM,

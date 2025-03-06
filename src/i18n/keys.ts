@@ -161,7 +161,9 @@ export const TASK_TRANSLATIONS = {
   },
   BUTTONS: {
     SET_DATE_TIME: 'taskManagement.buttons.setDateTime',
-    CLOSE: 'taskManagement.buttons.close'
+    CLOSE: 'taskManagement.buttons.close',
+    OK: 'taskManagement.buttons.ok',
+    BACK: 'taskManagement.buttons.back'
   },
   ITEM: {
     ACCESSIBILITY: {

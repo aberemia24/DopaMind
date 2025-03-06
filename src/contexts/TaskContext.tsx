@@ -106,36 +106,84 @@ export const TaskProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const updateTask = useCallback<TaskContextType['updateTask']>(async (taskId: string, updates: Partial<Omit<Task, 'id' | 'userId'>>) => {
     try {
       setLoading(true);
-      // Actualizează în DB
-      await updateTaskInDb(taskId, updates);
       
       // Găsește task-ul curent pentru a determina perioada
       let currentPeriod: TimePeriodKey | null = null;
-      let updatedTask: Task | null = null;
+      let taskToUpdate: Task | null = null;
 
       for (const [period, taskList] of Object.entries(tasks)) {
         const task = taskList.find((t: Task) => t.id === taskId);
         if (task) {
           currentPeriod = period as TimePeriodKey;
-          updatedTask = { ...task, ...updates };
+          taskToUpdate = task;
           break;
         }
       }
 
-      if (!currentPeriod || !updatedTask) {
+      if (!currentPeriod || !taskToUpdate) {
         throw new Error('Task not found');
       }
+      
+      // Creăm task-ul actualizat
+      const updatedTask = { ...taskToUpdate, ...updates, updatedAt: Date.now() };
+      
+      // Determinăm noua perioadă bazată pe ora din dueDate (dacă a fost actualizată)
+      let newPeriod = currentPeriod;
+      if (updates.dueDate || updates.period) {
+        // Dacă perioada este specificată explicit, o folosim pe aceea
+        if (updates.period) {
+          newPeriod = updates.period;
+        } 
+        // Altfel, determinăm perioada bazată pe ora din dueDate
+        else if (updates.dueDate) {
+          const date = new Date(updates.dueDate);
+          const hours = date.getHours();
+          
+          if (hours >= 5 && hours < 12) {
+            newPeriod = 'MORNING';
+          } else if (hours >= 12 && hours < 18) {
+            newPeriod = 'AFTERNOON';
+          } else {
+            newPeriod = 'EVENING';
+          }
+          
+          // Actualizăm și perioada în task
+          updatedTask.period = newPeriod;
+        }
+      }
+      
+      // Actualizează în DB cu perioada corectă
+      await updateTaskInDb(taskId, updatedTask);
 
       // Actualizează state-ul local
-      setTasks(prev => ({
-        ...prev,
-        [currentPeriod!]: prev[currentPeriod!].map((task: Task) =>
-          task.id === taskId ? updatedTask! : task
-        )
-      }));
+      setTasks(prev => {
+        const result = { ...prev };
+        
+        // Dacă perioada s-a schimbat, mutăm task-ul în noua perioadă
+        if (newPeriod !== currentPeriod) {
+          // Eliminăm task-ul din perioada veche
+          result[currentPeriod] = prev[currentPeriod].filter((t: Task) => t.id !== taskId);
+          // Adăugăm task-ul în noua perioadă
+          result[newPeriod] = [...prev[newPeriod], updatedTask];
+        } else {
+          // Actualizăm task-ul în aceeași perioadă
+          result[currentPeriod] = prev[currentPeriod].map((t: Task) =>
+            t.id === taskId ? updatedTask : t
+          );
+        }
+        
+        return result;
+      });
 
       // Actualizează cache-ul
-      await taskCacheService.updateTaskInCache(currentPeriod, taskId, updatedTask);
+      if (newPeriod !== currentPeriod) {
+        // Dacă perioada s-a schimbat, actualizăm cache-ul corespunzător
+        await taskCacheService.deleteTaskFromCache(currentPeriod, taskId);
+        await taskCacheService.addTaskToCache(newPeriod, updatedTask);
+      } else {
+        // Altfel, actualizăm task-ul în aceeași perioadă
+        await taskCacheService.updateTaskInCache(currentPeriod, taskId, updatedTask);
+      }
     } catch (err) {
       console.error('Error updating task:', err);
       setError(t('taskManagement.errors.updateTask'));

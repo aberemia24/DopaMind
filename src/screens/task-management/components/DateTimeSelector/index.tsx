@@ -9,6 +9,7 @@ import type { Task } from '../../../../services/taskService';
 import { useTranslation } from 'react-i18next';
 import { MaterialIcons } from '@expo/vector-icons';
 import { TASK_TRANSLATIONS } from '../../../../i18n/keys';
+import { getTimePeriodFromDate } from '../../../../utils/timeUtils';
 
 interface DateTimeSelectorProps {
   dueDate?: Date | string;
@@ -52,17 +53,16 @@ export const DateTimeSelector: React.FC<DateTimeSelectorProps> = ({
       const newDate = new Date(selectedDate);
       newDate.setHours(time.hours);
       newDate.setMinutes(time.minutes);
-      onDateTimeChange({ dueDate: newDate });
+      
+      // Determinăm perioada corectă bazată pe ora selectată
+      const period = getTimePeriodFromDate(newDate);
+      
+      // Actualizăm task-ul cu noua dată și perioada corespunzătoare
+      onDateTimeChange({ 
+        dueDate: newDate,
+        period: period
+      });
     }
-  };
-
-  /**
-   * Gestionează schimbarea timpului pentru memento
-   * IMPACT: Actualizează timpul de notificare pentru task
-   * @param minutes Numărul de minute înainte de data scadentă când se va trimite notificarea
-   */
-  const handleReminderChange = (minutes: number) => {
-    onDateTimeChange({ reminderMinutes: minutes });
   };
 
   /**
@@ -80,14 +80,30 @@ export const DateTimeSelector: React.FC<DateTimeSelectorProps> = ({
       newDate.setMinutes(option.time.minutes);
     }
     
+    // Determinăm perioada corectă bazată pe ora selectată
+    const period = getTimePeriodFromDate(newDate);
+    
     // Actualizăm starea locală
     setSelectedDate(newDate);
     
     // Trimitem actualizarea către părinte
-    onDateTimeChange({ dueDate: newDate });
+    onDateTimeChange({ 
+      dueDate: newDate,
+      period: period
+    });
     
-    // Afișăm selectorul de timp pentru ajustări fine
-    setShowTimePicker(true);
+    // Închide direct modalul fără a mai afișa selectorul de timp
+    // Utilizatorul poate deschide din nou modalul dacă dorește să ajusteze ora
+    setModalVisible(false);
+  };
+
+  /**
+   * Gestionează schimbarea timpului pentru memento
+   * IMPACT: Actualizează timpul de notificare pentru task
+   * @param minutes Numărul de minute înainte de data scadentă când se va trimite notificarea
+   */
+  const handleReminderChange = (minutes: number) => {
+    onDateTimeChange({ reminderMinutes: minutes });
   };
 
   /**
@@ -179,7 +195,13 @@ export const DateTimeSelector: React.FC<DateTimeSelectorProps> = ({
     <>
       <TouchableOpacity
         style={styles.actionButton}
-        onPress={() => setModalVisible(true)}
+        onPress={() => {
+          setModalVisible(true);
+          // Dacă task-ul are deja o dată setată, deschidem direct selectorul de timp
+          if (dueDate) {
+            setShowTimePicker(true);
+          }
+        }}
         accessibilityRole="button"
         accessibilityLabel={t(TASK_TRANSLATIONS.BUTTONS.SET_DATE_TIME)}
       >
@@ -218,22 +240,58 @@ export const DateTimeSelector: React.FC<DateTimeSelectorProps> = ({
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>
-                {t(TASK_TRANSLATIONS.DATE_TIME_SELECTOR.TITLE)}
-              </Text>
-              <TouchableOpacity
-                onPress={() => setModalVisible(false)}
-                accessibilityRole="button"
-                accessibilityLabel={t(TASK_TRANSLATIONS.BUTTONS.CLOSE)}
-              >
-                <MaterialIcons
-                  name="close"
-                  size={24}
-                  color={ACCESSIBILITY.COLORS.TEXT.PRIMARY}
-                />
-              </TouchableOpacity>
-            </View>
+            {/* Header pentru ecranul de calendar */}
+            {!showTimePicker && (
+              <View style={styles.modalHeader}>
+                <Text style={styles.modalTitle}>
+                  {t(TASK_TRANSLATIONS.DATE_TIME_SELECTOR.TITLE)}
+                </Text>
+                <TouchableOpacity
+                  onPress={() => setModalVisible(false)}
+                  accessibilityRole="button"
+                  accessibilityLabel={t(TASK_TRANSLATIONS.BUTTONS.CLOSE)}
+                >
+                  <MaterialIcons
+                    name="close"
+                    size={24}
+                    color={ACCESSIBILITY.COLORS.TEXT.PRIMARY}
+                  />
+                </TouchableOpacity>
+              </View>
+            )}
+            
+            {/* Header pentru ecranul de selectare a orei */}
+            {showTimePicker && (
+              <View style={styles.modalHeader}>
+                <TouchableOpacity
+                  style={styles.headerButton}
+                  onPress={() => setShowTimePicker(false)}
+                  accessibilityRole="button"
+                  accessibilityLabel={t(TASK_TRANSLATIONS.BUTTONS.BACK)}
+                >
+                  <MaterialIcons
+                    name="arrow-back"
+                    size={24}
+                    color={ACCESSIBILITY.COLORS.TEXT.PRIMARY}
+                  />
+                </TouchableOpacity>
+                <Text style={styles.modalTitle}>
+                  {t(TASK_TRANSLATIONS.DATE_TIME_SELECTOR.TITLE)}
+                </Text>
+                <TouchableOpacity
+                  style={styles.headerButton}
+                  onPress={() => setModalVisible(false)}
+                  accessibilityRole="button"
+                  accessibilityLabel={t(TASK_TRANSLATIONS.BUTTONS.CLOSE)}
+                >
+                  <MaterialIcons
+                    name="close"
+                    size={24}
+                    color={ACCESSIBILITY.COLORS.TEXT.PRIMARY}
+                  />
+                </TouchableOpacity>
+              </View>
+            )}
 
             <TabBar activeTab={activeTab} onTabChange={setActiveTab} />
 
@@ -241,13 +299,52 @@ export const DateTimeSelector: React.FC<DateTimeSelectorProps> = ({
               <>
                 <QuickOptions onOptionSelect={handleQuickOptionSelect} />
                 {showTimePicker ? (
-                  <TimePicker 
-                    onTimeSelect={handleTimeSelect} 
-                    reminderMinutes={reminderMinutes}
-                    onReminderChange={handleReminderChange}
-                  />
+                  <>
+                    <TimePicker 
+                      onTimeSelect={handleTimeSelect} 
+                      reminderMinutes={reminderMinutes}
+                      onReminderChange={handleReminderChange}
+                      selectedDate={selectedDate}
+                    />
+                    <View style={styles.buttonContainer}>
+                      <TouchableOpacity
+                        style={styles.iconButton}
+                        onPress={() => setModalVisible(false)}
+                        accessibilityRole="button"
+                        accessibilityLabel={t(TASK_TRANSLATIONS.BUTTONS.OK)}
+                      >
+                        <MaterialIcons
+                          name="check"
+                          size={24}
+                          color={ACCESSIBILITY.COLORS.STATES.SUCCESS}
+                        />
+                      </TouchableOpacity>
+                    </View>
+                  </>
                 ) : (
-                  <CalendarView onDateSelect={handleDateSelect} />
+                  <>
+                    <CalendarView onDateSelect={handleDateSelect} />
+                    <View style={styles.buttonContainer}>
+                      {/* Eliminăm butonul de înapoi din ecranul de calendar - nu este necesar */}
+                      <TouchableOpacity
+                        style={styles.iconButton}
+                        onPress={() => {
+                          if (selectedDate) {
+                            // Închide modalul direct dacă avem deja o dată selectată
+                            setModalVisible(false);
+                          }
+                        }}
+                        accessibilityRole="button"
+                        accessibilityLabel={t(TASK_TRANSLATIONS.BUTTONS.OK)}
+                      >
+                        <MaterialIcons
+                          name="check"
+                          size={24}
+                          color={ACCESSIBILITY.COLORS.STATES.SUCCESS}
+                        />
+                      </TouchableOpacity>
+                    </View>
+                  </>
                 )}
               </>
             ) : (
@@ -306,14 +403,30 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: ACCESSIBILITY.SPACING.MD,
   },
+  headerButton: {
+    padding: ACCESSIBILITY.SPACING.SM,
+    borderRadius: ACCESSIBILITY.SPACING.SM,
+  },
   modalTitle: {
     fontSize: ACCESSIBILITY.TYPOGRAPHY.SIZES.LG,
     fontWeight: ACCESSIBILITY.TYPOGRAPHY.WEIGHTS.BOLD,
     color: ACCESSIBILITY.COLORS.TEXT.PRIMARY,
+    flex: 1,
+    textAlign: 'center',
   },
   comingSoon: {
     textAlign: 'center',
     marginTop: ACCESSIBILITY.SPACING.LG,
     color: ACCESSIBILITY.COLORS.TEXT.SECONDARY,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    marginTop: ACCESSIBILITY.SPACING.MD,
+  },
+  iconButton: {
+    padding: ACCESSIBILITY.SPACING.SM,
+    borderRadius: ACCESSIBILITY.SPACING.SM,
+    marginLeft: ACCESSIBILITY.SPACING.SM,
   },
 });

@@ -9,6 +9,10 @@
       "markComplete": "mark as complete",
       "markIncomplete": "mark as incomplete"
     },
+    "buttons": {
+      "ok": "OK",
+      "back": "Back"
+    },
     "fields": {
       "email": "Email",
       "password": "Password",
@@ -185,6 +189,8 @@
       "editTask": "Edit task",
       "setDateTime": "Set date and time",
       "close": "Close",
+      "ok": "OK",
+      "back": "Back",
       "expandSection": "Expand {{section}} section",
       "collapseSection": "Collapse {{section}} section"
     },
@@ -249,7 +255,12 @@
       "notAuthenticated": "You must be logged in to manage tasks",
       "addTask": "Could not add task. Please try again.",
       "updateTask": "Could not update task. Please try again.",
-      "deleteTask": "Could not delete task. Please try again."
+      "deleteTask": "Could not delete task. Please try again.",
+      "invalidTime": "Please enter a valid time",
+      "requiredFields": "Please fill in all required fields"
+    },
+    "confirmations": {
+      "timeSet": "Time has been set successfully"
     },
     "accessibility": {
       "taskList": "Task list organized by time periods",
