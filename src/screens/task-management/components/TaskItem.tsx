@@ -55,12 +55,12 @@ const TaskItem: React.FC<TaskItemProps> = ({
       >
         <MaterialIcons
           name={task.completed ? 'check-box' : 'check-box-outline-blank'}
-          size={task.completed ? 18 : 24}
+          size={task.completed ? 16 : 24}
           color={ACCESSIBILITY.COLORS.TEXT.SECONDARY}
         />
       </TouchableOpacity>
 
-      <View style={styles.contentContainer}>
+      <View style={[styles.contentContainer, task.completed && styles.completedContentContainer]}>
         {isEditing ? (
           <TextInput
             style={styles.input}
@@ -156,15 +156,18 @@ const styles = StyleSheet.create({
     marginVertical: 2, 
   },
   completedContainer: {
-    opacity: 0.8, 
-    backgroundColor: 'rgba(0,0,0,0.03)', 
-    borderColor: 'rgba(0,0,0,0.05)', 
+    opacity: 0.9, 
+    backgroundColor: 'rgba(0,0,0,0.02)', 
+    borderColor: 'rgba(0,0,0,0.08)', 
   },
   completedContainerCompact: {
-    paddingVertical: 0,
-    minHeight: 24,
-    marginVertical: 0,
-    borderWidth: 0.5,
+    paddingVertical: 2,
+    minHeight: 28,
+    height: 28,
+    marginVertical: 1, 
+    borderWidth: 1,
+    borderRadius: 4, 
+    borderColor: 'rgba(0,0,0,0.1)', 
   },
   checkbox: {
     width: 36, 
@@ -173,16 +176,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   completedCheckbox: {
-    width: 24,
-    height: 24,
+    width: 28,
+    height: 28,
     justifyContent: 'center',
     alignItems: 'center',
+    marginLeft: 2,
   },
   contentContainer: {
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+  },
+  completedContentContainer: {
+    paddingVertical: 0,
+    height: 28,
   },
   titleContainer: {
     flex: 1,
@@ -196,7 +204,8 @@ const styles = StyleSheet.create({
   completedTitle: {
     textDecorationLine: 'line-through',
     color: ACCESSIBILITY.COLORS.TEXT.SECONDARY,
-    fontSize: 12,
+    fontSize: 12, 
+    lineHeight: 18,
   },
   untitledTask: {
     fontStyle: 'italic',
@@ -220,8 +229,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   completionDateContainer: {
-    paddingHorizontal: ACCESSIBILITY.SPACING.SM,
+    paddingHorizontal: 8,
     justifyContent: 'center',
+    height: 28,
   },
   completionDate: {
     fontSize: 11,

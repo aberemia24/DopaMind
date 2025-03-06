@@ -170,13 +170,13 @@ const TimeSection: React.FC<TimeSectionProps> = ({
                   <Text style={styles.completedTasksTitle}>
                     {t('taskManagement.labels.completedTasks')}
                   </Text>
-                  <Text style={styles.taskCount}>
+                  <Text style={[styles.taskCount, styles.completedTasksTitle]}>
                     ({completedTasks.length})
                   </Text>
                 </View>
                 <View style={styles.completedTasksList}>
                   {completedTasks.map((task) => (
-                    <View key={task.id} style={styles.taskItemWrapper}>
+                    <View key={task.id} style={[styles.taskItemWrapper, styles.completedTaskItemWrapper]}>
                       <TaskItem
                         task={task}
                         onToggle={() => handleToggleTask(task.id)}
@@ -271,15 +271,20 @@ const styles = StyleSheet.create({
     borderRadius: 0,
     backgroundColor: 'transparent',
   },
+  completedTaskItemWrapper: {
+    margin: 0,
+    padding: 0,
+    marginBottom: 1,
+  },
   completedTasksHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingTop: ACCESSIBILITY.SPACING.XS,
-    paddingBottom: 2,
+    paddingTop: 8,
+    paddingBottom: 4,
     paddingHorizontal: ACCESSIBILITY.SPACING.SM,
     marginTop: 4,
     borderTopWidth: 0.5,
-    borderTopColor: 'rgba(0,0,0,0.05)',
+    borderTopColor: 'rgba(0,0,0,0.1)',
   },
   completedTasksTitle: {
     fontSize: 12,
@@ -288,8 +293,8 @@ const styles = StyleSheet.create({
   },
   completedTasksList: {
     backgroundColor: 'transparent',
-    paddingVertical: 0,
-    paddingHorizontal: 0,
+    paddingVertical: 2,
+    paddingHorizontal: ACCESSIBILITY.SPACING.XS,
     marginTop: 0,
   },
   emptyState: {

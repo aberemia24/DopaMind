@@ -21,6 +21,7 @@
     "@react-navigation/native": "^6.1.9",
     "@react-navigation/native-stack": "^6.9.17",
     "@shopify/flash-list": "^1.7.3",
+    "date-fns": "^4.1.0",
     "expo": "~52.0.36",
     "expo-auth-session": "~6.0.3",
     "expo-crypto": "~14.0.2",
