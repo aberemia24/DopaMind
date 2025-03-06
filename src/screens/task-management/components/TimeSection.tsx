@@ -26,7 +26,6 @@ const TimeSection: React.FC<TimeSectionProps> = ({
   onUpdateTask,
 }) => {
   const { t } = useTranslation();
-  const dayTimeColors = getDayTimeColors();
   const [isExpanded, setIsExpanded] = useState(true);
   const animatedHeight = useRef(new Animated.Value(1)).current;
   const animatedRotation = useRef(new Animated.Value(0)).current;
@@ -74,8 +73,8 @@ const TimeSection: React.FC<TimeSectionProps> = ({
 
   return (
     <View style={styles.container}>
-      {/* Separator subtil între categorii */}
-      <View style={styles.separator} />
+      {/* Spațiu între categorii în loc de separator subtil */}
+      <View style={styles.categorySpacing} />
       
       <TouchableOpacity
         activeOpacity={0.7}
@@ -90,56 +89,43 @@ const TimeSection: React.FC<TimeSectionProps> = ({
           t('taskManagement.accessibility.expandHint')
         }
       >
-        <View style={styles.headerContainer}>
-          <View 
-            style={[
-              styles.colorBar, 
-              { backgroundColor: periodColors.BORDER }
-            ]} 
-          />
-          <View 
-            style={[
-              styles.header,
-              { backgroundColor: `${periodColors.PRIMARY}40` } 
-            ]}
-          >
-            <View style={styles.titleContainer}>
+        <View style={[styles.headerCard, { borderLeftColor: periodColors.BORDER }]}>
+          <View style={styles.titleContainer}>
+            <MaterialIcons 
+              name={period.icon} 
+              size={20} 
+              color={periodColors.ICON} 
+            />
+            <Text style={styles.title}>
+              {t(period.titleKey)}
+            </Text>
+            <Text style={styles.taskCount}>
+              ({tasks.length})
+            </Text>
+          </View>
+          <View style={styles.actionContainer}>
+            <TouchableOpacity
+              onPress={(e) => {
+                e.stopPropagation(); // Previne propagarea evenimentului la părinte
+                onAddTask();
+              }}
+              style={styles.addButton}
+              accessibilityRole="button"
+              accessibilityLabel={t('taskManagement.buttons.addTask')}
+            >
               <MaterialIcons 
-                name={period.icon} 
+                name="add" 
                 size={20} 
-                color={periodColors.ICON} 
+                color={ACCESSIBILITY.COLORS.INTERACTIVE.PRIMARY} 
               />
-              <Text style={[styles.title, { color: ACCESSIBILITY.COLORS.TEXT.PRIMARY }]}>
-                {t(period.titleKey)}
-              </Text>
-              <Text style={styles.taskCount}>
-                ({tasks.length})
-              </Text>
-            </View>
-            <View style={styles.actionContainer}>
-              <TouchableOpacity
-                onPress={(e) => {
-                  e.stopPropagation(); // Previne propagarea evenimentului la părinte
-                  onAddTask();
-                }}
-                style={styles.addButton}
-                accessibilityRole="button"
-                accessibilityLabel={t('taskManagement.buttons.addTask')}
-              >
-                <MaterialIcons 
-                  name="add" 
-                  size={20} 
-                  color={ACCESSIBILITY.COLORS.INTERACTIVE.PRIMARY} 
-                />
-              </TouchableOpacity>
-              <Animated.View style={{ transform: [{ rotate: iconRotation }] }}>
-                <MaterialIcons 
-                  name="expand-more" 
-                  size={20} 
-                  color={ACCESSIBILITY.COLORS.TEXT.SECONDARY} 
-                />
-              </Animated.View>
-            </View>
+            </TouchableOpacity>
+            <Animated.View style={{ transform: [{ rotate: iconRotation }] }}>
+              <MaterialIcons 
+                name="expand-more" 
+                size={20} 
+                color={ACCESSIBILITY.COLORS.TEXT.SECONDARY} 
+              />
+            </Animated.View>
           </View>
         </View>
       </TouchableOpacity>
@@ -157,15 +143,21 @@ const TimeSection: React.FC<TimeSectionProps> = ({
           }
         ]}
       >
-        {tasks.map((task) => (
-          <TaskItem
-            key={task.id}
-            task={task}
-            onToggle={() => onToggleTask(task.id)}
-            onDelete={() => onDeleteTask(task.id)}
-            onUpdate={(updates: Partial<Task>) => onUpdateTask(task.id, updates)}
-          />
-        ))}
+        {tasks.length > 0 ? (
+          tasks.map((task) => (
+            <TaskItem
+              key={task.id}
+              task={task}
+              onToggle={() => onToggleTask(task.id)}
+              onDelete={() => onDeleteTask(task.id)}
+              onUpdate={(updates: Partial<Task>) => onUpdateTask(task.id, updates)}
+            />
+          ))
+        ) : (
+          <View style={styles.emptyState}>
+            <Text style={styles.emptyStateText}>Nu există sarcini pentru această perioadă</Text>
+          </View>
+        )}
       </Animated.View>
     </View>
   );
@@ -173,41 +165,30 @@ const TimeSection: React.FC<TimeSectionProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: ACCESSIBILITY.SPACING.MD, // Spațiu mai mare între categorii
+    marginBottom: ACCESSIBILITY.SPACING.MD,
   },
-  separator: {
-    height: 1,
-    backgroundColor: ACCESSIBILITY.COLORS.BACKGROUND.DISABLED,
-    marginHorizontal: ACCESSIBILITY.SPACING.LG,
-    marginBottom: ACCESSIBILITY.SPACING.SM,
-    opacity: 0.5,
+  categorySpacing: {
+    height: ACCESSIBILITY.SPACING.SM,
   },
-  headerContainer: {
-    flexDirection: 'row',
-    marginHorizontal: ACCESSIBILITY.SPACING.XS,
-    borderRadius: ACCESSIBILITY.SPACING.SM,
-    overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.08, 
-    shadowRadius: 1.5, 
-    elevation: 1, 
-    borderWidth: 0.5, 
-    borderColor: 'rgba(0,0,0,0.05)', 
-  },
-  colorBar: {
-    width: 6, 
-  },
-  header: {
-    flex: 1,
+  headerCard: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    backgroundColor: ACCESSIBILITY.COLORS.BACKGROUND.PRIMARY,
+    marginHorizontal: ACCESSIBILITY.SPACING.SM,
     paddingHorizontal: ACCESSIBILITY.SPACING.BASE,
     paddingVertical: ACCESSIBILITY.SPACING.SM,
+    borderRadius: ACCESSIBILITY.SPACING.SM,
+    borderLeftWidth: 4,
+    // Adăugăm o umbră mai consistentă
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 2,
   },
   titleContainer: {
     flexDirection: 'row',
@@ -217,6 +198,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: ACCESSIBILITY.TYPOGRAPHY.SIZES.BASE,
     fontWeight: ACCESSIBILITY.TYPOGRAPHY.WEIGHTS.MEDIUM,
+    color: ACCESSIBILITY.COLORS.TEXT.PRIMARY,
   },
   taskCount: {
     fontSize: ACCESSIBILITY.TYPOGRAPHY.SIZES.SM,
@@ -236,6 +218,15 @@ const styles = StyleSheet.create({
   taskList: {
     paddingTop: ACCESSIBILITY.SPACING.XS,
   },
+  emptyState: {
+    padding: ACCESSIBILITY.SPACING.MD,
+    alignItems: 'center',
+  },
+  emptyStateText: {
+    color: ACCESSIBILITY.COLORS.TEXT.SECONDARY,
+    fontSize: ACCESSIBILITY.TYPOGRAPHY.SIZES.SM,
+    fontStyle: 'italic',
+  }
 });
 
 export default TimeSection;
