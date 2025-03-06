@@ -1,5 +1,5 @@
-import React, { useState, useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Animated } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, LayoutAnimation, Platform, UIManager } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import TaskItem from './TaskItem';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -7,6 +7,11 @@ import { ACCESSIBILITY } from '../../../constants/accessibility';
 import type { Task } from '../../../services/taskService';
 import type { TimePeriod } from '../../../constants/taskTypes';
 import { getDayTimeColors } from '../../../utils/daytime';
+
+// Activăm LayoutAnimation pentru Android
+if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
+  UIManager.setLayoutAnimationEnabledExperimental(true);
+}
 
 interface TimeSectionProps {
   period: TimePeriod;
@@ -27,11 +32,10 @@ const TimeSection: React.FC<TimeSectionProps> = ({
 }) => {
   const { t } = useTranslation();
   const [isExpanded, setIsExpanded] = useState(true);
-  const animatedHeight = useRef(new Animated.Value(1)).current;
-  const animatedRotation = useRef(new Animated.Value(0)).current;
+  const periodColors = getPeriodColors();
   
   // Obținem culorile corespunzătoare perioadei
-  const getPeriodColors = () => {
+  function getPeriodColors() {
     switch (period.id) {
       case 'MORNING':
         return ACCESSIBILITY.COLORS.DAYTIME.MORNING;
@@ -42,45 +46,23 @@ const TimeSection: React.FC<TimeSectionProps> = ({
       default:
         return ACCESSIBILITY.COLORS.DAYTIME.MORNING;
     }
-  };
-
-  const periodColors = getPeriodColors();
+  }
   
-  const   toggleExpand = () => {
-    const newValue = !isExpanded;
-    setIsExpanded(newValue);
-    
-    // Folosim o animație mai fluidă cu easing
-    Animated.parallel([
-      // Animație pentru înălțime
-      Animated.timing(animatedHeight, {
-        toValue: newValue ? 1 : 0,
-        duration: 300, // Puțin mai lent pentru o tranziție mai fluidă
-        useNativeDriver: false,
-      }),
-      
-      // Animație pentru rotația iconului
-      Animated.timing(animatedRotation, {
-        toValue: newValue ? 0 : 1,
-        duration: 300,
-        useNativeDriver: true,
-      })
-    ]).start();
+  // Folosim LayoutAnimation în loc de Animated
+  const toggleExpand = () => {
+    // Configurăm animația pentru înainte de a schimba starea
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setIsExpanded(!isExpanded);
   };
-  
-  // Calculăm rotația iconului
-  const iconRotation = animatedRotation.interpolate({
-    inputRange: [0, 1],
-    outputRange: ['0deg', '180deg'],
-  });
 
   return (
     <View style={styles.container}>
-      {/* Spațiu între categorii în loc de separator subtil */}
+      {/* Spațiu între categorii */}
       <View style={styles.categorySpacing} />
       
-      {/* Creăm un container cu border stânga colorat pentru întreaga secțiune */}
+      {/* Containerul principal cu bordură colorată */}
       <View style={[styles.sectionContainer, { borderLeftColor: periodColors.BORDER }]}>
+        {/* Header-ul secțiunii - este mereu vizibil */}
         <TouchableOpacity
           activeOpacity={0.7}
           onPress={toggleExpand}
@@ -124,51 +106,38 @@ const TimeSection: React.FC<TimeSectionProps> = ({
                   color={ACCESSIBILITY.COLORS.INTERACTIVE.PRIMARY} 
                 />
               </TouchableOpacity>
-              <Animated.View style={{ transform: [{ rotate: iconRotation }] }}>
-                <MaterialIcons 
-                  name="expand-more" 
-                  size={20} 
-                  color={ACCESSIBILITY.COLORS.TEXT.SECONDARY} 
-                />
-              </Animated.View>
+              <MaterialIcons 
+                name={isExpanded ? "expand-more" : "expand-less"} 
+                size={20} 
+                color={ACCESSIBILITY.COLORS.TEXT.SECONDARY} 
+              />
             </View>
           </View>
         </TouchableOpacity>
 
-      <Animated.View 
-        style={[
-          styles.taskList,
-          {
-            maxHeight: animatedHeight.interpolate({
-              inputRange: [0, 1],
-              outputRange: [0, 1000] // Valoare mare pentru a acoperi toate task-urile
-            }),
-            opacity: animatedHeight,
-            overflow: 'hidden',
-            // Asigurăm că nu există border sau umbre conflictuale
-            borderWidth: 0,
-            shadowOpacity: 0,
-            elevation: 0,
-          }
-        ]}
-      >
-        {tasks.length > 0 ? (
-          tasks.map((task) => (
-            <View key={task.id} style={styles.taskItemWrapper}>
-              <TaskItem
-                task={task}
-                onToggle={() => onToggleTask(task.id)}
-                onDelete={() => onDeleteTask(task.id)}
-                onUpdate={(updates: Partial<Task>) => onUpdateTask(task.id, updates)}
-              />
-            </View>
-          ))
-        ) : (
-          <View style={styles.emptyState}>
-            <Text style={styles.emptyStateText}>Nu există sarcini pentru această perioadă</Text>
+        {/* Container pentru lista de task-uri - vizibil doar când isExpanded este true */}
+        {isExpanded && (
+          <View style={styles.taskListContainer}>
+            {tasks.length > 0 ? (
+              <View style={styles.taskList}>
+                {tasks.map((task) => (
+                  <View key={task.id} style={styles.taskItemWrapper}>
+                    <TaskItem
+                      task={task}
+                      onToggle={() => onToggleTask(task.id)}
+                      onDelete={() => onDeleteTask(task.id)}
+                      onUpdate={(updates: Partial<Task>) => onUpdateTask(task.id, updates)}
+                    />
+                  </View>
+                ))}
+              </View>
+            ) : (
+              <View style={styles.emptyState}>
+                <Text style={styles.emptyStateText}>Nu există sarcini pentru această perioadă</Text>
+              </View>
+            )}
           </View>
         )}
-      </Animated.View>
       </View>
     </View>
   );
@@ -187,7 +156,7 @@ const styles = StyleSheet.create({
     borderRadius: ACCESSIBILITY.SPACING.SM,
     overflow: 'hidden',
     backgroundColor: ACCESSIBILITY.COLORS.BACKGROUND.PRIMARY,
-    // Adăugăm o umbră pentru întreaga secțiune
+    // Umbre pentru întreaga secțiune
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -201,10 +170,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: ACCESSIBILITY.COLORS.BACKGROUND.PRIMARY,
+    backgroundColor: 'transparent',
     paddingHorizontal: ACCESSIBILITY.SPACING.BASE,
     paddingVertical: ACCESSIBILITY.SPACING.SM,
-    // Am eliminat border și shadow pentru că acum sunt la nivelul containerului părinte
   },
   titleContainer: {
     flexDirection: 'row',
@@ -231,25 +199,27 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  taskList: {
-    // Fără padding sau margine suplimentară, pentru că acum totul este în interiorul aceluiași container
-    paddingTop: 0,
-    paddingBottom: ACCESSIBILITY.SPACING.XS,
-    // Asigurăm că task-urile nu au stil vizual conflictual în timpul animației
+  taskListContainer: {
     backgroundColor: 'transparent',
+    // Fără umbră sau border
     borderWidth: 0,
     shadowOpacity: 0,
     elevation: 0,
   },
+  taskList: {
+    paddingTop: 0,
+    paddingBottom: ACCESSIBILITY.SPACING.XS,
+    backgroundColor: 'transparent',
+  },
   taskItemWrapper: {
-    // Acest wrapper va "neutraliza" efectele vizuale ale TaskItem în timpul animației
-    marginHorizontal: ACCESSIBILITY.SPACING.XS,
-    marginVertical: ACCESSIBILITY.SPACING.XS / 2,
+    margin: 0,
+    padding: ACCESSIBILITY.SPACING.XS,
     borderRadius: 0,
+    // Fără umbre sau border-uri
+    borderWidth: 0,
     shadowOpacity: 0,
     elevation: 0,
     backgroundColor: 'transparent',
-    overflow: 'hidden', // Ascunde orice efect vizual care iese din container
   },
   emptyState: {
     padding: ACCESSIBILITY.SPACING.MD,
