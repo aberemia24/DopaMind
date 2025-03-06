@@ -37,7 +37,7 @@ const TaskItem: React.FC<TaskItemProps> = ({
     if (!task.completedAt) return '';
     
     const locale = i18n.language === 'ro' ? ro : undefined;
-    return format(new Date(task.completedAt), 'dd MMM', { locale });
+    return format(new Date(task.completedAt), 'dd MMM HH:mm', { locale });
   };
 
   return (
@@ -47,7 +47,7 @@ const TaskItem: React.FC<TaskItemProps> = ({
       task.completed && styles.completedContainerCompact
     ]}>
       <TouchableOpacity
-        style={styles.checkbox}
+        style={[styles.checkbox, task.completed && styles.completedCheckbox]}
         onPress={onToggle}
         accessibilityRole="checkbox"
         accessibilityState={{ checked: task.completed }}
@@ -55,7 +55,7 @@ const TaskItem: React.FC<TaskItemProps> = ({
       >
         <MaterialIcons
           name={task.completed ? 'check-box' : 'check-box-outline-blank'}
-          size={24}
+          size={task.completed ? 18 : 24}
           color={ACCESSIBILITY.COLORS.TEXT.SECONDARY}
         />
       </TouchableOpacity>
@@ -161,13 +161,20 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(0,0,0,0.05)', 
   },
   completedContainerCompact: {
-    paddingVertical: 2,
-    minHeight: 30,
-    marginVertical: 1,
+    paddingVertical: 0,
+    minHeight: 24,
+    marginVertical: 0,
+    borderWidth: 0.5,
   },
   checkbox: {
     width: 36, 
     height: 36, 
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  completedCheckbox: {
+    width: 24,
+    height: 24,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -189,6 +196,7 @@ const styles = StyleSheet.create({
   completedTitle: {
     textDecorationLine: 'line-through',
     color: ACCESSIBILITY.COLORS.TEXT.SECONDARY,
+    fontSize: 12,
   },
   untitledTask: {
     fontStyle: 'italic',
@@ -216,7 +224,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   completionDate: {
-    fontSize: 12,
+    fontSize: 11,
     color: ACCESSIBILITY.COLORS.TEXT.SECONDARY,
     fontStyle: 'italic',
   },

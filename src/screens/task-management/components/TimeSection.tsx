@@ -274,18 +274,23 @@ const styles = StyleSheet.create({
   completedTasksHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingTop: ACCESSIBILITY.SPACING.SM,
-    paddingBottom: ACCESSIBILITY.SPACING.XS,
+    paddingTop: ACCESSIBILITY.SPACING.XS,
+    paddingBottom: 2,
     paddingHorizontal: ACCESSIBILITY.SPACING.SM,
+    marginTop: 4,
+    borderTopWidth: 0.5,
+    borderTopColor: 'rgba(0,0,0,0.05)',
   },
   completedTasksTitle: {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: ACCESSIBILITY.TYPOGRAPHY.WEIGHTS.MEDIUM,
     color: ACCESSIBILITY.COLORS.TEXT.SECONDARY,
   },
   completedTasksList: {
     backgroundColor: 'transparent',
     paddingVertical: 0,
+    paddingHorizontal: 0,
+    marginTop: 0,
   },
   emptyState: {
     padding: ACCESSIBILITY.SPACING.MD,
