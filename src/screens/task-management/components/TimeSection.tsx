@@ -1,207 +1,44 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, LayoutAnimation, Platform, UIManager } from 'react-native';
-import { useTranslation } from 'react-i18next';
-import TaskItem from './TaskItem';
-import { MaterialIcons } from '@expo/vector-icons';
-import { ACCESSIBILITY } from '../../../constants/accessibility';
-import type { Task } from '../../../services/taskService';
-import type { TimePeriod } from '../../../constants/taskTypes';
-import { getDayTimeColors } from '../../../utils/daytime';
-
-// Activăm LayoutAnimation pentru Android
-if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
-  UIManager.setLayoutAnimationEnabledExperimental(true);
-}
-
-interface TimeSectionProps {
-  period: TimePeriod;
-  tasks: Task[];
-  onAddTask: () => void;
-  onToggleTask: (taskId: string) => void;
-  onDeleteTask: (taskId: string) => void;
-  onUpdateTask: (taskId: string, updates: Partial<Task>) => void;
-}
-
-const TimeSection: React.FC<TimeSectionProps> = ({
-  period,
-  tasks,
-  onAddTask,
-  onToggleTask,
-  onDeleteTask,
-  onUpdateTask,
-}) => {
-  const { t } = useTranslation();
-  const [isExpanded, setIsExpanded] = useState(true);
-  const periodColors = getPeriodColors();
-  
-  // Obținem culorile corespunzătoare perioadei
-  function getPeriodColors() {
-    switch (period.id) {
-      case 'MORNING':
-        return ACCESSIBILITY.COLORS.DAYTIME.MORNING;
-      case 'AFTERNOON':
-        return ACCESSIBILITY.COLORS.DAYTIME.AFTERNOON;
-      case 'EVENING':
-        return ACCESSIBILITY.COLORS.DAYTIME.EVENING;
-      default:
-        return ACCESSIBILITY.COLORS.DAYTIME.MORNING;
-    }
-  }
-  
-  // Separăm task-urile active de cele completate
-  const activeTasks = tasks.filter(task => !task.completed);
-  const completedTasks = tasks.filter(task => task.completed);
-  
-  // Folosim LayoutAnimation în loc de Animated
-  const toggleExpand = () => {
-    // Configurăm animația pentru înainte de a schimba starea
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    setIsExpanded(!isExpanded);
-  };
-
-  // Actualizează un task când este marcat ca finalizat
-  const handleToggleTask = (taskId: string) => {
-    const task = tasks.find(t => t.id === taskId);
-    if (task) {
-      // Dacă task-ul este marcat ca finalizat, adăugăm timestamp-ul curent
-      if (!task.completed) {
-        onUpdateTask(taskId, { 
-          completed: true, 
-          completedAt: Date.now() 
-        });
-      } else {
-        onUpdateTask(taskId, { 
-          completed: false, 
-          completedAt: undefined 
-        });
-      }
-    }
-  };
-
-  return (
-    <View style={styles.container}>
-      {/* Spațiu între categorii */}
-      <View style={styles.categorySpacing} />
-      
-      {/* Containerul principal cu bordură colorată */}
-      <View style={[styles.sectionContainer, { borderLeftColor: periodColors.BORDER }]}>
-        {/* Header-ul secțiunii - este mereu vizibil */}
-        <TouchableOpacity
-          activeOpacity={0.7}
-          onPress={toggleExpand}
-          accessibilityRole="button"
-          accessibilityLabel={isExpanded ? 
-            t('taskManagement.buttons.collapseSection', { section: t(period.titleKey) }) : 
-            t('taskManagement.buttons.expandSection', { section: t(period.titleKey) })
-          }
-          accessibilityHint={isExpanded ? 
-            t('taskManagement.accessibility.collapseHint') : 
-            t('taskManagement.accessibility.expandHint')
-          }
-        >
-          <View style={styles.headerCard}>
-            <View style={styles.titleContainer}>
-              <MaterialIcons 
-                name={period.icon} 
-                size={20} 
-                color={periodColors.ICON} 
-              />
-              <Text style={styles.title}>
-                {t(period.titleKey)}
-              </Text>
-              <Text style={styles.taskCount}>
-                ({activeTasks.length})
-              </Text>
-            </View>
-            <View style={styles.actionContainer}>
-              <TouchableOpacity
-                onPress={(e) => {
-                  e.stopPropagation(); // Previne propagarea evenimentului la părinte
-                  onAddTask();
-                }}
-                style={styles.addButton}
-                accessibilityRole="button"
-                accessibilityLabel={t('taskManagement.buttons.addTask')}
-              >
-                <MaterialIcons 
-                  name="add" 
-                  size={20} 
-                  color={ACCESSIBILITY.COLORS.INTERACTIVE.PRIMARY} 
-                />
-              </TouchableOpacity>
-              <MaterialIcons 
-                name={isExpanded ? "expand-more" : "expand-less"} 
-                size={20} 
-                color={ACCESSIBILITY.COLORS.TEXT.SECONDARY} 
-              />
-            </View>
-          </View>
-        </TouchableOpacity>
-
-        {/* Container pentru lista de task-uri - vizibil doar când isExpanded este true */}
-        {isExpanded && (
-          <View style={styles.taskListContainer}>
-            {/* Task-uri active */}
-            {activeTasks.length > 0 ? (
-              <View style={styles.taskList}>
-                {activeTasks.map((task) => (
-                  <View key={task.id} style={styles.taskItemWrapper}>
-                    <TaskItem
-                      task={task}
-                      onToggle={() => handleToggleTask(task.id)}
-                      onDelete={() => onDeleteTask(task.id)}
-                      onUpdate={(updates: Partial<Task>) => onUpdateTask(task.id, updates)}
-                    />
-                  </View>
-                ))}
-              </View>
-            ) : (
-              <View style={styles.emptyState}>
-                <Text style={styles.emptyStateText}>
-                  {t('taskManagement.labels.noTasksForPeriod')}
-                </Text>
-              </View>
-            )}
-            
-            {/* Task-uri completate */}
-            {completedTasks.length > 0 && (
-              <>
-                <View style={styles.completedTasksHeader}>
-                  <Text style={styles.completedTasksTitle}>
-                    {t('taskManagement.labels.completedTasks')}
-                  </Text>
-                  <Text style={[styles.taskCount, styles.completedTasksTitle]}>
-                    ({completedTasks.length})
-                  </Text>
-                </View>
-                <View style={styles.completedTasksList}>
-                  {completedTasks.map((task) => (
-                    <View key={task.id} style={[styles.taskItemWrapper, styles.completedTaskItemWrapper]}>
-                      <TaskItem
-                        task={task}
-                        onToggle={() => handleToggleTask(task.id)}
-                        onDelete={() => onDeleteTask(task.id)}
-                        onUpdate={(updates: Partial<Task>) => onUpdateTask(task.id, updates)}
-                      />
-                    </View>
-                  ))}
-                </View>
-              </>
-            )}
-          </View>
-        )}
-      </View>
-    </View>
-  );
+{{ ... }}
 };
 
+/**
+ * Stilurile componentei TimeSection
+ * 
+ * GHID DE MODIFICARE:
+ * - Toate valorile de spațiere trebuie să folosească ACCESSIBILITY.SPACING
+ * - Toate valorile de font trebuie să folosească ACCESSIBILITY.TYPOGRAPHY
+ * - Toate culorile trebuie să folosească ACCESSIBILITY.COLORS
+ * - Elementele interactive trebuie să respecte dimensiunile minime ACCESSIBILITY.TOUCH_TARGET
+ */
 const styles = StyleSheet.create({
+  /**
+   * Containerul principal al secțiunii
+   * 
+   * IMPACT MODIFICARE:
+   * - Modificarea marginii va afecta spațierea verticală între secțiuni
+   * - Valoarea SM_MD oferă un echilibru între densitate și lizibilitate
+   */
   container: {
-    marginBottom: ACCESSIBILITY.SPACING.SM,
+    marginBottom: ACCESSIBILITY.SPACING.SM_MD, // Folosim valoarea intermediară pentru spațierea dintre secțiuni
   },
+  /**
+   * Spațiul dintre categorii
+   * 
+   * IMPACT MODIFICARE:
+   * - Reducerea înălțimii crește densitatea informațională
+   * - Valoarea minimă de 2px menține o separare vizuală subtilă
+   */
   categorySpacing: {
-    height: 4,
+    height: 2, // Reducem spațierea dintre categorii
   },
+  /**
+   * Containerul principal al secțiunii cu bordură colorată
+   * 
+   * IMPACT MODIFICARE:
+   * - Bordura colorată din stânga ajută la identificarea vizuală a perioadei
+   * - Umbrirea subtilă oferă adâncime vizuală și separă secțiunile
+   * - Marginile orizontale definesc alinierea cu alte elemente din UI
+   */
   sectionContainer: {
     marginHorizontal: ACCESSIBILITY.SPACING.SM,
     borderLeftWidth: 4,
@@ -218,39 +55,116 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
     elevation: 2,
   },
+  /**
+   * Stilul pentru header-ul secțiunii
+   * 
+   * IMPACT MODIFICARE:
+   * - Spațierea internă afectează dimensiunea zonei de touch
+   * - Flexbox asigură alinierea corectă a elementelor
+   * - Reducerea padding-ului vertical optimizează spațiul vertical
+   */
   headerCard: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: 'transparent',
     paddingHorizontal: ACCESSIBILITY.SPACING.BASE,
-    paddingVertical: 8,
+    paddingVertical: 6,
   },
+  /**
+   * Stilul specific pentru header-ul secțiunii COMPLETED
+   * 
+   * IMPACT MODIFICARE:
+   * - Fundalul subtil diferențiază vizual secțiunea de task-uri completate
+   * - Bordura inferioară creează o separare vizuală între header și conținut
+   */
+  completedSectionHeader: {
+    backgroundColor: 'rgba(0,0,0,0.03)',
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(0,0,0,0.05)',
+  },
+  /**
+   * Containerul pentru titlul secțiunii și iconița
+   * 
+   * IMPACT MODIFICARE:
+   * - Spațierea între elemente (gap) afectează lizibilitatea
+   * - Alinierea pe centru asigură aspect vizual consistent
+   */
   titleContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: ACCESSIBILITY.SPACING.SM,
   },
+  /**
+   * Stilul pentru titlul secțiunii
+   * 
+   * IMPACT MODIFICARE:
+   * - Dimensiunea fontului afectează ierarhia vizuală și lizibilitatea
+   * - Greutatea fontului (MEDIUM) oferă importanță vizuală
+   * - Culoarea trebuie să asigure contrast suficient (minim 4.5:1)
+   */
   title: {
     fontSize: ACCESSIBILITY.TYPOGRAPHY.SIZES.BASE,
     fontWeight: ACCESSIBILITY.TYPOGRAPHY.WEIGHTS.MEDIUM,
     color: ACCESSIBILITY.COLORS.TEXT.PRIMARY,
   },
+  /**
+   * Stilul specific pentru titlul secțiunii COMPLETED
+   * 
+   * IMPACT MODIFICARE:
+   * - Culoarea secundară reduce importanța vizuală a secțiunii completate
+   * - Menține greutatea MEDIUM pentru consistență cu celelalte titluri
+   */
+  completedSectionTitle: {
+    color: ACCESSIBILITY.COLORS.TEXT.SECONDARY,
+    fontWeight: ACCESSIBILITY.TYPOGRAPHY.WEIGHTS.MEDIUM,
+  },
+  /**
+   * Stilul pentru numărul de task-uri
+   * 
+   * IMPACT MODIFICARE:
+   * - Dimensiunea mai mică a fontului indică importanță secundară
+   * - Culoarea secundară reduce contrastul și importanța vizuală
+   * - Marginea din stânga asigură spațiere consistentă față de titlu
+   */
   taskCount: {
     fontSize: ACCESSIBILITY.TYPOGRAPHY.SIZES.SM,
     color: ACCESSIBILITY.COLORS.TEXT.SECONDARY,
     marginLeft: ACCESSIBILITY.SPACING.XS,
   },
+  /**
+   * Containerul pentru butoanele de acțiune din header
+   * 
+   * IMPACT MODIFICARE:
+   * - Flexbox asigură alinierea corectă a butoanelor
+   * - Spațierea între butoane afectează accesibilitatea
+   */
   actionContainer: {
     flexDirection: 'row',
     alignItems: 'center',
   },
+  /**
+   * Stilul pentru butonul de adăugare task
+   * 
+   * IMPACT MODIFICARE:
+   * - Dimensiunile respectă standardele de accesibilitate (minim 44x44px)
+   * - Centrarea conținutului asigură aspect vizual consistent
+   * - Zona de touch trebuie să fie suficient de mare pentru utilizare facilă
+   */
   addButton: {
     width: ACCESSIBILITY.TOUCH_TARGET.MIN_WIDTH,
     height: ACCESSIBILITY.TOUCH_TARGET.MIN_HEIGHT,
     justifyContent: 'center',
     alignItems: 'center',
   },
+  /**
+   * Containerul pentru lista de task-uri
+   * 
+   * IMPACT MODIFICARE:
+   * - Spațierea internă afectează densitatea informațională
+   * - Eliminarea umbrelor și bordurilor simplifică aspectul vizual
+   * - Fundalul transparent permite evidențierea task-urilor individuale
+   */
   taskListContainer: {
     backgroundColor: 'transparent',
     paddingHorizontal: ACCESSIBILITY.SPACING.XS,
@@ -260,22 +174,53 @@ const styles = StyleSheet.create({
     shadowOpacity: 0,
     elevation: 0,
   },
+  /**
+   * Stilul pentru lista de task-uri active
+   * 
+   * IMPACT MODIFICARE:
+   * - Eliminarea padding-ului superior reduce spațiul vertical
+   * - Păstrarea padding-ului inferior asigură spațiere după ultimul task
+   * - Fundalul transparent permite evidențierea task-urilor individuale
+   */
   taskList: {
     paddingTop: 0,
     paddingBottom: ACCESSIBILITY.SPACING.XS,
     backgroundColor: 'transparent',
   },
+  /**
+   * Wrapper pentru elementele de task individuale
+   * 
+   * IMPACT MODIFICARE:
+   * - Eliminarea marginilor și padding-ului reduce spațiul vertical
+   * - Fundalul transparent permite stilizarea în componenta TaskItem
+   * - Eliminarea border-radius menține aspect vizual consistent
+   */
   taskItemWrapper: {
     margin: 0,
     padding: 0,
     borderRadius: 0,
     backgroundColor: 'transparent',
   },
+  /**
+   * Stilul specific pentru task-urile completate
+   * 
+   * IMPACT MODIFICARE:
+   * - Marginea inferioară minimă (2px) asigură separare vizuală subtilă
+   * - Eliminarea altor spațieri maximizează densitatea informațională
+   */
   completedTaskItemWrapper: {
     margin: 0,
     padding: 0,
-    marginBottom: 1,
+    marginBottom: 2,
   },
+  /**
+   * Header-ul pentru secțiunea de task-uri completate
+   * 
+   * IMPACT MODIFICARE:
+   * - Bordura superioară creează separare vizuală de task-urile active
+   * - Spațierea asimetrică (mai mult sus, mai puțin jos) optimizează spațiul
+   * - Marginea superioară adaugă spațiu după ultimul task activ
+   */
   completedTasksHeader: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -286,29 +231,106 @@ const styles = StyleSheet.create({
     borderTopWidth: 0.5,
     borderTopColor: 'rgba(0,0,0,0.1)',
   },
+  /**
+   * Stilul pentru titlul secțiunii de task-uri completate
+   * 
+   * IMPACT MODIFICARE:
+   * - Dimensiunea redusă a fontului (12px) economisește spațiu vertical
+   * - Culoarea secundară reduce importanța vizuală
+   * - Greutatea MEDIUM asigură lizibilitate la dimensiune mică
+   */
   completedTasksTitle: {
     fontSize: 12,
     fontWeight: ACCESSIBILITY.TYPOGRAPHY.WEIGHTS.MEDIUM,
     color: ACCESSIBILITY.COLORS.TEXT.SECONDARY,
   },
+  /**
+   * Lista de task-uri completate
+   * 
+   * IMPACT MODIFICARE:
+   * - Spațierea redusă maximizează densitatea informațională
+   * - Fundalul transparent permite evidențierea task-urilor individuale
+   * - Eliminarea marginii superioare reduce spațiul vertical
+   */
   completedTasksList: {
     backgroundColor: 'transparent',
-    paddingVertical: 2,
+    paddingVertical: 4,
     paddingHorizontal: ACCESSIBILITY.SPACING.XS,
     marginTop: 0,
   },
+  /**
+   * Stilul pentru starea goală (când nu există task-uri)
+   * 
+   * IMPACT MODIFICARE:
+   * - Înălțimea minimă (30px) asigură vizibilitate suficientă
+   * - Centrarea conținutului oferă aspect vizual plăcut
+   * - Padding-ul minim economisește spațiu vertical
+   */
   emptyState: {
-    padding: ACCESSIBILITY.SPACING.MD,
+    padding: ACCESSIBILITY.SPACING.XS,
     alignItems: 'center',
     justifyContent: 'center',
-    minHeight: ACCESSIBILITY.TOUCH_TARGET.MIN_HEIGHT * 2,
+    minHeight: 30, // Reducem înălțimea minimă, dar păstrăm-o suficient de mare pentru accesibilitate
   },
+  /**
+   * Stilul specific pentru starea goală în secțiunile non-COMPLETED
+   * 
+   * IMPACT MODIFICARE:
+   * - Înălțimea minimă și mai redusă (24px) maximizează densitatea
+   * - Padding-ul vertical minim (2px) economisește spațiu
+   * - Menține vizibilitatea mesajului de stare goală
+   */
+  compactEmptyState: {
+    minHeight: 24, // Înălțime minimă și mai redusă pentru secțiunile non-COMPLETED
+    paddingVertical: 2,
+  },
+  /**
+   * Stilul pentru textul din starea goală
+   * 
+   * IMPACT MODIFICARE:
+   * - Dimensiunea redusă a fontului economisește spațiu vertical
+   * - Stilul italic diferențiază vizual mesajul de stare goală
+   * - Culoarea secundară reduce importanța vizuală
+   * - Alinierea centrată oferă aspect vizual plăcut
+   */
   emptyStateText: {
     color: ACCESSIBILITY.COLORS.TEXT.SECONDARY,
     fontSize: ACCESSIBILITY.TYPOGRAPHY.SIZES.SM,
     fontStyle: 'italic',
     textAlign: 'center',
+  },
+  /**
+   * Separatorul vizual între secțiunile normale și secțiunea COMPLETED
+   * 
+   * IMPACT MODIFICARE:
+   * - Înălțimea (2px) asigură vizibilitate suficientă
+   * - Culoarea semi-transparentă oferă contrast subtil
+   * - Marginile orizontale aliniază separatorul cu containerele secțiunilor
+   * - Marginile verticale creează spațiere vizuală între secțiuni
+   */
+  sectionSeparator: {
+    height: 2,
+    backgroundColor: 'rgba(0,0,0,0.15)',
+    marginHorizontal: ACCESSIBILITY.SPACING.SM,
+    marginTop: ACCESSIBILITY.SPACING.MD,
+    marginBottom: ACCESSIBILITY.SPACING.MD,
   }
 });
 
+/**
+ * Export-ul componentei TimeSection
+ * 
+ * Această componentă este folosită în TaskManagementScreen pentru afișarea
+ * task-urilor organizate pe perioade de timp (dimineață, după-amiază, seară, completate).
+ * 
+ * UTILIZARE:
+ * <TimeSection
+ *   period={periodObject}
+ *   tasks={tasksArray}
+ *   onAddTask={handleAddTask}
+ *   onToggleTask={handleToggleTask}
+ *   onDeleteTask={handleDeleteTask}
+ *   onUpdateTask={handleUpdateTask}
+ * />
+ */
 export default TimeSection;
