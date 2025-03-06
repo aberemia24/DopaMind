@@ -158,6 +158,8 @@
   "taskManagement": {
     "title": "Gestionare Sarcini",
     "dateTimeSelector": {
+      "title": "Setează Data și Ora",
+      "comingSoon": "Setările de durată vor fi disponibile în curând",
       "tabs": {
         "date": "Dată",
         "duration": "Durată"

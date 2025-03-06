@@ -146,6 +146,8 @@
   "taskManagement": {
     "title": "Task Management",
     "dateTimeSelector": {
+      "title": "Set Date & Time",
+      "comingSoon": "Duration settings coming soon",
       "tabs": {
         "date": "Date",
         "duration": "Duration"
@@ -182,6 +184,7 @@
       "deleteTask": "Delete task",
       "editTask": "Edit task",
       "setDateTime": "Set date and time",
+      "close": "Close",
       "expandSection": "Expand {{section}} section",
       "collapseSection": "Collapse {{section}} section"
     },

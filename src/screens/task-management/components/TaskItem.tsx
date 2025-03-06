@@ -136,7 +136,7 @@ const TaskItem: React.FC<TaskItemProps> = ({
 
       <View style={contentContainerStyle}>
         {/* Afișează fie un input de editare, fie textul titlului
-            IMPACT: Controlează modul în care utilizatorul poate edita titlul */}
+             IMPACT: Controlează modul în care utilizatorul poate edita titlul */}
         {isEditing ? (
           <TextInput
             style={styles.input}
@@ -161,11 +161,11 @@ const TaskItem: React.FC<TaskItemProps> = ({
         )}
 
         {/* Afișează butoanele de acțiune sau data completării, în funcție de starea sarcinii
-            IMPACT: Determină opțiunile disponibile utilizatorului pentru fiecare sarcină */}
+             IMPACT: Determină opțiunile disponibile utilizatorului pentru fiecare sarcină */}
         {!task.completed ? (
           <View style={styles.actions}>
             {/* Buton pentru marcarea sarcinii ca prioritară/non-prioritară
-                IMPACT: Controlează funcționalitatea de prioritizare */}
+                 IMPACT: Controlează funcționalitatea de prioritizare */}
             <TouchableOpacity
               style={styles.actionButton}
               onPress={() => onUpdate({ isPriority: !task.isPriority })}
@@ -186,15 +186,16 @@ const TaskItem: React.FC<TaskItemProps> = ({
             </TouchableOpacity>
 
             {/* Selector pentru dată și timp
-                IMPACT: Permite utilizatorului să seteze termenul limită și reamintirile */}
+                 IMPACT: Permite utilizatorului să seteze termenul limită și reamintirile */}
             <DateTimeSelector
               dueDate={task.dueDate}
               reminderMinutes={task.reminderMinutes}
               onDateTimeChange={(updates) => onUpdate(updates)}
+              isCompleted={task.completed}
             />
 
             {/* Buton pentru ștergerea sarcinii
-                IMPACT: Controlează capacitatea utilizatorului de a șterge sarcina */}
+                 IMPACT: Controlează capacitatea utilizatorului de a șterge sarcina */}
             <TouchableOpacity
               style={styles.deleteButton}
               onPress={onDelete}
@@ -209,12 +210,12 @@ const TaskItem: React.FC<TaskItemProps> = ({
             </TouchableOpacity>
           </View>
         ) : (
-          /* Container pentru data completării - vizibil doar pentru sarcinile finalizate
-             IMPACT: Oferă feedback vizual despre când a fost finalizată sarcina */
-          <View style={styles.completionDateContainer}>
+          <View style={styles.completionInfo}>
             <Text style={styles.completionDate}>
               {formatCompletionDate()}
             </Text>
+            
+            {/* DateTimeSelector a fost eliminat pentru sarcinile completate conform cerințelor */}
           </View>
         )}
       </View>
@@ -303,7 +304,6 @@ const styles = StyleSheet.create({
     color: ACCESSIBILITY.COLORS.TEXT.PRIMARY,  // Culoarea principală a textului
   },
   completedTitle: {
-    textDecorationLine: 'line-through',  // Taie textul pentru a indica finalizarea
     color: ACCESSIBILITY.COLORS.TEXT.SECONDARY,  // Culoare secundară - mai puțin accentuată
     fontSize: 13,                    // Font mic pentru textul finalizat
     lineHeight: 18,                  // Spațiere între linii
@@ -313,7 +313,6 @@ const styles = StyleSheet.create({
     color: ACCESSIBILITY.COLORS.TEXT.PRIMARY,  // Menține culoarea principală pentru text
   },
   priorityCompletedTitle: {
-    textDecorationLine: 'line-through',  // Taie textul pentru a indica finalizarea
     color: ACCESSIBILITY.COLORS.TEXT.SECONDARY,  // Culoare secundară - mai puțin accentuată
     fontStyle: 'italic',             // Stil italic
   },
@@ -348,18 +347,19 @@ const styles = StyleSheet.create({
     borderRadius: ACCESSIBILITY.SPACING.SM,  // Colțuri rotunjite
     marginLeft: ACCESSIBILITY.SPACING.XXS,   // Spațiere suplimentară în stânga
   },
-  completionDateContainer: {
-    paddingHorizontal: 8,            // Spațiere orizontală internă
-    justifyContent: 'center',        // Centrează pe verticală
-    height: 30,                      // Înălțime fixă
-    marginRight: ACCESSIBILITY.SPACING.XS, // Spațiere în dreapta pentru a separa de marginea containerului
+  completionInfo: {
+    flexDirection: 'row',            // Aranjează elementele pe orizontală
+    alignItems: 'center',            // Centrează elementele pe verticală
+    marginTop: 4,                    // Spațiere deasupra informațiilor de completare
+    flexWrap: 'wrap',                // Permite elementelor să treacă pe linia următoare dacă nu este suficient spațiu
+    justifyContent: 'flex-start',    // Aliniază elementele la stânga
+    gap: ACCESSIBILITY.SPACING.XS,   // Spațiere uniformă între elemente
   },
   completionDate: {
-    fontSize: 13,                    // Font puțin mai mare pentru data completării
-    color: ACCESSIBILITY.COLORS.TEXT.PRIMARY,  // Culoare primară pentru mai multă vizibilitate
+    fontSize: ACCESSIBILITY.TYPOGRAPHY.SIZES.SM,  // Dimensiunea fontului mai mică pentru informații secundare
+    color: ACCESSIBILITY.COLORS.TEXT.SECONDARY,   // Culoare secundară - mai puțin accentuată
     fontStyle: 'italic',             // Stil italic
-    opacity: 0.8,                    // Ușor transparent pentru a indica că este informație secundară
-    fontWeight: ACCESSIBILITY.TYPOGRAPHY.WEIGHTS.MEDIUM, // Stil semi-bold pentru mai multă lizibilitate
+    marginRight: ACCESSIBILITY.SPACING.XS,        // Spațiere între data completării și alte elemente
   },
 });
 

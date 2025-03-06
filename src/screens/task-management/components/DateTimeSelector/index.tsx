@@ -14,14 +14,23 @@ interface DateTimeSelectorProps {
   dueDate?: Date | string;
   reminderMinutes?: number;
   onDateTimeChange: (updates: Partial<Task>) => void;
+  isCompleted?: boolean;
 }
 
 type TabType = 'date' | 'duration';
 
+/**
+ * Componenta DateTimeSelector
+ * Permite utilizatorului să selecteze data și ora pentru un task
+ * Afișează data și ora într-un format accesibil pentru utilizatorii cu ADHD
+ * 
+ * IMPACT: Modificarea acestei componente afectează modul în care utilizatorii văd și setează datele scadente
+ */
 export const DateTimeSelector: React.FC<DateTimeSelectorProps> = ({
   dueDate,
   reminderMinutes,
   onDateTimeChange,
+  isCompleted = false,
 }) => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<TabType>('date');
@@ -47,14 +56,46 @@ export const DateTimeSelector: React.FC<DateTimeSelectorProps> = ({
     }
   };
 
+  /**
+   * Gestionează schimbarea timpului pentru memento
+   * IMPACT: Actualizează timpul de notificare pentru task
+   * @param minutes Numărul de minute înainte de data scadentă când se va trimite notificarea
+   */
+  const handleReminderChange = (minutes: number) => {
+    onDateTimeChange({ reminderMinutes: minutes });
+  };
+
+  /**
+   * Gestionează selectarea unei opțiuni rapide
+   * IMPACT: Setează data și ora într-o singură operație
+   * @param option Opțiunea selectată care conține data și, opțional, ora
+   */
   const handleQuickOptionSelect = (option: { date: Date; time?: { hours: number; minutes: number } }) => {
-    setSelectedDate(option.date);
+    // Creăm o nouă dată bazată pe opțiunea selectată
+    const newDate = new Date(option.date);
+    
+    // Dacă opțiunea include și ora, o setăm
     if (option.time) {
-      handleTimeSelect(option.time);
+      newDate.setHours(option.time.hours);
+      newDate.setMinutes(option.time.minutes);
     }
+    
+    // Actualizăm starea locală
+    setSelectedDate(newDate);
+    
+    // Trimitem actualizarea către părinte
+    onDateTimeChange({ dueDate: newDate });
+    
+    // Afișăm selectorul de timp pentru ajustări fine
     setShowTimePicker(true);
   };
 
+  /**
+   * Formatează data pentru afișare
+   * IMPACT: Determină cum este afișată data în interfață
+   * @param date Data care trebuie formatată
+   * @returns String formatat pentru afișare
+   */
   const formatDate = (date?: Date | string) => {
     if (!date) return t(TASK_TRANSLATIONS.DATE_TIME_SELECTOR.QUICK_OPTIONS.TODAY);
     
@@ -83,6 +124,57 @@ export const DateTimeSelector: React.FC<DateTimeSelectorProps> = ({
     }
   };
 
+  /**
+   * Formatează ora pentru afișare
+   * IMPACT: Determină cum este afișată ora în interfață
+   * @param date Data din care se extrage ora
+   * @returns String formatat pentru afișare (ex: "18:00")
+   */
+  const formatTime = (date?: Date | string) => {
+    if (!date) return '';
+    
+    try {
+      const dateObj = typeof date === 'string' ? new Date(date) : date;
+      const hours = dateObj.getHours().toString().padStart(2, '0');
+      const minutes = dateObj.getMinutes().toString().padStart(2, '0');
+      return `${hours}:${minutes}`;
+    } catch (error) {
+      console.error('Error formatting time:', error, date);
+      return '';
+    }
+  };
+
+  /**
+   * Determină culoarea pentru data scadentă în funcție de urgență
+   * IMPACT: Oferă indicii vizuale pentru utilizatorii cu ADHD despre urgența task-ului
+   * @param date Data scadentă
+   * @returns Obiectul de culoare din constanta ACCESSIBILITY
+   */
+  const getDueDateColor = (date?: Date | string) => {
+    if (!date) return ACCESSIBILITY.COLORS.TEXT.SECONDARY;
+    
+    try {
+      const dateObj = typeof date === 'string' ? new Date(date) : date;
+      const now = new Date();
+      const diffHours = (dateObj.getTime() - now.getTime()) / (1000 * 60 * 60);
+      
+      if (diffHours < 0) {
+        // Termen depășit
+        return ACCESSIBILITY.COLORS.STATES.ERROR;
+      } else if (diffHours < 3) {
+        // Mai puțin de 3 ore - urgent
+        return ACCESSIBILITY.COLORS.STATES.WARNING;
+      } else if (diffHours < 24) {
+        // Mai puțin de 24 ore - atenție
+        return 'rgba(234, 88, 12, 0.9)'; // Portocaliu
+      }
+      
+      return ACCESSIBILITY.COLORS.TEXT.SECONDARY;
+    } catch (error) {
+      return ACCESSIBILITY.COLORS.TEXT.SECONDARY;
+    }
+  };
+
   return (
     <>
       <TouchableOpacity
@@ -94,12 +186,27 @@ export const DateTimeSelector: React.FC<DateTimeSelectorProps> = ({
         <MaterialIcons
           name="event"
           size={24}
-          color={ACCESSIBILITY.COLORS.TEXT.SECONDARY}
+          color={isCompleted ? ACCESSIBILITY.COLORS.TEXT.SECONDARY : getDueDateColor(dueDate)}
         />
         {dueDate && (
-          <Text style={styles.dateText}>
-            {formatDate(dueDate)}
-          </Text>
+          <View style={styles.dateTimeContainer}>
+            <Text style={[
+              styles.dateText, 
+              isCompleted && styles.completedText,
+              { color: isCompleted ? ACCESSIBILITY.COLORS.TEXT.SECONDARY : getDueDateColor(dueDate) }
+            ]}>
+              {formatDate(dueDate)}
+            </Text>
+            {formatTime(dueDate) && (
+              <Text style={[
+                styles.timeText, 
+                isCompleted && styles.completedText,
+                { color: isCompleted ? ACCESSIBILITY.COLORS.TEXT.SECONDARY : getDueDateColor(dueDate) }
+              ]}>
+                {formatTime(dueDate)}
+              </Text>
+            )}
+          </View>
         )}
       </TouchableOpacity>
 
@@ -109,40 +216,44 @@ export const DateTimeSelector: React.FC<DateTimeSelectorProps> = ({
         visible={modalVisible}
         onRequestClose={() => setModalVisible(false)}
       >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContainer}>
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>{t(TASK_TRANSLATIONS.DATE_TIME_SELECTOR.TABS.DATE)}</Text>
+              <Text style={styles.modalTitle}>
+                {t(TASK_TRANSLATIONS.DATE_TIME_SELECTOR.TITLE)}
+              </Text>
               <TouchableOpacity
                 onPress={() => setModalVisible(false)}
-                style={styles.closeButton}
+                accessibilityRole="button"
+                accessibilityLabel={t(TASK_TRANSLATIONS.BUTTONS.CLOSE)}
               >
-                <MaterialIcons name="close" size={24} color={ACCESSIBILITY.COLORS.TEXT.PRIMARY} />
+                <MaterialIcons
+                  name="close"
+                  size={24}
+                  color={ACCESSIBILITY.COLORS.TEXT.PRIMARY}
+                />
               </TouchableOpacity>
             </View>
 
-            <TabBar
-              activeTab={activeTab}
-              onTabChange={setActiveTab}
-            />
+            <TabBar activeTab={activeTab} onTabChange={setActiveTab} />
 
-            {activeTab === 'date' && (
+            {activeTab === 'date' ? (
               <>
                 <QuickOptions onOptionSelect={handleQuickOptionSelect} />
-                
-                <CalendarView
-                  selectedDate={selectedDate}
-                  onDateSelect={handleDateSelect}
-                />
-
-                {showTimePicker && selectedDate && (
-                  <TimePicker
-                    onTimeSelect={handleTimeSelect}
+                {showTimePicker ? (
+                  <TimePicker 
+                    onTimeSelect={handleTimeSelect} 
                     reminderMinutes={reminderMinutes}
-                    onReminderChange={(minutes) => onDateTimeChange({ reminderMinutes: minutes })}
+                    onReminderChange={handleReminderChange}
                   />
+                ) : (
+                  <CalendarView onDateSelect={handleDateSelect} />
                 )}
               </>
+            ) : (
+              <Text style={styles.comingSoon}>
+                {t(TASK_TRANSLATIONS.DATE_TIME_SELECTOR.COMING_SOON)}
+              </Text>
             )}
           </View>
         </View>
@@ -155,42 +266,54 @@ const styles = StyleSheet.create({
   actionButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
     padding: ACCESSIBILITY.SPACING.XS,
-    borderRadius: ACCESSIBILITY.SPACING.SM,
-    backgroundColor: ACCESSIBILITY.COLORS.BACKGROUND.SECONDARY,
-    minHeight: ACCESSIBILITY.TOUCH_TARGET.MIN_HEIGHT,
-    minWidth: ACCESSIBILITY.TOUCH_TARGET.MIN_WIDTH,
+    borderRadius: ACCESSIBILITY.SPACING.XS,
+  },
+  dateTimeContainer: {
+    marginLeft: ACCESSIBILITY.SPACING.XS,
   },
   dateText: {
-    marginLeft: ACCESSIBILITY.SPACING.XS,
     fontSize: ACCESSIBILITY.TYPOGRAPHY.SIZES.SM,
     color: ACCESSIBILITY.COLORS.TEXT.SECONDARY,
+    marginLeft: ACCESSIBILITY.SPACING.XS,
   },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'flex-end',
+  timeText: {
+    fontSize: ACCESSIBILITY.TYPOGRAPHY.SIZES.SM,
+    fontWeight: ACCESSIBILITY.TYPOGRAPHY.WEIGHTS.MEDIUM,
+    color: ACCESSIBILITY.COLORS.TEXT.SECONDARY,
+    marginLeft: ACCESSIBILITY.SPACING.XS,
+  },
+  completedText: {
+    textDecorationLine: 'line-through',
+    fontStyle: 'italic',
   },
   modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    width: '90%',
     backgroundColor: ACCESSIBILITY.COLORS.BACKGROUND.PRIMARY,
-    borderTopLeftRadius: ACCESSIBILITY.SPACING.MD,
-    borderTopRightRadius: ACCESSIBILITY.SPACING.MD,
-    padding: ACCESSIBILITY.SPACING.BASE,
+    borderRadius: ACCESSIBILITY.SPACING.SM,
+    padding: ACCESSIBILITY.SPACING.MD,
     maxHeight: '80%',
   },
   modalHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: ACCESSIBILITY.SPACING.BASE,
+    marginBottom: ACCESSIBILITY.SPACING.MD,
   },
   modalTitle: {
     fontSize: ACCESSIBILITY.TYPOGRAPHY.SIZES.LG,
-    fontWeight: ACCESSIBILITY.TYPOGRAPHY.WEIGHTS.SEMIBOLD,
+    fontWeight: ACCESSIBILITY.TYPOGRAPHY.WEIGHTS.BOLD,
     color: ACCESSIBILITY.COLORS.TEXT.PRIMARY,
   },
-  closeButton: {
-    padding: ACCESSIBILITY.SPACING.XS,
+  comingSoon: {
+    textAlign: 'center',
+    marginTop: ACCESSIBILITY.SPACING.LG,
+    color: ACCESSIBILITY.COLORS.TEXT.SECONDARY,
   },
 });

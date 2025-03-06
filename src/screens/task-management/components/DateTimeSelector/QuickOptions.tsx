@@ -16,12 +16,20 @@ interface QuickOptionsProps {
   onOptionSelect: (option: { date: Date; time?: { hours: number; minutes: number } }) => void;
 }
 
+/**
+ * Opțiunile rapide pentru selectarea datei și orei
+ * IMPACT: Modificarea acestor opțiuni afectează direct experiența utilizatorului
+ * pentru setarea rapidă a termenelor limită
+ */
 const QUICK_OPTIONS: QuickOption[] = [
   {
     id: 'today',
     icon: 'today',
     titleKey: TASK_TRANSLATIONS.DATE_TIME_SELECTOR.QUICK_OPTIONS.TODAY,
-    getDate: () => ({ date: new Date() }),
+    getDate: () => ({ 
+      date: new Date(),
+      time: { hours: 12, minutes: 0 }, // Ora implicită pentru "astăzi" - prânz
+    }),
   },
   {
     id: 'tomorrow',
@@ -30,38 +38,38 @@ const QUICK_OPTIONS: QuickOption[] = [
     getDate: () => {
       const tomorrow = new Date();
       tomorrow.setDate(tomorrow.getDate() + 1);
-      return { date: tomorrow };
+      return { 
+        date: tomorrow,
+        time: { hours: 12, minutes: 0 }, // Ora implicită pentru "mâine" - prânz
+      };
     },
   },
   {
-    id: 'tonight',
-    icon: 'nights-stay',
-    titleKey: TASK_TRANSLATIONS.DATE_TIME_SELECTOR.QUICK_OPTIONS.TONIGHT,
+    id: 'morning',
+    icon: 'wb-sunny',
+    titleKey: TASK_TRANSLATIONS.DATE_TIME_SELECTOR.TIME_PICKER.MORNING,
     getDate: () => ({
       date: new Date(),
-      time: { hours: 20, minutes: 0 },
+      time: { hours: 9, minutes: 0 }, // Ora implicită pentru dimineață - 9:00
     }),
   },
   {
-    id: 'weekend',
-    icon: 'weekend',
-    titleKey: TASK_TRANSLATIONS.DATE_TIME_SELECTOR.QUICK_OPTIONS.WEEKEND,
-    getDate: () => {
-      const date = new Date();
-      const daysUntilWeekend = 6 - date.getDay(); // 6 = Sâmbătă
-      date.setDate(date.getDate() + daysUntilWeekend);
-      return { date };
-    },
+    id: 'afternoon',
+    icon: 'wb-twilight',
+    titleKey: TASK_TRANSLATIONS.DATE_TIME_SELECTOR.TIME_PICKER.AFTERNOON,
+    getDate: () => ({
+      date: new Date(),
+      time: { hours: 14, minutes: 0 }, // Ora implicită pentru după-amiază - 14:00
+    }),
   },
   {
-    id: 'nextWeek',
-    icon: 'date-range',
-    titleKey: TASK_TRANSLATIONS.DATE_TIME_SELECTOR.QUICK_OPTIONS.NEXT_WEEK,
-    getDate: () => {
-      const date = new Date();
-      date.setDate(date.getDate() + 7);
-      return { date };
-    },
+    id: 'evening',
+    icon: 'nights-stay',
+    titleKey: TASK_TRANSLATIONS.DATE_TIME_SELECTOR.TIME_PICKER.EVENING,
+    getDate: () => ({
+      date: new Date(),
+      time: { hours: 20, minutes: 0 }, // Ora implicită pentru seară - 20:00
+    }),
   },
 ];
 

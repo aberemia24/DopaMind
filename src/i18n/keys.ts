@@ -126,6 +126,8 @@ export const ONBOARDING_TRANSLATIONS = {
 export const TASK_TRANSLATIONS = {
   TITLE: 'taskManagement.title',
   DATE_TIME_SELECTOR: {
+    TITLE: 'taskManagement.dateTimeSelector.title',
+    COMING_SOON: 'taskManagement.dateTimeSelector.comingSoon',
     TABS: {
       DATE: 'taskManagement.dateTimeSelector.tabs.date',
       DURATION: 'taskManagement.dateTimeSelector.tabs.duration'
@@ -158,7 +160,8 @@ export const TASK_TRANSLATIONS = {
     }
   },
   BUTTONS: {
-    SET_DATE_TIME: 'taskManagement.buttons.setDateTime'
+    SET_DATE_TIME: 'taskManagement.buttons.setDateTime',
+    CLOSE: 'taskManagement.buttons.close'
   },
   ITEM: {
     ACCESSIBILITY: {
