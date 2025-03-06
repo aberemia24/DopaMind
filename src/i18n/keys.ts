@@ -82,7 +82,8 @@ export const WELCOME_TRANSLATIONS = {
   BUTTONS: {
     EMAIL_LOGIN: 'welcome.buttons.emailLogin',
     GOOGLE_LOGIN: 'welcome.buttons.googleLogin',
-  },
+    GOOGLE_SIGN_IN: 'welcome.buttons.googleSignIn'
+  }
 } as const;
 
 /**
@@ -123,6 +124,42 @@ export const ONBOARDING_TRANSLATIONS = {
  * Chei pentru Task Management
  */
 export const TASK_TRANSLATIONS = {
+  TITLE: 'taskManagement.title',
+  DATE_TIME_SELECTOR: {
+    TABS: {
+      DATE: 'taskManagement.dateTimeSelector.tabs.date',
+      DURATION: 'taskManagement.dateTimeSelector.tabs.duration'
+    },
+    CALENDAR: {
+      PREVIOUS_MONTH: 'taskManagement.dateTimeSelector.calendar.previousMonth',
+      NEXT_MONTH: 'taskManagement.dateTimeSelector.calendar.nextMonth'
+    },
+    QUICK_OPTIONS: {
+      TODAY: 'taskManagement.dateTimeSelector.quickOptions.today',
+      TOMORROW: 'taskManagement.dateTimeSelector.quickOptions.tomorrow',
+      TONIGHT: 'taskManagement.dateTimeSelector.quickOptions.tonight',
+      WEEKEND: 'taskManagement.dateTimeSelector.quickOptions.weekend',
+      NEXT_WEEK: 'taskManagement.dateTimeSelector.quickOptions.nextWeek'
+    },
+    TIME_PICKER: {
+      TITLE: 'taskManagement.dateTimeSelector.timePicker.title',
+      MORNING: 'taskManagement.dateTimeSelector.timePicker.morning',
+      AFTERNOON: 'taskManagement.dateTimeSelector.timePicker.afternoon',
+      EVENING: 'taskManagement.dateTimeSelector.timePicker.evening',
+      CUSTOM: 'taskManagement.dateTimeSelector.timePicker.custom'
+    },
+    REMINDERS: {
+      TITLE: 'taskManagement.dateTimeSelector.reminders.title',
+      AT_TIME: 'taskManagement.dateTimeSelector.reminders.atTime',
+      BEFORE_15M: 'taskManagement.dateTimeSelector.reminders.before15m',
+      BEFORE_30M: 'taskManagement.dateTimeSelector.reminders.before30m',
+      BEFORE_1H: 'taskManagement.dateTimeSelector.reminders.before1h',
+      BEFORE_2H: 'taskManagement.dateTimeSelector.reminders.before2h'
+    }
+  },
+  BUTTONS: {
+    SET_DATE_TIME: 'taskManagement.buttons.setDateTime'
+  },
   ITEM: {
     ACCESSIBILITY: {
       TASK_STATUS: 'taskItem.accessibility.taskStatus',
@@ -293,6 +330,19 @@ export const DATE_TIME_TRANSLATIONS = {
 } as const;
 
 /**
+ * Chei pentru Google Auth
+ */
+export const GOOGLE_AUTH_TRANSLATIONS = {
+  ERRORS: {
+    MISSING_CLIENT_ID: 'auth.google.errors.missingClientId',
+    AUTH_FAILED: 'auth.google.errors.authFailed',
+    UNKNOWN: 'auth.google.errors.unknown',
+    MISSING_TOKENS: 'auth.google.errors.missingTokens',
+    REQUEST_NOT_READY: 'auth.google.errors.requestNotReady'
+  }
+} as const;
+
+/**
  * Chei comune pentru toate componentele
  */
 export const COMMON_TRANSLATIONS = {
@@ -308,6 +358,8 @@ export const COMMON_TRANSLATIONS = {
     MARK_COMPLETE: 'common.markComplete',
     MARK_INCOMPLETE: 'common.markIncomplete',
   },
+  COMING_SOON: 'common.comingSoon',
+  ERROR: 'common.error',
 } as const;
 
 /**
@@ -338,6 +390,7 @@ export const TASK_MANAGEMENT_TRANSLATIONS = {
     ACTIVE: 'taskManagement.filters.active',
     COMPLETED: 'taskManagement.filters.completed',
     PRIORITY: 'taskManagement.filters.priority',
+    COMPLETED_TASKS: 'taskManagement.filters.completedTasks',
   },
   BUTTONS: {
     ADD_TASK: 'taskManagement.buttons.addTask',
@@ -354,6 +407,7 @@ export const TASK_MANAGEMENT_TRANSLATIONS = {
       TITLE: 'taskManagement.alerts.softLimit.title',
       MESSAGE: 'taskManagement.alerts.softLimit.message',
       CONFIRM: 'taskManagement.alerts.softLimit.confirm',
+      CANCEL: 'taskManagement.alerts.softLimit.cancel',
     },
   },
   ERRORS: {
@@ -393,4 +447,43 @@ export const TASK_MANAGEMENT_TRANSLATIONS = {
     URGENT: 'taskManagement.tags.urgent',
     LATER: 'taskManagement.tags.later'
   },
+} as const;
+
+/**
+ * Chei pentru setări
+ */
+export const SETTINGS_TRANSLATIONS = {
+  TITLE: 'settings.title',
+  SECTIONS: {
+    GENERAL: 'settings.sections.general',
+    ACCOUNT: 'settings.sections.account',
+    NOTIFICATIONS: 'settings.sections.notifications',
+    APPEARANCE: 'settings.sections.appearance',
+    LANGUAGE: 'settings.sections.language',
+    ABOUT: 'settings.sections.about',
+  },
+} as const;
+
+/**
+ * Chei pentru calendar
+ */
+export const CALENDAR_TRANSLATIONS = {
+  TITLE: 'calendar.title',
+  DESCRIPTION: 'calendar.description',
+} as const;
+
+/**
+ * Chei pentru focus
+ */
+export const FOCUS_TRANSLATIONS = {
+  TITLE: 'focus.title',
+  DESCRIPTION: 'focus.description',
+} as const;
+
+/**
+ * Chei pentru statistici
+ */
+export const STATS_TRANSLATIONS = {
+  TITLE: 'stats.title',
+  DESCRIPTION: 'stats.description',
 } as const;

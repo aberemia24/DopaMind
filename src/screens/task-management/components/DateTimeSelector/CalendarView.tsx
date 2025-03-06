@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { ACCESSIBILITY } from '../../../../constants/accessibility';
+import { TASK_TRANSLATIONS } from '../../../../i18n/keys';
 
 interface CalendarViewProps {
   selectedDate?: Date;
@@ -79,7 +80,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
           onPress={goToPreviousMonth}
           style={styles.navigationButton}
           accessibilityRole="button"
-          accessibilityLabel={t('taskManagement.dateTimeSelector.calendar.previousMonth')}
+          accessibilityLabel={t(TASK_TRANSLATIONS.DATE_TIME_SELECTOR.CALENDAR.PREVIOUS_MONTH)}
         >
           <MaterialIcons
             name="chevron-left"
@@ -99,7 +100,7 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
           onPress={goToNextMonth}
           style={styles.navigationButton}
           accessibilityRole="button"
-          accessibilityLabel={t('taskManagement.dateTimeSelector.calendar.nextMonth')}
+          accessibilityLabel={t(TASK_TRANSLATIONS.DATE_TIME_SELECTOR.CALENDAR.NEXT_MONTH)}
         >
           <MaterialIcons
             name="chevron-right"

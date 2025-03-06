@@ -6,6 +6,7 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
+    "scheme": "com.dopamind.app",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -18,7 +19,7 @@
       "supportsTablet": true
     },
     "android": {
-      "package": "com.alexandrueremia24.DopaMind_new",
+      "package": "com.dopamind.app",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#6495ED"
@@ -27,7 +28,8 @@
         "NOTIFICATIONS",
         "READ_CALENDAR",
         "WRITE_CALENDAR"
-      ]
+      ],
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "favicon": "./assets/icon.png"
@@ -46,7 +48,24 @@
           "color": "#6495ED"
         }
       ],
-      "expo-secure-store"
-    ]
+      "expo-secure-store",
+      [
+        "@react-native-google-signin/google-signin",
+        {
+          "androidClientId": "278576421883-gcj5focgjs5l7g2rhus5fn7b988l5ta0.apps.googleusercontent.com",
+          "iosUrlScheme": "com.googleusercontent.apps.278576421883-gcj5focgjs5l7g2rhus5fn7b988l5ta0"
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "d25c7299-7ca0-476b-8c1a-19cf32aed1d1"
+      },
+      "googleAuth": {
+        "androidClientId": "278576421883-gcj5focgjs5l7g2rhus5fn7b988l5ta0.apps.googleusercontent.com",
+        "webClientId": "278576421883-43ggpgnd6vknt978t129sucr9pgbmu2a.apps.googleusercontent.com",
+        "iosClientId": "YOUR_IOS_CLIENT_ID"
+      }
+    }
   }
 }

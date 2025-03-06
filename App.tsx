@@ -10,6 +10,10 @@ import { AuthProvider } from './src/contexts/auth';
 import './src/i18n';  // Import i18n configuration
 
 export default function App() {
+  console.log('App: Checking env variables:', {
+    ANDROID_CLIENT_ID: process.env.EXPO_PUBLIC_GOOGLE_AUTH_ANDROID_CLIENT_ID
+  });
+
   const [isInitializing, setIsInitializing] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -18,7 +22,7 @@ export default function App() {
       try {
         console.log('Starting Firebase initialization...');
         initializeFirebaseApp();
-        initializeFirebaseAuth();
+        await initializeFirebaseAuth(); // Așteptăm finalizarea inițializării Auth
         initializeFirestore();
         console.log('Firebase initialized successfully');
         setIsInitializing(false);

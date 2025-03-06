@@ -31,7 +31,7 @@ const TaskItem: React.FC<TaskItemProps> = ({
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, task.completed && styles.completedContainer]}>
       <TouchableOpacity
         style={styles.checkbox}
         onPress={onToggle}
@@ -42,7 +42,7 @@ const TaskItem: React.FC<TaskItemProps> = ({
         <MaterialIcons
           name={task.completed ? 'check-box' : 'check-box-outline-blank'}
           size={24}
-          color={task.completed ? ACCESSIBILITY.COLORS.INTERACTIVE.PRIMARY : ACCESSIBILITY.COLORS.TEXT.SECONDARY}
+          color={ACCESSIBILITY.COLORS.TEXT.SECONDARY}
         />
       </TouchableOpacity>
 
@@ -90,7 +90,9 @@ const TaskItem: React.FC<TaskItemProps> = ({
             <MaterialIcons
               name={task.isPriority ? 'star' : 'star-outline'}
               size={24}
-              color={task.isPriority ? '#FFD700' : ACCESSIBILITY.COLORS.TEXT.SECONDARY}
+              color={task.isPriority 
+                ? (task.completed ? ACCESSIBILITY.COLORS.TEXT.SECONDARY : '#FFD700') 
+                : ACCESSIBILITY.COLORS.TEXT.SECONDARY}
             />
           </TouchableOpacity>
 
@@ -122,8 +124,23 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: ACCESSIBILITY.SPACING.SM,
+    paddingVertical: ACCESSIBILITY.SPACING.XS,
     minHeight: ACCESSIBILITY.TOUCH_TARGET.MIN_HEIGHT,
+    backgroundColor: ACCESSIBILITY.COLORS.BACKGROUND.PRIMARY,
+    borderRadius: ACCESSIBILITY.SPACING.SM,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 2,
+    marginHorizontal: ACCESSIBILITY.SPACING.XS,
+    marginVertical: ACCESSIBILITY.SPACING.XS,
+  },
+  completedContainer: {
+    opacity: 0.5, // Creștem efectul de estompare (mai faded out)
   },
   checkbox: {
     width: ACCESSIBILITY.TOUCH_TARGET.MIN_WIDTH,

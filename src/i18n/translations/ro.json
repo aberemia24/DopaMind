@@ -40,7 +40,8 @@
       "active": "activă",
       "inactive": "inactivă",
       "pending": "în așteptare"
-    }
+    },
+    "comingSoon": "În curând"
   },
   "auth": {
     "login": {
@@ -80,6 +81,47 @@
       "login": "Se conectează...",
       "register": "Se creează contul...",
       "logout": "Se deconectează..."
+    },
+    "errors": {
+      "unknown": "A apărut o eroare necunoscută",
+      "invalidEmail": "Adresa de email este invalidă",
+      "wrongPassword": "Parolă incorectă",
+      "userNotFound": "Utilizatorul nu a fost găsit",
+      "emailInUse": "Această adresă de email este deja folosită",
+      "weakPassword": "Parola este prea slabă",
+      "tooManyRequests": "Prea multe încercări. Încearcă din nou mai târziu.",
+      "default": "A apărut o eroare la autentificare",
+      "logout": "Nu s-a putut efectua deconectarea. Vă rugăm să încercați din nou.",
+      "userDisabled": "Acest cont a fost dezactivat",
+      "operationNotAllowed": "Această operațiune nu este permisă",
+      "emptyFields": "Te rugăm să completezi toate câmpurile",
+      "invalidCredentials": "Email sau parolă invalidă",
+      "googleSignInFailed": "Autentificarea cu Google a eșuat. Te rugăm să încerci din nou."
+    },
+    "buttons": {
+      "login": "Autentificare",
+      "googleLogin": "Conectare cu Google",
+      "createAccount": "Creare cont"
+    },
+    "fields": {
+      "email": "Email",
+      "password": "Parolă"
+    },
+    "google": {
+      "errors": {
+        "missingClientId": "ID-ul clientului Google nu este configurat",
+        "authFailed": "Autentificarea cu Google a eșuat",
+        "unknown": "A apărut o eroare neașteptată",
+        "missingTokens": "Token-urile de autentificare lipsesc",
+        "requestNotReady": "Cererea de autentificare Google nu este pregătită"
+      }
+    }
+  },
+  "welcome": {
+    "buttons": {
+      "emailLogin": "Continuă cu email",
+      "googleLogin": "Continuă cu Google",
+      "googleSignIn": "Conectează-te cu Google"
     }
   },
   "errors": {
@@ -114,6 +156,45 @@
     "signOutError": "Eroare la deconectare:"
   },
   "taskManagement": {
+    "title": "Gestionare Sarcini",
+    "dateTimeSelector": {
+      "tabs": {
+        "date": "Dată",
+        "duration": "Durată"
+      },
+      "calendar": {
+        "previousMonth": "Luna anterioară",
+        "nextMonth": "Luna următoare"
+      },
+      "quickOptions": {
+        "today": "Astăzi",
+        "tomorrow": "Mâine",
+        "tonight": "Diseară",
+        "weekend": "Weekend",
+        "nextWeek": "Săptămâna viitoare"
+      },
+      "timePicker": {
+        "title": "Selectează ora",
+        "morning": "Dimineață",
+        "afternoon": "După-amiază",
+        "evening": "Seară",
+        "custom": "Personalizat"
+      },
+      "reminders": {
+        "title": "Memento",
+        "atTime": "La ora exactă",
+        "before15m": "Cu 15 minute înainte",
+        "before30m": "Cu 30 minute înainte",
+        "before1h": "Cu 1 oră înainte",
+        "before2h": "Cu 2 ore înainte"
+      }
+    },
+    "buttons": {
+      "addTask": "Adaugă sarcină",
+      "deleteTask": "Șterge sarcina",
+      "editTask": "Editează sarcina",
+      "setDateTime": "Setează data și ora"
+    },
     "actions": {
       "create": "Creează sarcină nouă",
       "edit": "Editează sarcina",
@@ -159,7 +240,8 @@
       "softLimit": {
         "title": "Limită de sarcini",
         "message": "Ai deja multe sarcini active pentru această perioadă. Ești sigur că vrei să adaugi încă una?",
-        "confirm": "Da, adaugă"
+        "confirm": "Da, adaugă",
+        "cancel": "Nu, renunță"
       },
       "deleteConfirm": {
         "title": "Confirmare ștergere",
@@ -184,6 +266,24 @@
       "validation": {
         "titleTooShort": "Titlul trebuie să aibă cel puțin 3 caractere",
         "titleRequired": "@:common.validation.required"
+      }
+    },
+    "periods": {
+      "morning": {
+        "title": "Dimineață",
+        "description": "Perioada de dimineață"
+      },
+      "afternoon": {
+        "title": "După-amiază",
+        "description": "Perioada de după-amiază"
+      },
+      "evening": {
+        "title": "Seară",
+        "description": "Perioada de seară"
+      },
+      "night": {
+        "title": "Noapte",
+        "description": "Perioada de noapte"
       }
     }
   },
@@ -275,5 +375,42 @@
         "night": "00:00 - 06:00"
       }
     }
+  },
+  "navigation": {
+    "tabs": {
+      "tasks": "Sarcini",
+      "calendar": "Calendar",
+      "focus": "Focus",
+      "stats": "Statistici",
+      "settings": "Setări"
+    },
+    "titles": {
+      "taskManagement": "Gestionare sarcini",
+      "login": "Autentificare",
+      "register": "Înregistrare"
+    }
+  },
+  "settings": {
+    "title": "Setări",
+    "sections": {
+      "general": "General",
+      "account": "Cont",
+      "notifications": "Notificări",
+      "appearance": "Aspect",
+      "language": "Limbă",
+      "about": "Despre"
+    }
+  },
+  "calendar": {
+    "title": "Calendar",
+    "description": "Vizualizează și gestionează sarcinile tale într-un format de calendar. Această funcționalitate va fi disponibilă în curând."
+  },
+  "focus": {
+    "title": "Focus",
+    "description": "Folosește tehnici de focus și concentrare pentru a-ți îmbunătăți productivitatea. Această funcționalitate va fi disponibilă în curând."
+  },
+  "stats": {
+    "title": "Statistici",
+    "description": "Vizualizează statistici despre sarcinile și activitățile tale. Această funcționalitate va fi disponibilă în curând."
   }
 }

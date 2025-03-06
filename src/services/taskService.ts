@@ -24,7 +24,6 @@ export interface TasksByPeriod {
   MORNING: Task[];
   AFTERNOON: Task[];
   EVENING: Task[];
-  NIGHT: Task[];
 }
 
 type TaskData = Omit<Task, 'id'>;
@@ -140,8 +139,7 @@ export const fetchTasks = async (userId: string): Promise<TasksByPeriod> => {
     const result: TasksByPeriod = {
       MORNING: [],
       AFTERNOON: [],
-      EVENING: [],
-      NIGHT: []
+      EVENING: []
     };
 
     querySnapshot.forEach((doc) => {

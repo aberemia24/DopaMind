@@ -579,10 +579,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
       console.log('AuthProvider: Început logout...');
       await getFirebaseAuth().signOut();
       
-      // Curățare doar token-uri, nu și credențiale
-      await cleanupAuthData(true);
+      // Curățare completă a datelor de autentificare
+      await cleanupAuthData(false);
       
       setUser(null);
+      setIsAuthenticated(false);
       console.log('AuthProvider: Logout finalizat cu succes');
       return true;
     } catch (error) {

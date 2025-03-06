@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-nati
 import { MaterialIcons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { ACCESSIBILITY } from '../../../../constants/accessibility';
+import { TASK_TRANSLATIONS } from '../../../../i18n/keys';
 
 interface QuickOption {
   id: string;
@@ -19,13 +20,13 @@ const QUICK_OPTIONS: QuickOption[] = [
   {
     id: 'today',
     icon: 'today',
-    titleKey: 'taskManagement.dateTimeSelector.quickOptions.today',
+    titleKey: TASK_TRANSLATIONS.DATE_TIME_SELECTOR.QUICK_OPTIONS.TODAY,
     getDate: () => ({ date: new Date() }),
   },
   {
     id: 'tomorrow',
     icon: 'event',
-    titleKey: 'taskManagement.dateTimeSelector.quickOptions.tomorrow',
+    titleKey: TASK_TRANSLATIONS.DATE_TIME_SELECTOR.QUICK_OPTIONS.TOMORROW,
     getDate: () => {
       const tomorrow = new Date();
       tomorrow.setDate(tomorrow.getDate() + 1);
@@ -35,7 +36,7 @@ const QUICK_OPTIONS: QuickOption[] = [
   {
     id: 'tonight',
     icon: 'nights-stay',
-    titleKey: 'taskManagement.dateTimeSelector.quickOptions.tonight',
+    titleKey: TASK_TRANSLATIONS.DATE_TIME_SELECTOR.QUICK_OPTIONS.TONIGHT,
     getDate: () => ({
       date: new Date(),
       time: { hours: 20, minutes: 0 },
@@ -44,7 +45,7 @@ const QUICK_OPTIONS: QuickOption[] = [
   {
     id: 'weekend',
     icon: 'weekend',
-    titleKey: 'taskManagement.dateTimeSelector.quickOptions.weekend',
+    titleKey: TASK_TRANSLATIONS.DATE_TIME_SELECTOR.QUICK_OPTIONS.WEEKEND,
     getDate: () => {
       const date = new Date();
       const daysUntilWeekend = 6 - date.getDay(); // 6 = Sâmbătă
@@ -55,7 +56,7 @@ const QUICK_OPTIONS: QuickOption[] = [
   {
     id: 'nextWeek',
     icon: 'date-range',
-    titleKey: 'taskManagement.dateTimeSelector.quickOptions.nextWeek',
+    titleKey: TASK_TRANSLATIONS.DATE_TIME_SELECTOR.QUICK_OPTIONS.NEXT_WEEK,
     getDate: () => {
       const date = new Date();
       date.setDate(date.getDate() + 7);

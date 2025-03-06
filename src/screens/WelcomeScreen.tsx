@@ -5,27 +5,37 @@ import {
   TouchableOpacity,
   Text,
   SafeAreaView,
+  Alert,
 } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
 import { OnboardingSlides } from '../components/Onboarding/OnboardingSlides';
 import { useNavigation } from '@react-navigation/native';
 import { AuthNavigationProp } from '../navigation/types';
 import { useTranslation } from 'react-i18next';
 import { ACCESSIBILITY } from '../constants/accessibility';
 import { WELCOME_TRANSLATIONS } from '../i18n/keys';
+import { useGoogleAuth } from '../hooks/useGoogleAuth';
 
 export function WelcomeScreen() {
   const navigation = useNavigation<AuthNavigationProp>();
   const { t } = useTranslation();
+  const { signInWithGoogle, isLoading: googleLoading, error: googleError, isReady } = useGoogleAuth();
   
-  const handleEmailLogin = () => {
-    navigation.navigate('Login');
+  const handleGoogleLogin = async () => {
+    try {
+      await signInWithGoogle();
+    } catch (error) {
+      Alert.alert(
+        t('common.error'),
+        t('auth.errors.googleSignInFailed')
+      );
+      console.error('Google Sign-In Error:', error);
+    }
   };
 
-  const handleGoogleLogin = () => {
-    // Va fi implementat în pasul următor
-    console.log('Google login to be implemented');
+  const handleEmailLogin = () => {
+    navigation.navigate('Login');
   };
 
   return (
@@ -53,10 +63,12 @@ export function WelcomeScreen() {
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={[styles.googleButton]}
+          style={[styles.googleButton, (googleLoading || !isReady) && styles.buttonDisabled]}
           onPress={handleGoogleLogin}
+          disabled={googleLoading || !isReady}
           accessibilityRole="button"
           accessibilityLabel={t(WELCOME_TRANSLATIONS.BUTTONS.GOOGLE_LOGIN)}
+          accessibilityState={{ disabled: googleLoading || !isReady }}
         >
           <FontAwesome 
             name="google" 
@@ -65,7 +77,9 @@ export function WelcomeScreen() {
             style={styles.buttonIcon} 
           />
           <Text style={styles.googleButtonText}>
-            {t(WELCOME_TRANSLATIONS.BUTTONS.GOOGLE_LOGIN)}
+            {googleLoading 
+              ? t('common.loading')
+              : t(WELCOME_TRANSLATIONS.BUTTONS.GOOGLE_LOGIN)}
           </Text>
         </TouchableOpacity>
       </View>
@@ -91,7 +105,6 @@ const styles = StyleSheet.create({
     backgroundColor: ACCESSIBILITY.COLORS.BACKGROUND.SECONDARY,
     borderRadius: ACCESSIBILITY.SPACING.SM,
     padding: ACCESSIBILITY.SPACING.MD,
-    marginBottom: ACCESSIBILITY.SPACING.SM,
     minHeight: ACCESSIBILITY.TOUCH_TARGET.MIN_HEIGHT + ACCESSIBILITY.SPACING.MD,
     elevation: 2,
     shadowColor: ACCESSIBILITY.COLORS.TEXT.PRIMARY,
@@ -102,10 +115,15 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 1.41,
   },
+  emailButtonText: {
+    color: ACCESSIBILITY.COLORS.TEXT.PRIMARY,
+    fontSize: ACCESSIBILITY.TYPOGRAPHY.SIZES.BASE,
+    fontWeight: '600',
+  },
   googleButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#4285F4', // Culoarea oficială Google
+    backgroundColor: '#4285F4', // Google Blue
     borderRadius: ACCESSIBILITY.SPACING.SM,
     padding: ACCESSIBILITY.SPACING.MD,
     minHeight: ACCESSIBILITY.TOUCH_TARGET.MIN_HEIGHT + ACCESSIBILITY.SPACING.MD,
@@ -118,17 +136,15 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 1.41,
   },
+  googleButtonText: {
+    color: 'white',
+    fontSize: ACCESSIBILITY.TYPOGRAPHY.SIZES.BASE,
+    fontWeight: '600',
+  },
+  buttonDisabled: {
+    opacity: 0.6,
+  },
   buttonIcon: {
     marginRight: ACCESSIBILITY.SPACING.SM,
-  },
-  emailButtonText: {
-    flex: 1,
-    fontSize: 16,
-    color: ACCESSIBILITY.COLORS.TEXT.PRIMARY,
-  },
-  googleButtonText: {
-    flex: 1,
-    fontSize: 16,
-    color: ACCESSIBILITY.COLORS.TEXT.PRIMARY,
   },
 });

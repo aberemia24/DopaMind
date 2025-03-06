@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-nati
 import { MaterialIcons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { ACCESSIBILITY } from '../../../../constants/accessibility';
+import { TASK_TRANSLATIONS } from '../../../../i18n/keys';
 
 interface TimePickerProps {
   onTimeSelect: (time: { hours: number; minutes: number }) => void;
@@ -23,11 +24,11 @@ const TIME_SLOTS: TimeSlot[] = [
 ];
 
 const REMINDER_OPTIONS = [
-  { minutes: 0, titleKey: 'taskManagement.dateTimeSelector.reminders.atTime' },
-  { minutes: 15, titleKey: 'taskManagement.dateTimeSelector.reminders.before15m' },
-  { minutes: 30, titleKey: 'taskManagement.dateTimeSelector.reminders.before30m' },
-  { minutes: 60, titleKey: 'taskManagement.dateTimeSelector.reminders.before1h' },
-  { minutes: 120, titleKey: 'taskManagement.dateTimeSelector.reminders.before2h' },
+  { minutes: 0, titleKey: TASK_TRANSLATIONS.DATE_TIME_SELECTOR.REMINDERS.AT_TIME },
+  { minutes: 15, titleKey: TASK_TRANSLATIONS.DATE_TIME_SELECTOR.REMINDERS.BEFORE_15M },
+  { minutes: 30, titleKey: TASK_TRANSLATIONS.DATE_TIME_SELECTOR.REMINDERS.BEFORE_30M },
+  { minutes: 60, titleKey: TASK_TRANSLATIONS.DATE_TIME_SELECTOR.REMINDERS.BEFORE_1H },
+  { minutes: 120, titleKey: TASK_TRANSLATIONS.DATE_TIME_SELECTOR.REMINDERS.BEFORE_2H },
 ];
 
 export const TimePicker: React.FC<TimePickerProps> = ({
@@ -46,7 +47,7 @@ export const TimePicker: React.FC<TimePickerProps> = ({
   return (
     <View style={styles.container}>
       <Text style={styles.title}>
-        {t('taskManagement.dateTimeSelector.timePicker.title')}
+        {t(TASK_TRANSLATIONS.DATE_TIME_SELECTOR.TIME_PICKER.TITLE)}
       </Text>
 
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -57,7 +58,7 @@ export const TimePicker: React.FC<TimePickerProps> = ({
               style={styles.timeSlot}
               onPress={() => handleTimeSlotSelect(slot.time)}
               accessibilityRole="button"
-              accessibilityLabel={t(`taskManagement.dateTimeSelector.timePicker.${slot.period}`)}
+              accessibilityLabel={t(TASK_TRANSLATIONS.DATE_TIME_SELECTOR.TIME_PICKER[slot.period.toUpperCase() as keyof typeof TASK_TRANSLATIONS.DATE_TIME_SELECTOR.TIME_PICKER])}
             >
               <MaterialIcons
                 name={slot.icon}
@@ -73,7 +74,7 @@ export const TimePicker: React.FC<TimePickerProps> = ({
             style={styles.timeSlot}
             onPress={() => setShowCustomTime(!showCustomTime)}
             accessibilityRole="button"
-            accessibilityLabel={t('taskManagement.dateTimeSelector.timePicker.custom')}
+            accessibilityLabel={t(TASK_TRANSLATIONS.DATE_TIME_SELECTOR.TIME_PICKER.CUSTOM)}
           >
             <MaterialIcons
               name="schedule"
@@ -82,7 +83,7 @@ export const TimePicker: React.FC<TimePickerProps> = ({
               style={styles.icon}
             />
             <Text style={styles.timeText}>
-              {t('taskManagement.dateTimeSelector.timePicker.custom')}
+              {t(TASK_TRANSLATIONS.DATE_TIME_SELECTOR.TIME_PICKER.CUSTOM)}
             </Text>
           </TouchableOpacity>
         </View>
@@ -90,7 +91,7 @@ export const TimePicker: React.FC<TimePickerProps> = ({
 
       <View style={styles.reminderSection}>
         <Text style={styles.reminderTitle}>
-          {t('taskManagement.dateTimeSelector.reminders.title')}
+          {t(TASK_TRANSLATIONS.DATE_TIME_SELECTOR.REMINDERS.TITLE)}
         </Text>
 
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
