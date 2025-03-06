@@ -352,11 +352,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,            // Spațiere orizontală internă
     justifyContent: 'center',        // Centrează pe verticală
     height: 30,                      // Înălțime fixă
+    marginRight: ACCESSIBILITY.SPACING.XS, // Spațiere în dreapta pentru a separa de marginea containerului
   },
   completionDate: {
-    fontSize: 12,                    // Font mic pentru data completării
-    color: ACCESSIBILITY.COLORS.TEXT.SECONDARY,  // Culoare secundară
+    fontSize: 13,                    // Font puțin mai mare pentru data completării
+    color: ACCESSIBILITY.COLORS.TEXT.PRIMARY,  // Culoare primară pentru mai multă vizibilitate
     fontStyle: 'italic',             // Stil italic
+    opacity: 0.8,                    // Ușor transparent pentru a indica că este informație secundară
+    fontWeight: ACCESSIBILITY.TYPOGRAPHY.WEIGHTS.MEDIUM, // Stil semi-bold pentru mai multă lizibilitate
   },
 });
 

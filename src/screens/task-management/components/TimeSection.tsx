@@ -389,7 +389,7 @@ const styles = StyleSheet.create({
   completedTaskItemWrapper: {
     margin: 0,
     padding: 0,
-    marginBottom: 2,  // Spațiere mică între sarcinile completate
+    marginBottom: 0.7,  // Spațiere mică între sarcinile completate
   },
   completedTasksHeader: {
     flexDirection: 'row',
@@ -432,7 +432,7 @@ const styles = StyleSheet.create({
     height: 2,
     backgroundColor: 'rgba(0,0,0,0.15)',
     marginHorizontal: ACCESSIBILITY.SPACING.SM,
-    marginTop: ACCESSIBILITY.SPACING.MD,
+    marginTop: ACCESSIBILITY.SPACING.SM_MD,
     marginBottom: ACCESSIBILITY.SPACING.MD,
   }
 });
