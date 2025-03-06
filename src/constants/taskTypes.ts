@@ -28,7 +28,7 @@ export const TIME_PERIODS: Record<TimePeriodKey, TimePeriod> = {
   MORNING: {
     id: 'MORNING',
     label: DATE_TIME_TRANSLATIONS.TIME.RANGES.MORNING,
-    icon: 'wb-sunny',
+    icon: 'wb-twilight',
     timeFrame: '06:00 - 12:00',
     description: DATE_TIME_TRANSLATIONS.TIME.RANGES.MORNING,
     titleKey: 'taskManagement.periods.morning.title'

@@ -20,6 +20,7 @@ import { useTaskContext } from '../../contexts/TaskContext';
 import { ACCESSIBILITY } from '../../constants/accessibility';
 import { useAuth } from '../../contexts/auth';
 import type { Task } from '../../services/taskService';
+import { getDayTimeColors } from '../../utils/daytime';
 
 const TaskManagementScreen: React.FC = () => {
   const { logout, user, isAuthenticated } = useAuth();
@@ -27,6 +28,7 @@ const TaskManagementScreen: React.FC = () => {
   const { tasks, loading, error, addTask, updateTask, deleteTask, toggleTask } = useTaskContext();
   const [currentFilter, setCurrentFilter] = useState<FilterOption>('all');
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const dayTimeColors = getDayTimeColors();
 
   // Monitorizăm starea de autentificare 
   useEffect(() => {
@@ -135,7 +137,7 @@ const TaskManagementScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
+      <View style={[styles.header, { borderBottomColor: dayTimeColors.PRIMARY }]}>
         <Text style={styles.title}>{t('taskManagement.title')}</Text>
         <TouchableOpacity
           onPress={handleLogout}
@@ -236,8 +238,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: ACCESSIBILITY.SPACING.MD,
     paddingTop: ACCESSIBILITY.SPACING.XL,
-    paddingBottom: ACCESSIBILITY.SPACING.MD,
-    backgroundColor: ACCESSIBILITY.COLORS.BACKGROUND.PRIMARY,
+    paddingBottom: ACCESSIBILITY.SPACING.SM,
+    borderBottomWidth: 2,
   },
   title: {
     fontSize: ACCESSIBILITY.TYPOGRAPHY.SIZES.XL,

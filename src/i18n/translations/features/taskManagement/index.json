@@ -40,6 +40,10 @@
     "updateTask": "Nu s-a putut actualiza sarcina. Te rugăm să încerci din nou.",
     "deleteTask": "Nu s-a putut șterge sarcina. Te rugăm să încerci din nou."
   },
+  "buttons": {
+    "expandSection": "Extinde secțiunea {{section}}",
+    "collapseSection": "Restrânge secțiunea {{section}}"
+  },
   "accessibility": {
     "taskList": "Listă de sarcini organizate pe perioade de timp",
     "taskStatus": "Sarcina {{title}} este {{status}}",
@@ -47,6 +51,8 @@
     "editMode": "Editare sarcină",
     "editTitle": "Editează titlul sarcinii",
     "editTitleHint": "Introdu noul titlu al sarcinii",
+    "expandHint": "Afișează sarcinile din această secțiune",
+    "collapseHint": "Ascunde sarcinile din această secțiune",
     "validation": {
       "titleTooShort": "Titlul trebuie să aibă cel puțin 3 caractere",
       "titleRequired": "@:common.validation.required"

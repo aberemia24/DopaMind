@@ -181,7 +181,9 @@
       "addTask": "Add task",
       "deleteTask": "Delete task",
       "editTask": "Edit task",
-      "setDateTime": "Set date and time"
+      "setDateTime": "Set date and time",
+      "expandSection": "Expand {{section}} section",
+      "collapseSection": "Collapse {{section}} section"
     },
     "actions": {
       "create": "Create new task",
@@ -252,6 +254,8 @@
       "editMode": "Edit task",
       "editTitle": "Edit task title",
       "editTitleHint": "Enter new task title",
+      "expandHint": "Show tasks in this section",
+      "collapseHint": "Hide tasks in this section",
       "validation": {
         "titleTooShort": "Title must be at least 3 characters long",
         "titleRequired": "@:common.validation.required"

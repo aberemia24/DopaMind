@@ -42,6 +42,28 @@ export const ACCESSIBILITY = {
       ERROR: '#DC2626',
       INFO: '#3B82F6',
     },
+    
+    // Culori specifice perioadelor zilei
+    DAYTIME: {
+      MORNING: {
+        PRIMARY: '#FEF3C7', // galben foarte deschis
+        SECONDARY: '#FEF9C3', // galben pal
+        BORDER: '#FDE68A',   // galben mediu pentru border
+        ICON: '#D97706',     // galben-portocaliu pentru iconițe
+      },
+      AFTERNOON: {
+        PRIMARY: '#BAE6FD', // albastru-turcoaz deschis
+        SECONDARY: '#E0F2FE', // bleu foarte deschis
+        BORDER: '#7DD3FC',   // albastru-turcoaz mediu pentru border
+        ICON: '#0284C7',     // albastru-turcoaz pentru iconițe
+      },
+      EVENING: {
+        PRIMARY: '#C4B5FD', // mov-indigo deschis
+        SECONDARY: '#F3E8FF', // mov foarte deschis
+        BORDER: '#A78BFA',   // mov-indigo mediu pentru border
+        ICON: '#7C3AED',     // mov-indigo pentru iconițe
+      },
+    },
   },
   
   // Font sizes optimizate pentru lizibilitate
