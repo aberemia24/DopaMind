@@ -133,7 +133,9 @@ const TimeSection: React.FC<TimeSectionProps> = ({
               </View>
             ) : (
               <View style={styles.emptyState}>
-                <Text style={styles.emptyStateText}>Nu există sarcini pentru această perioadă</Text>
+                <Text style={styles.emptyStateText}>
+                  {t('taskManagement.labels.noTasksForPeriod')}
+                </Text>
               </View>
             )}
           </View>
@@ -145,10 +147,10 @@ const TimeSection: React.FC<TimeSectionProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: ACCESSIBILITY.SPACING.MD,
+    marginBottom: ACCESSIBILITY.SPACING.SM,
   },
   categorySpacing: {
-    height: ACCESSIBILITY.SPACING.SM,
+    height: 4,
   },
   sectionContainer: {
     marginHorizontal: ACCESSIBILITY.SPACING.SM,
@@ -172,7 +174,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'transparent',
     paddingHorizontal: ACCESSIBILITY.SPACING.BASE,
-    paddingVertical: ACCESSIBILITY.SPACING.SM,
+    paddingVertical: 8,
   },
   titleContainer: {
     flexDirection: 'row',
@@ -201,6 +203,8 @@ const styles = StyleSheet.create({
   },
   taskListContainer: {
     backgroundColor: 'transparent',
+    paddingHorizontal: ACCESSIBILITY.SPACING.XS,
+    paddingVertical: ACCESSIBILITY.SPACING.XS,
     // Fără umbră sau border
     borderWidth: 0,
     shadowOpacity: 0,
@@ -213,22 +217,21 @@ const styles = StyleSheet.create({
   },
   taskItemWrapper: {
     margin: 0,
-    padding: ACCESSIBILITY.SPACING.XS,
+    padding: 0,
     borderRadius: 0,
-    // Fără umbre sau border-uri
-    borderWidth: 0,
-    shadowOpacity: 0,
-    elevation: 0,
     backgroundColor: 'transparent',
   },
   emptyState: {
     padding: ACCESSIBILITY.SPACING.MD,
     alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: ACCESSIBILITY.TOUCH_TARGET.MIN_HEIGHT * 2,
   },
   emptyStateText: {
     color: ACCESSIBILITY.COLORS.TEXT.SECONDARY,
     fontSize: ACCESSIBILITY.TYPOGRAPHY.SIZES.SM,
     fontStyle: 'italic',
+    textAlign: 'center',
   }
 });
 

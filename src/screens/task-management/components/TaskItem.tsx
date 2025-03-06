@@ -124,27 +124,23 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: ACCESSIBILITY.SPACING.XS,
-    minHeight: ACCESSIBILITY.TOUCH_TARGET.MIN_HEIGHT,
+    paddingVertical: 4, 
+    minHeight: 36, 
     backgroundColor: ACCESSIBILITY.COLORS.BACKGROUND.PRIMARY,
     borderRadius: ACCESSIBILITY.SPACING.SM,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 2,
-    marginHorizontal: ACCESSIBILITY.SPACING.XS,
-    marginVertical: ACCESSIBILITY.SPACING.XS,
+    borderWidth: 1,
+    borderColor: 'rgba(0,0,0,0.1)',
+    marginHorizontal: ACCESSIBILITY.SPACING.SM,
+    marginVertical: 2, 
   },
   completedContainer: {
-    opacity: 0.5, // Creștem efectul de estompare (mai faded out)
+    opacity: 0.8, 
+    backgroundColor: 'rgba(0,0,0,0.03)', 
+    borderColor: 'rgba(0,0,0,0.05)', 
   },
   checkbox: {
-    width: ACCESSIBILITY.TOUCH_TARGET.MIN_WIDTH,
-    height: ACCESSIBILITY.TOUCH_TARGET.MIN_HEIGHT,
+    width: 36, 
+    height: 36, 
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -160,7 +156,7 @@ const styles = StyleSheet.create({
     minHeight: ACCESSIBILITY.TOUCH_TARGET.MIN_HEIGHT,
   },
   title: {
-    fontSize: ACCESSIBILITY.TYPOGRAPHY.SIZES.BASE,
+    fontSize: 14, 
     color: ACCESSIBILITY.COLORS.TEXT.PRIMARY,
   },
   completedTitle: {
@@ -173,9 +169,9 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    fontSize: ACCESSIBILITY.TYPOGRAPHY.SIZES.BASE,
+    fontSize: 14, 
     color: ACCESSIBILITY.COLORS.TEXT.PRIMARY,
-    minHeight: ACCESSIBILITY.TOUCH_TARGET.MIN_HEIGHT,
+    minHeight: 36, 
     paddingHorizontal: ACCESSIBILITY.SPACING.SM,
   },
   actions: {
@@ -183,8 +179,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   actionButton: {
-    width: ACCESSIBILITY.TOUCH_TARGET.MIN_WIDTH,
-    height: ACCESSIBILITY.TOUCH_TARGET.MIN_HEIGHT,
+    width: 36, 
+    height: 36, 
     justifyContent: 'center',
     alignItems: 'center',
   },
