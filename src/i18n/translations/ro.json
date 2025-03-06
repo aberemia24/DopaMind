@@ -227,14 +227,16 @@
       "all": "toate",
       "active": "active",
       "completed": "finalizate",
-      "priority": "prioritare"
+      "priority": "prioritare",
+      "completedTasks": "Sarcini Finalizate"
     },
     "labels": {
       "untitledTask": "sarcină fără titlu",
       "taskName": "Numele sarcinii",
       "priority": "Prioritate",
       "dueDate": "Data scadentă",
-      "status": "Status"
+      "status": "Status",
+      "noTasksForPeriod": "Nu există sarcini pentru această perioadă"
     },
     "alerts": {
       "softLimit": {

@@ -48,11 +48,34 @@ const TimeSection: React.FC<TimeSectionProps> = ({
     }
   }
   
+  // Separăm task-urile active de cele completate
+  const activeTasks = tasks.filter(task => !task.completed);
+  const completedTasks = tasks.filter(task => task.completed);
+  
   // Folosim LayoutAnimation în loc de Animated
   const toggleExpand = () => {
     // Configurăm animația pentru înainte de a schimba starea
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     setIsExpanded(!isExpanded);
+  };
+
+  // Actualizează un task când este marcat ca finalizat
+  const handleToggleTask = (taskId: string) => {
+    const task = tasks.find(t => t.id === taskId);
+    if (task) {
+      // Dacă task-ul este marcat ca finalizat, adăugăm timestamp-ul curent
+      if (!task.completed) {
+        onUpdateTask(taskId, { 
+          completed: true, 
+          completedAt: Date.now() 
+        });
+      } else {
+        onUpdateTask(taskId, { 
+          completed: false, 
+          completedAt: undefined 
+        });
+      }
+    }
   };
 
   return (
@@ -87,7 +110,7 @@ const TimeSection: React.FC<TimeSectionProps> = ({
                 {t(period.titleKey)}
               </Text>
               <Text style={styles.taskCount}>
-                ({tasks.length})
+                ({activeTasks.length})
               </Text>
             </View>
             <View style={styles.actionContainer}>
@@ -118,13 +141,14 @@ const TimeSection: React.FC<TimeSectionProps> = ({
         {/* Container pentru lista de task-uri - vizibil doar când isExpanded este true */}
         {isExpanded && (
           <View style={styles.taskListContainer}>
-            {tasks.length > 0 ? (
+            {/* Task-uri active */}
+            {activeTasks.length > 0 ? (
               <View style={styles.taskList}>
-                {tasks.map((task) => (
+                {activeTasks.map((task) => (
                   <View key={task.id} style={styles.taskItemWrapper}>
                     <TaskItem
                       task={task}
-                      onToggle={() => onToggleTask(task.id)}
+                      onToggle={() => handleToggleTask(task.id)}
                       onDelete={() => onDeleteTask(task.id)}
                       onUpdate={(updates: Partial<Task>) => onUpdateTask(task.id, updates)}
                     />
@@ -137,6 +161,32 @@ const TimeSection: React.FC<TimeSectionProps> = ({
                   {t('taskManagement.labels.noTasksForPeriod')}
                 </Text>
               </View>
+            )}
+            
+            {/* Task-uri completate */}
+            {completedTasks.length > 0 && (
+              <>
+                <View style={styles.completedTasksHeader}>
+                  <Text style={styles.completedTasksTitle}>
+                    {t('taskManagement.labels.completedTasks')}
+                  </Text>
+                  <Text style={styles.taskCount}>
+                    ({completedTasks.length})
+                  </Text>
+                </View>
+                <View style={styles.completedTasksList}>
+                  {completedTasks.map((task) => (
+                    <View key={task.id} style={styles.taskItemWrapper}>
+                      <TaskItem
+                        task={task}
+                        onToggle={() => handleToggleTask(task.id)}
+                        onDelete={() => onDeleteTask(task.id)}
+                        onUpdate={(updates: Partial<Task>) => onUpdateTask(task.id, updates)}
+                      />
+                    </View>
+                  ))}
+                </View>
+              </>
             )}
           </View>
         )}
@@ -220,6 +270,22 @@ const styles = StyleSheet.create({
     padding: 0,
     borderRadius: 0,
     backgroundColor: 'transparent',
+  },
+  completedTasksHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingTop: ACCESSIBILITY.SPACING.SM,
+    paddingBottom: ACCESSIBILITY.SPACING.XS,
+    paddingHorizontal: ACCESSIBILITY.SPACING.SM,
+  },
+  completedTasksTitle: {
+    fontSize: 14,
+    fontWeight: ACCESSIBILITY.TYPOGRAPHY.WEIGHTS.MEDIUM,
+    color: ACCESSIBILITY.COLORS.TEXT.SECONDARY,
+  },
+  completedTasksList: {
+    backgroundColor: 'transparent',
+    paddingVertical: 0,
   },
   emptyState: {
     padding: ACCESSIBILITY.SPACING.MD,

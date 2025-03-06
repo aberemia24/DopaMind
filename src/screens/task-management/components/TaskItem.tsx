@@ -5,6 +5,8 @@ import { useTranslation } from 'react-i18next';
 import { ACCESSIBILITY } from '../../../constants/accessibility';
 import { DateTimeSelector } from './DateTimeSelector';
 import type { Task } from '../../../services/taskService';
+import { format } from 'date-fns';
+import { ro } from 'date-fns/locale';
 
 interface TaskItemProps {
   task: Task;
@@ -21,7 +23,7 @@ const TaskItem: React.FC<TaskItemProps> = ({
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [title, setTitle] = useState(task.title);
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const handleSubmitEditing = () => {
     if (title.trim() !== task.title) {
@@ -30,8 +32,20 @@ const TaskItem: React.FC<TaskItemProps> = ({
     setIsEditing(false);
   };
 
+  // Formatarea datei completării
+  const formatCompletionDate = () => {
+    if (!task.completedAt) return '';
+    
+    const locale = i18n.language === 'ro' ? ro : undefined;
+    return format(new Date(task.completedAt), 'dd MMM', { locale });
+  };
+
   return (
-    <View style={[styles.container, task.completed && styles.completedContainer]}>
+    <View style={[
+      styles.container, 
+      task.completed && styles.completedContainer,
+      task.completed && styles.completedContainerCompact
+    ]}>
       <TouchableOpacity
         style={styles.checkbox}
         onPress={onToggle}
@@ -60,7 +74,7 @@ const TaskItem: React.FC<TaskItemProps> = ({
         ) : (
           <TouchableOpacity
             style={styles.titleContainer}
-            onPress={() => setIsEditing(true)}
+            onPress={() => !task.completed && setIsEditing(true)}
             accessibilityRole="button"
             accessibilityLabel={t('taskManagement.labels.editTask')}
           >
@@ -76,45 +90,53 @@ const TaskItem: React.FC<TaskItemProps> = ({
           </TouchableOpacity>
         )}
 
-        <View style={styles.actions}>
-          <TouchableOpacity
-            style={styles.actionButton}
-            onPress={() => onUpdate({ isPriority: !task.isPriority })}
-            accessibilityRole="button"
-            accessibilityLabel={t(
-              task.isPriority
-                ? 'taskManagement.buttons.removePriority'
-                : 'taskManagement.buttons.addPriority'
-            )}
-          >
-            <MaterialIcons
-              name={task.isPriority ? 'star' : 'star-outline'}
-              size={24}
-              color={task.isPriority 
-                ? (task.completed ? ACCESSIBILITY.COLORS.TEXT.SECONDARY : '#FFD700') 
-                : ACCESSIBILITY.COLORS.TEXT.SECONDARY}
-            />
-          </TouchableOpacity>
+        {!task.completed ? (
+          <View style={styles.actions}>
+            <TouchableOpacity
+              style={styles.actionButton}
+              onPress={() => onUpdate({ isPriority: !task.isPriority })}
+              accessibilityRole="button"
+              accessibilityLabel={t(
+                task.isPriority
+                  ? 'taskManagement.buttons.removePriority'
+                  : 'taskManagement.buttons.addPriority'
+              )}
+            >
+              <MaterialIcons
+                name={task.isPriority ? 'star' : 'star-outline'}
+                size={24}
+                color={task.isPriority 
+                  ? (task.completed ? ACCESSIBILITY.COLORS.TEXT.SECONDARY : '#FFD700') 
+                  : ACCESSIBILITY.COLORS.TEXT.SECONDARY}
+              />
+            </TouchableOpacity>
 
-          <TouchableOpacity
-            style={styles.actionButton}
-            onPress={onDelete}
-            accessibilityRole="button"
-            accessibilityLabel={t('taskManagement.buttons.deleteTask')}
-          >
-            <MaterialIcons
-              name="delete-outline"
-              size={24}
-              color={ACCESSIBILITY.COLORS.TEXT.SECONDARY}
-            />
-          </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.actionButton}
+              onPress={onDelete}
+              accessibilityRole="button"
+              accessibilityLabel={t('taskManagement.buttons.deleteTask')}
+            >
+              <MaterialIcons
+                name="delete-outline"
+                size={24}
+                color={ACCESSIBILITY.COLORS.TEXT.SECONDARY}
+              />
+            </TouchableOpacity>
 
-          <DateTimeSelector
-            dueDate={task.dueDate}
-            reminderMinutes={task.reminderMinutes}
-            onDateTimeChange={(updates) => onUpdate(updates)}
-          />
-        </View>
+            <DateTimeSelector
+              dueDate={task.dueDate}
+              reminderMinutes={task.reminderMinutes}
+              onDateTimeChange={(updates) => onUpdate(updates)}
+            />
+          </View>
+        ) : (
+          <View style={styles.completionDateContainer}>
+            <Text style={styles.completionDate}>
+              {formatCompletionDate()}
+            </Text>
+          </View>
+        )}
       </View>
     </View>
   );
@@ -137,6 +159,11 @@ const styles = StyleSheet.create({
     opacity: 0.8, 
     backgroundColor: 'rgba(0,0,0,0.03)', 
     borderColor: 'rgba(0,0,0,0.05)', 
+  },
+  completedContainerCompact: {
+    paddingVertical: 2,
+    minHeight: 30,
+    marginVertical: 1,
   },
   checkbox: {
     width: 36, 
@@ -183,6 +210,15 @@ const styles = StyleSheet.create({
     height: 36, 
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  completionDateContainer: {
+    paddingHorizontal: ACCESSIBILITY.SPACING.SM,
+    justifyContent: 'center',
+  },
+  completionDate: {
+    fontSize: 12,
+    color: ACCESSIBILITY.COLORS.TEXT.SECONDARY,
+    fontStyle: 'italic',
   },
 });
 

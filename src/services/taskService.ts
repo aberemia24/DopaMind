@@ -12,6 +12,7 @@ export interface Task {
   userId: string;
   createdAt: number;
   updatedAt: number;
+  completedAt?: number; // Data la care a fost completat task-ul
   dueDate?: Date;
   reminderMinutes?: number;
   repeat?: {
@@ -50,7 +51,8 @@ const validateTaskData = (data: unknown): TaskData => {
     updatedAt,
     dueDate,
     reminderMinutes,
-    repeat
+    repeat,
+    completedAt
   } = data as Record<string, unknown>;
 
   if (typeof title !== 'string' || !title) {
@@ -95,6 +97,10 @@ const validateTaskData = (data: unknown): TaskData => {
     throw new Error('Invalid task data: reminderMinutes must be a valid number if present');
   }
 
+  if (completedAt !== undefined && (typeof completedAt !== 'number' || !Number.isFinite(completedAt))) {
+    throw new Error('Invalid task data: completedAt must be a valid timestamp if present');
+  }
+
   if (repeat !== undefined && (typeof repeat !== 'object' || !repeat || typeof (repeat as any).frequency !== 'string' || typeof (repeat as any).interval !== 'number')) {
     throw new Error('Invalid task data: repeat must be an object with frequency and interval if present');
   }
@@ -120,7 +126,8 @@ const validateTaskData = (data: unknown): TaskData => {
     updatedAt,
     dueDate,
     reminderMinutes,
-    repeat: validatedRepeat
+    repeat: validatedRepeat,
+    completedAt
   };
 };
 
