@@ -100,7 +100,7 @@ const TimeSection: React.FC<TimeSectionProps> = ({
           <View 
             style={[
               styles.header,
-              { backgroundColor: `${periodColors.PRIMARY}15` } // Opacitate 15% pentru un efect subtil
+              { backgroundColor: `${periodColors.PRIMARY}40` } // Creșterea opacității de la 15% la 40%
             ]}
           >
             <View style={styles.titleContainer}>
@@ -192,12 +192,14 @@ const styles = StyleSheet.create({
       width: 0,
       height: 1,
     },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 2,
+    shadowOpacity: 0.08, // Creșterea ușoară a opacității umbrei pentru un efect mai vizibil
+    shadowRadius: 1.5, // Reducerea razei umbrei pentru un efect mai definit
+    elevation: 1, // Reducerea elevației pentru un efect mai subtil
+    borderWidth: 0.5, // Adăugarea unui border subtil
+    borderColor: 'rgba(0,0,0,0.05)', // Culoare semi-transparentă pentru border
   },
   colorBar: {
-    width: 4,
+    width: 6, // Creșterea lățimii barei de culoare pentru mai multă vizibilitate
   },
   header: {
     flex: 1,
