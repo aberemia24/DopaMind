@@ -64,11 +64,19 @@ const TaskManagementScreen: React.FC = () => {
   };
 
   const getActiveTasksCountForPeriod = (periodId: TimePeriodKey): number => {
+    if (periodId === 'COMPLETED') return 0; // Nu există task-uri active în secțiunea COMPLETED
     return tasks[periodId].filter(task => !task.completed).length;
   };
 
   const getAllCompletedTasks = (): Task[] => {
+    // Colectăm toate task-urile completate din toate perioadele (cu excepția COMPLETED)
     return [...tasks.MORNING, ...tasks.AFTERNOON, ...tasks.EVENING].filter(task => task.completed);
+  };
+
+  // Adăugăm task-urile completate în obiectul tasks pentru a fi folosite cu TimeSection
+  const tasksWithCompleted = {
+    ...tasks,
+    COMPLETED: getAllCompletedTasks()
   };
 
   const showSoftLimitWarning = (periodId: TimePeriodKey, onConfirm: () => void): void => {
@@ -167,56 +175,31 @@ const TaskManagementScreen: React.FC = () => {
           />
           
           {/* Afișăm categoriile de perioade doar dacă nu suntem în tab-ul "completed" */}
-          {currentFilter !== 'completed' && Object.entries(TIME_PERIODS).map(([id, period]) => (
+          {currentFilter !== 'completed' && Object.entries(TIME_PERIODS)
+            .filter(([id]) => id !== 'COMPLETED') // Excludem secțiunea COMPLETED din ciclul normal
+            .map(([id, period]) => (
+              <TimeSection
+                key={id}
+                period={period}
+                tasks={filterTasks(tasks[id as TimePeriodKey])}
+                onAddTask={() => handleAddTask(id as TimePeriodKey)}
+                onToggleTask={toggleTask}
+                onDeleteTask={deleteTask}
+                onUpdateTask={(taskId, updates) => updateTask(taskId, updates)}
+              />
+          ))}
+
+          {/* Secțiunea pentru task-urile completate - folosind componenta TimeSection */}
+          {(currentFilter === 'completed' || (currentFilter === 'all' && getAllCompletedTasks().length > 0)) && (
             <TimeSection
-              key={id}
-              period={period}
-              tasks={filterTasks(tasks[id as TimePeriodKey]).filter(task => !task.completed)}
-              onAddTask={() => handleAddTask(id as TimePeriodKey)}
+              key="COMPLETED"
+              period={TIME_PERIODS.COMPLETED}
+              tasks={tasksWithCompleted.COMPLETED}
+              onAddTask={() => {}} // Nu permitem adăugarea de task-uri direct în secțiunea completate
               onToggleTask={toggleTask}
               onDeleteTask={deleteTask}
               onUpdateTask={(taskId, updates) => updateTask(taskId, updates)}
             />
-          ))}
-
-          {/* Secțiunea pentru task-urile completate */}
-          {(currentFilter === 'completed' || (currentFilter === 'all' && getAllCompletedTasks().length > 0)) && (
-            <View style={styles.completedTasksSection}>
-              {/* Afișăm header-ul doar în tab-ul "all" */}
-              {currentFilter === 'all' && (
-                <View style={styles.completedTasksHeader}>
-                  <MaterialIcons 
-                    name="check-circle" 
-                    size={24} 
-                    color={ACCESSIBILITY.COLORS.INTERACTIVE.PRIMARY} 
-                  />
-                  <Text style={styles.completedTasksTitle}>
-                    {t('taskManagement.filters.completedTasks')}
-                  </Text>
-                </View>
-              )}
-              <View style={styles.completedTasksList}>
-                {getAllCompletedTasks().map(task => (
-                  <View key={task.id} style={styles.completedTaskContainer}>
-                    <View style={styles.periodIconContainer}>
-                      <MaterialIcons 
-                        name={TIME_PERIODS[task.period].icon} 
-                        size={16} 
-                        color={ACCESSIBILITY.COLORS.TEXT.SECONDARY} 
-                      />
-                    </View>
-                    <View style={styles.taskItemContainer}>
-                      <TaskItem
-                        task={task}
-                        onToggle={() => toggleTask(task.id)}
-                        onDelete={() => deleteTask(task.id)}
-                        onUpdate={(updates) => updateTask(task.id, updates)}
-                      />
-                    </View>
-                  </View>
-                ))}
-              </View>
-            </View>
           )}
         </ScrollView>
       </KeyboardAvoidingView>

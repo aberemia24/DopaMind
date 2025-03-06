@@ -1,4 +1,4 @@
-import { getDocs, query, collection, where, addDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore';
+import { getDocs, query, collection, where, addDoc, updateDoc, deleteDoc, doc, FieldValue, deleteField } from 'firebase/firestore';
 import { getFirebaseFirestore } from '../config/firebase';
 import type { TimePeriodKey } from '../constants/taskTypes';
 
@@ -21,10 +21,16 @@ export interface Task {
   };
 }
 
+// Tip pentru actualizări care permite și FieldValue pentru câmpurile care pot fi șterse
+type TaskUpdateData = {
+  [K in keyof Omit<Task, 'id'>]?: K extends 'completedAt' ? Task[K] | FieldValue : Task[K];
+};
+
 export interface TasksByPeriod {
   MORNING: Task[];
   AFTERNOON: Task[];
   EVENING: Task[];
+  COMPLETED: Task[];
 }
 
 type TaskData = Omit<Task, 'id'>;
@@ -146,7 +152,8 @@ export const fetchTasks = async (userId: string): Promise<TasksByPeriod> => {
     const result: TasksByPeriod = {
       MORNING: [],
       AFTERNOON: [],
-      EVENING: []
+      EVENING: [],
+      COMPLETED: []
     };
 
     querySnapshot.forEach((doc) => {
@@ -192,13 +199,22 @@ export const addTask = async (taskData: Omit<Task, 'id'>): Promise<Task> => {
  */
 export const updateTask = async (
   taskId: string,
-  updates: Partial<Omit<Task, 'id'>>
+  updates: TaskUpdateData
 ): Promise<void> => {
   try {
     const db = getFirebaseFirestore();
     const taskRef = doc(db, TASKS_COLLECTION, taskId);
+    
+    // Procesăm câmpurile null pentru a le transforma în deleteField()
+    const processedUpdates = { ...updates };
+    
+    // Verificăm dacă completedAt este null sau undefined și îl înlocuim cu deleteField()
+    if (processedUpdates.completedAt === null || processedUpdates.completedAt === undefined) {
+      processedUpdates.completedAt = deleteField();
+    }
+    
     await updateDoc(taskRef, {
-      ...updates,
+      ...processedUpdates,
       updatedAt: Date.now()
     });
   } catch (error) {

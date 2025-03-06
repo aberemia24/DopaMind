@@ -40,14 +40,37 @@ const TaskItem: React.FC<TaskItemProps> = ({
     return format(new Date(task.completedAt), 'dd MMM HH:mm', { locale });
   };
 
+  // Determinăm stilurile containerului în funcție de starea task-ului
+  const containerStyle = [
+    styles.container,
+    task.completed ? styles.completedContainer : null,
+    task.completed ? styles.completedContainerCompact : null,
+    task.isPriority && !task.completed ? styles.priorityContainer : null,
+  ];
+
+  // Determinăm stilurile pentru checkbox
+  const checkboxStyle = [
+    styles.checkbox,
+    task.completed ? styles.completedCheckbox : null,
+  ];
+
+  // Determinăm stilurile pentru containerul de conținut
+  const contentContainerStyle = [
+    styles.contentContainer,
+    task.completed ? styles.completedContentContainer : null,
+  ];
+
+  // Determinăm stilurile pentru titlu
+  const titleStyle = [
+    styles.title,
+    task.completed ? styles.completedTitle : null,
+    !task.title ? styles.untitledTask : null,
+  ];
+
   return (
-    <View style={[
-      styles.container, 
-      task.completed && styles.completedContainer,
-      task.completed && styles.completedContainerCompact
-    ]}>
+    <View style={containerStyle}>
       <TouchableOpacity
-        style={[styles.checkbox, task.completed && styles.completedCheckbox]}
+        style={checkboxStyle}
         onPress={onToggle}
         accessibilityRole="checkbox"
         accessibilityState={{ checked: task.completed }}
@@ -60,7 +83,7 @@ const TaskItem: React.FC<TaskItemProps> = ({
         />
       </TouchableOpacity>
 
-      <View style={[styles.contentContainer, task.completed && styles.completedContentContainer]}>
+      <View style={contentContainerStyle}>
         {isEditing ? (
           <TextInput
             style={styles.input}
@@ -78,13 +101,7 @@ const TaskItem: React.FC<TaskItemProps> = ({
             accessibilityRole="button"
             accessibilityLabel={t('taskManagement.labels.editTask')}
           >
-            <Text
-              style={[
-                styles.title,
-                task.completed && styles.completedTitle,
-                !task.title && styles.untitledTask,
-              ]}
-            >
+            <Text style={titleStyle}>
               {task.title || t('taskManagement.labels.untitledTask')}
             </Text>
           </TouchableOpacity>
@@ -160,11 +177,16 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.02)', 
     borderColor: 'rgba(0,0,0,0.08)', 
   },
+  priorityContainer: {
+    borderLeftWidth: 4,
+    borderLeftColor: ACCESSIBILITY.COLORS.INTERACTIVE.PRIMARY,
+    backgroundColor: 'rgba(0,0,0,0.01)',
+  },
   completedContainerCompact: {
     paddingVertical: 2,
-    minHeight: 28,
-    height: 28,
-    marginVertical: 1, 
+    minHeight: 30,
+    height: 30,
+    marginVertical: 2, 
     borderWidth: 1,
     borderRadius: 4, 
     borderColor: 'rgba(0,0,0,0.1)', 
@@ -190,7 +212,7 @@ const styles = StyleSheet.create({
   },
   completedContentContainer: {
     paddingVertical: 0,
-    height: 28,
+    height: 30,
   },
   titleContainer: {
     flex: 1,
@@ -204,7 +226,7 @@ const styles = StyleSheet.create({
   completedTitle: {
     textDecorationLine: 'line-through',
     color: ACCESSIBILITY.COLORS.TEXT.SECONDARY,
-    fontSize: 12, 
+    fontSize: 13, 
     lineHeight: 18,
   },
   untitledTask: {
@@ -231,10 +253,10 @@ const styles = StyleSheet.create({
   completionDateContainer: {
     paddingHorizontal: 8,
     justifyContent: 'center',
-    height: 28,
+    height: 30,
   },
   completionDate: {
-    fontSize: 11,
+    fontSize: 12,
     color: ACCESSIBILITY.COLORS.TEXT.SECONDARY,
     fontStyle: 'italic',
   },

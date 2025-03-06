@@ -34,7 +34,8 @@ export const TaskProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [tasks, setTasks] = useState<TasksByPeriod>({
     MORNING: [],
     AFTERNOON: [],
-    EVENING: []
+    EVENING: [],
+    COMPLETED: []
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -128,7 +129,7 @@ export const TaskProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // Actualizează state-ul local
       setTasks(prev => ({
         ...prev,
-        [currentPeriod!]: prev[currentPeriod!].map(task =>
+        [currentPeriod!]: prev[currentPeriod!].map((task: Task) =>
           task.id === taskId ? updatedTask! : task
         )
       }));
@@ -150,7 +151,7 @@ export const TaskProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // Găsește perioada task-ului
       let taskPeriod: TimePeriodKey | null = null;
       for (const [period, taskList] of Object.entries(tasks)) {
-        if (taskList.some((t: Task) => t.id === taskId)) {
+        if (taskList.some((task: Task) => task.id === taskId)) {
           taskPeriod = period as TimePeriodKey;
           break;
         }
@@ -166,7 +167,7 @@ export const TaskProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // Actualizează state-ul local
       setTasks(prev => ({
         ...prev,
-        [taskPeriod!]: prev[taskPeriod!].filter(task => task.id !== taskId)
+        [taskPeriod!]: prev[taskPeriod!].filter((task: Task) => task.id !== taskId)
       }));
 
       // Actualizează cache-ul

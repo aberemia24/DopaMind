@@ -14,7 +14,8 @@ interface CacheData {
 const INITIAL_TASKS: TasksByPeriod = {
   MORNING: [],
   AFTERNOON: [],
-  EVENING: []
+  EVENING: [],
+  COMPLETED: []
 };
 
 export const taskCacheService = {

@@ -22,7 +22,7 @@ interface TimeEstimate {
   icon: string;
 }
 
-export type TimePeriodKey = 'MORNING' | 'AFTERNOON' | 'EVENING';
+export type TimePeriodKey = 'MORNING' | 'AFTERNOON' | 'EVENING' | 'COMPLETED';
 
 export const TIME_PERIODS: Record<TimePeriodKey, TimePeriod> = {
   MORNING: {
@@ -48,6 +48,14 @@ export const TIME_PERIODS: Record<TimePeriodKey, TimePeriod> = {
     timeFrame: '18:00 - 23:00',
     description: DATE_TIME_TRANSLATIONS.TIME.RANGES.EVENING,
     titleKey: 'taskManagement.periods.evening.title'
+  },
+  COMPLETED: {
+    id: 'COMPLETED',
+    label: 'Completed Tasks',
+    icon: 'done-all',
+    timeFrame: '',
+    description: 'Completed Tasks',
+    titleKey: 'taskManagement.filters.completedTasks'
   }
 } as const;
 
