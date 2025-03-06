@@ -225,7 +225,8 @@
       "taskName": "Task name",
       "priority": "Priority",
       "dueDate": "Due date",
-      "status": "Status"
+      "status": "Status",
+      "noTasksForPeriod": "No tasks for this period"
     },
     "alerts": {
       "softLimit": {

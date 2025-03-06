@@ -19,7 +19,8 @@
     "taskName": "Numele sarcinii",
     "priority": "Prioritate",
     "dueDate": "Data scadentă",
-    "status": "Status"
+    "status": "Status",
+    "noTasksForPeriod": "Nu există sarcini pentru această perioadă"
   },
   "alerts": {
     "softLimit": {
