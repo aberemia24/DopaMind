@@ -102,10 +102,10 @@ const TaskItem: React.FC<TaskItemProps> = ({
     const listenerId = dragX.addListener(({ value }) => {
       // Verificăm dacă valoarea este suficient de mică (tragere spre stânga)
       // Declanșăm vibrația doar când utilizatorul trage mai mult de 50% din lățimea butonului
-      if (value <= -80 && !hasVibrated.current) {
+      if (value <= -100 && !hasVibrated.current) {
         Vibration.vibrate(50); // Vibrație scurtă
         hasVibrated.current = true;
-      } else if (value > -80) {
+      } else if (value > -100) {
         hasVibrated.current = false;
       }
     });
@@ -241,8 +241,8 @@ const TaskItem: React.FC<TaskItemProps> = ({
   const renderRightActions = (progress: Animated.AnimatedInterpolation<number>, dragX: Animated.AnimatedInterpolation<number>) => {
     // Calculează transformarea pe baza tragerii
     const trans = dragX.interpolate({
-      inputRange: [-100, -50, 0],
-      outputRange: [0, 50, 100],
+      inputRange: [-100, 0],
+      outputRange: [0, 100],
       extrapolate: 'clamp',
     });
     
@@ -323,10 +323,7 @@ const TaskItem: React.FC<TaskItemProps> = ({
       <Swipeable
         ref={swipeableRef}
         renderRightActions={renderRightActions}
-        rightThreshold={0.5} // Pragul pentru declanșarea acțiunii (50% din lățimea cardului)
-        friction={2} // Crește rezistența la swipe (valoare mai mare = mai rezistent)
-        overshootFriction={8} // Limitează cât de mult poate fi tras card-ul peste limită
-        onSwipeableRightWillOpen={handleDeleteConfirmation} // Declanșează confirmarea când se va deschide complet
+        onSwipeableRightOpen={handleDeleteConfirmation}
         containerStyle={{ width: '100%' }}
       >
         <View style={styles.taskContainer}>
@@ -603,6 +600,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',            // Aranjează elementele pe orizontală
     borderTopRightRadius: ACCESSIBILITY.SPACING.SM,    // Colțuri rotunjite în dreapta
     borderBottomRightRadius: ACCESSIBILITY.SPACING.SM, // Colțuri rotunjite în dreapta
+    position: 'absolute',            // Poziționare absolută
+    right: 0,                        // Aliniază la marginea din dreapta
   },
   deleteActionText: {
     color: 'white',                  // Text alb pentru contrast

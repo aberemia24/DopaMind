@@ -185,7 +185,7 @@ const TaskManagementScreen: React.FC = () => {
                 onAddTask={() => handleAddTask(id as TimePeriodKey)}
                 onToggleTask={toggleTask}
                 onDeleteTask={deleteTask}
-                onUpdateTask={(taskId, updates) => updateTask(taskId, updates)}
+                onUpdateTask={(taskId, updates) => updateTask(taskId, updates as Partial<Omit<Task, 'id' | 'userId'>>)}
               />
           ))}
 
@@ -198,7 +198,7 @@ const TaskManagementScreen: React.FC = () => {
               onAddTask={() => {}} // Nu permitem adăugarea de task-uri direct în secțiunea completate
               onToggleTask={toggleTask}
               onDeleteTask={deleteTask}
-              onUpdateTask={(taskId, updates) => updateTask(taskId, updates)}
+              onUpdateTask={(taskId, updates) => updateTask(taskId, updates as Partial<Omit<Task, 'id' | 'userId'>>)}
             />
           )}
         </ScrollView>

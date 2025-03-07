@@ -7,6 +7,7 @@ import { Navigation } from './src/navigation';
 import { GlobalErrorBoundary } from './src/core/error/ErrorBoundary';
 import { TaskProvider } from './src/contexts/TaskContext';
 import { AuthProvider } from './src/contexts/auth';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import './src/i18n';  // Import i18n configuration
 
 export default function App() {
@@ -53,15 +54,17 @@ export default function App() {
   }
 
   return (
-    <GlobalErrorBoundary>
-      <SafeAreaProvider>
-        <AuthProvider>
-          <TaskProvider>
-            <Navigation />
-          </TaskProvider>
-        </AuthProvider>
-        <StatusBar style="auto" />
-      </SafeAreaProvider>
-    </GlobalErrorBoundary>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <GlobalErrorBoundary>
+        <SafeAreaProvider>
+          <AuthProvider>
+            <TaskProvider>
+              <Navigation />
+            </TaskProvider>
+          </AuthProvider>
+          <StatusBar style="auto" />
+        </SafeAreaProvider>
+      </GlobalErrorBoundary>
+    </GestureHandlerRootView>
   );
 }

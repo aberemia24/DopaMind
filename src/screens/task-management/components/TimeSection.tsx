@@ -385,6 +385,7 @@ const styles = StyleSheet.create({
     padding: 0,
     borderRadius: 0,
     backgroundColor: 'transparent',
+    width: '100%',  // Asigurăm că ocupă toată lățimea disponibilă
   },
   completedTaskItemWrapper: {
     margin: 0,
