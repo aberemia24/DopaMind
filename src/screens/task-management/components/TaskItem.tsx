@@ -71,6 +71,19 @@ const TaskItem: React.FC<TaskItemProps> = ({
   };
 
   /**
+   * Formatează data scadentă a sarcinii într-un format localizat
+   * IMPACT: Afectează modul în care este afișată data scadentă
+   * IMPACT: Utilizează localizarea corectă în funcție de limba selectată (ro sau default)
+   * @returns String formatat cu data scadentă sau string gol dacă nu există
+   */
+  const formatDueDate = () => {
+    if (!task.dueDate) return '';
+    
+    const locale = i18n.language === 'ro' ? ro : undefined;
+    return format(new Date(task.dueDate), 'dd MMM HH:mm', { locale });
+  };
+
+  /**
    * Determină stilurile containerului în funcție de starea sarcinii
    * 
    * IMPACT: Modificarea acestei logici va afecta aspectul vizual al sarcinii
@@ -134,91 +147,95 @@ const TaskItem: React.FC<TaskItemProps> = ({
         />
       </TouchableOpacity>
 
-      <View style={contentContainerStyle}>
-        {/* Afișează fie un input de editare, fie textul titlului
-             IMPACT: Controlează modul în care utilizatorul poate edita titlul */}
-        {isEditing ? (
-          <TextInput
-            style={styles.input}
-            value={title}
-            onChangeText={setTitle}
-            onBlur={handleSubmitEditing}
-            onSubmitEditing={handleSubmitEditing}
-            autoFocus
-            accessibilityLabel={t('taskManagement.labels.editTask')}
-          />
-        ) : (
+      {!task.completed ? (
+        // Layout pentru task-uri active (necompletate)
+        <View style={styles.activeContentContainer}>
+          {/* Primul rând: Titlu și stea de prioritate */}
+          <View style={styles.titleRow}>
+            {/* Afișează fie un input de editare, fie textul titlului */}
+            {isEditing ? (
+              <TextInput
+                style={styles.input}
+                value={title}
+                onChangeText={setTitle}
+                onBlur={handleSubmitEditing}
+                onSubmitEditing={handleSubmitEditing}
+                autoFocus
+                accessibilityLabel={t('taskManagement.labels.editTask')}
+              />
+            ) : (
+              <TouchableOpacity
+                style={styles.titleContainer}
+                onPress={() => setIsEditing(true)}
+                accessibilityRole="button"
+                accessibilityLabel={t('taskManagement.labels.editTask')}
+              >
+                <Text style={titleStyle}>
+                  {task.title || t('taskManagement.labels.untitledTask')}
+                </Text>
+              </TouchableOpacity>
+            )}
+
+            {/* Indicator de prioritate (stea) */}
+            {!isEditing && (
+              <TouchableOpacity
+                style={styles.priorityIndicator}
+                onPress={() => onUpdate({ isPriority: !task.isPriority })}
+                accessibilityRole="button"
+                accessibilityLabel={t(
+                  task.isPriority
+                    ? 'taskManagement.buttons.removePriority'
+                    : 'taskManagement.buttons.addPriority'
+                )}
+              >
+                <MaterialIcons
+                  name={task.isPriority ? 'star' : 'star-outline'}
+                  size={20}
+                  color={task.isPriority 
+                    ? 'rgba(234, 88, 12, 0.9)' 
+                    : ACCESSIBILITY.COLORS.TEXT.SECONDARY}
+                />
+              </TouchableOpacity>
+            )}
+          </View>
+
+          {/* Al doilea rând: Data/ora scadentă (opțional) */}
+          {task.dueDate && (
+            <View style={styles.dueDateContainer}>
+              <MaterialIcons
+                name="schedule"
+                size={14}
+                color={ACCESSIBILITY.COLORS.TEXT.SECONDARY}
+                style={styles.dueDateIcon}
+              />
+              <Text style={styles.dueDate}>
+                {formatDueDate()}
+              </Text>
+            </View>
+          )}
+        </View>
+      ) : (
+        // Layout pentru task-uri completate (păstrăm așa cum este)
+        <View style={contentContainerStyle}>
+          {/* Afișează textul titlului */}
           <TouchableOpacity
             style={styles.titleContainer}
-            onPress={() => !task.completed && setIsEditing(true)}
             accessibilityRole="button"
-            accessibilityLabel={t('taskManagement.labels.editTask')}
+            accessibilityLabel={t('taskManagement.labels.viewTask')}
           >
             <Text style={titleStyle}>
               {task.title || t('taskManagement.labels.untitledTask')}
             </Text>
           </TouchableOpacity>
-        )}
 
-        {/* Afișează butoanele de acțiune sau data completării, în funcție de starea sarcinii
-             IMPACT: Determină opțiunile disponibile utilizatorului pentru fiecare sarcină */}
-        {!task.completed ? (
-          <View style={styles.actions}>
-            {/* Buton pentru marcarea sarcinii ca prioritară/non-prioritară
-                 IMPACT: Controlează funcționalitatea de prioritizare */}
-            <TouchableOpacity
-              style={styles.actionButton}
-              onPress={() => onUpdate({ isPriority: !task.isPriority })}
-              accessibilityRole="button"
-              accessibilityLabel={t(
-                task.isPriority
-                  ? 'taskManagement.buttons.removePriority'
-                  : 'taskManagement.buttons.addPriority'
-              )}
-            >
-              <MaterialIcons
-                name={task.isPriority ? 'star' : 'star-outline'}
-                size={24}
-                color={task.isPriority 
-                  ? (task.completed ? ACCESSIBILITY.COLORS.TEXT.SECONDARY : 'rgba(234, 88, 12, 0.9)') 
-                  : ACCESSIBILITY.COLORS.TEXT.SECONDARY}
-              />
-            </TouchableOpacity>
-
-            {/* Selector pentru dată și timp
-                 IMPACT: Permite utilizatorului să seteze termenul limită și reamintirile */}
-            <DateTimeSelector
-              dueDate={task.dueDate}
-              reminderMinutes={task.reminderMinutes}
-              onDateTimeChange={(updates) => onUpdate(updates)}
-              isCompleted={task.completed}
-            />
-
-            {/* Buton pentru ștergerea sarcinii
-                 IMPACT: Controlează capacitatea utilizatorului de a șterge sarcina */}
-            <TouchableOpacity
-              style={styles.deleteButton}
-              onPress={onDelete}
-              accessibilityRole="button"
-              accessibilityLabel={t('taskManagement.buttons.deleteTask')}
-            >
-              <MaterialIcons
-                name="delete-outline"
-                size={24}
-                color={ACCESSIBILITY.COLORS.STATES.ERROR}
-              />
-            </TouchableOpacity>
-          </View>
-        ) : (
+          {/* Afișează data completării */}
           <View style={styles.completionInfo}>
             <Text style={styles.completionDate}>
               {formatCompletionDate()}
             </Text>
-            
-            {/* DateTimeSelector a fost eliminat pentru sarcinile completate conform cerințelor */}
           </View>
-        )}
-      </View>
+        </View>
+      )}
     </View>
   );
 };
@@ -294,10 +311,21 @@ const styles = StyleSheet.create({
     paddingVertical: 0,              // Elimină spațierea verticală
     height: 30,                      // Înălțime fixă redusă
   },
+  activeContentContainer: {
+    flex: 1,                         // Ocupă tot spațiul disponibil
+    flexDirection: 'column',         // Aranjează elementele pe verticală
+    justifyContent: 'center',        // Centrează pe verticală
+    paddingLeft: ACCESSIBILITY.SPACING.XS, // Spațiere la stânga
+  },
   titleContainer: {
     flex: 1,                         // Ocupă tot spațiul disponibil
     justifyContent: 'center',        // Centrează pe verticală
     minHeight: ACCESSIBILITY.TOUCH_TARGET.MIN_HEIGHT,  // Înălțime minimă pentru accesibilitate
+  },
+  titleRow: {
+    flexDirection: 'row',            // Aranjează elementele pe orizontală
+    alignItems: 'center',            // Centrează pe verticală
+    justifyContent: 'space-between', // Spațiază elementele uniform
   },
   title: {
     fontSize: 14,                    // Dimensiunea fontului
@@ -327,25 +355,23 @@ const styles = StyleSheet.create({
     minHeight: 36,                   // Înălțime minimă
     paddingHorizontal: ACCESSIBILITY.SPACING.SM,  // Spațiere orizontală internă
   },
-  actions: {
-    flexDirection: 'row',            // Aranjează acțiunile pe orizontală
+  dueDateContainer: {
+    flexDirection: 'row',            // Aranjează elementele pe orizontală
     alignItems: 'center',            // Centrează pe verticală
-    justifyContent: 'flex-end',      // Aliniază la dreapta
+    marginTop: 2,                    // Spațiere deasupra datei scadente
   },
-  actionButton: {
-    width: 36,                       // Lățimea butonului
-    height: 36,                      // Înălțimea butonului
+  dueDateIcon: {
+    marginRight: 4,                  // Spațiere între icon și text
+  },
+  dueDate: {
+    fontSize: 12,                    // Dimensiune font mai mică
+    color: ACCESSIBILITY.COLORS.TEXT.SECONDARY, // Culoare secundară
+  },
+  priorityIndicator: {
+    width: 28,                       // Lățime mai mică pentru indicator
+    height: 28,                      // Înălțime mai mică pentru indicator
     justifyContent: 'center',        // Centrare pe verticală
     alignItems: 'center',            // Centrare pe orizontală
-    borderRadius: ACCESSIBILITY.SPACING.SM,  // Colțuri rotunjite
-  },
-  deleteButton: {
-    width: 36,                       // Lățimea butonului
-    height: 36,                      // Înălțimea butonului
-    justifyContent: 'center',        // Centrare pe verticală
-    alignItems: 'center',            // Centrare pe orizontală
-    borderRadius: ACCESSIBILITY.SPACING.SM,  // Colțuri rotunjite
-    marginLeft: ACCESSIBILITY.SPACING.XXS,   // Spațiere suplimentară în stânga
   },
   completionInfo: {
     flexDirection: 'row',            // Aranjează elementele pe orizontală
