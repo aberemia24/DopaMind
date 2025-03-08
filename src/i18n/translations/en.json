@@ -149,50 +149,104 @@
   },
   "taskManagement": {
     "title": "Task Management",
+    "labels": {
+      "untitledTask": "untitled task",
+      "noTasks": "You don't have any tasks",
+      "noTasksForPeriod": "No tasks for this period",
+      "noTasksMatchingFilter": "No tasks matching the selected filter",
+      "addTaskLabel": "Add task",
+      "dueDate": "Due date",
+      "noDueDate": "No due date",
+      "completedAt": "Completed at",
+      "taskTitlePlaceholder": "Task title",
+      "priority": "Priority",
+      "dragTaskInstructions": "Press and hold to drag tasks between periods"
+    },
+    "quickOptions": {
+      "reminder": {
+        "fiveMin": "5 minutes before",
+        "fifteenMin": "15 minutes before",
+        "thirtyMin": "30 minutes before",
+        "oneHour": "1 hour before"
+      },
+      "repeat": {
+        "daily": "Every day",
+        "weekly": "Every week",
+        "monthly": "Every month"
+      }
+    },
     "dateTimeSelector": {
       "title": "Set Date & Time",
       "comingSoon": "Duration settings coming soon",
       "tabs": {
         "date": "Date",
-        "duration": "Duration"
+        "time": "Time"
       },
-      "calendar": {
+      "buttons": {
+        "nextMonth": "Next month",
         "previousMonth": "Previous month",
-        "nextMonth": "Next month"
+        "ok": "OK",
+        "back": "Back",
+        "confirm": "Confirm",
+        "setTime": "Set time",
+        "setDate": "Set date",
+        "done": "Done",
+        "cancel": "Cancel",
+        "clear": "Clear date/time",
+        "save": "Save",
+        "setDateTime": "Set date and time"
+      },
+      "errors": {
+        "invalidHour": "Invalid hour. Please enter a value between 0-23.",
+        "invalidMinute": "Invalid minute. Please enter a value between 0-59.",
+        "required": "This field is required."
       },
       "quickOptions": {
         "today": "Today",
         "tomorrow": "Tomorrow",
-        "tonight": "Tonight",
         "weekend": "Weekend",
         "nextWeek": "Next week"
       },
-      "timePicker": {
-        "title": "Select time",
+      "timePeriods": {
         "morning": "Morning",
         "afternoon": "Afternoon",
-        "evening": "Evening",
-        "custom": "Custom"
-      },
-      "reminders": {
-        "title": "Reminder",
-        "atTime": "At time",
-        "before15m": "15 minutes before",
-        "before30m": "30 minutes before",
-        "before1h": "1 hour before",
-        "before2h": "2 hours before"
+        "evening": "Evening"
       }
     },
     "buttons": {
-      "addTask": "Add task",
-      "deleteTask": "Delete task",
+      "addTask": "Add new task",
       "editTask": "Edit task",
-      "setDateTime": "Set date and time",
-      "close": "Close",
-      "ok": "OK",
-      "back": "Back",
+      "deleteTask": "Delete task",
+      "setPriority": "Set priority",
+      "setDate": "Set date",
       "expandSection": "Expand {{section}} section",
-      "collapseSection": "Collapse {{section}} section"
+      "collapseSection": "Collapse {{section}} section",
+      "completeTask": "Mark as complete",
+      "uncompleteTask": "Mark as incomplete",
+      "postponeTask": "Postpone task"
+    },
+    "accessibility": {
+      "expandHintText": "Expand to see tasks for this period",
+      "collapseHint": "Collapse to hide tasks for this period",
+      "taskItem": "Task: {{title}}",
+      "taskCompleted": "Completed task: {{title}}",
+      "taskDueDate": "Due date: {{date}}",
+      "deleteTask": "Delete task {{title}}",
+      "editTask": "Edit task {{title}}",
+      "dragTask": "Move task {{title}}",
+      "draggableTask": "Task that can be moved between periods",
+      "dragHint": "Long press and drag to move task to another period",
+      "dropSuccess": "Task was moved to {{period}} period"
+    },
+    "errors": {
+      "fetchTasks": "Error loading tasks",
+      "addTaskError": "Error adding task",
+      "updateTaskError": "Error updating task",
+      "deleteTaskError": "Error deleting task",
+      "toggleTask": "Error toggling task status"
+    },
+    "success": {
+      "taskMoved": "Task moved to {{period}} period"
     },
     "actions": {
       "create": "Create new task",
@@ -215,77 +269,12 @@
       "urgent": "Urgent",
       "later": "Later"
     },
-    "quickOptions": {
-      "reminder": {
-        "fiveMin": "5 minutes before",
-        "fifteenMin": "15 minutes before",
-        "thirtyMin": "30 minutes before",
-        "oneHour": "1 hour before"
-      },
-      "repeat": {
-        "daily": "Every day",
-        "weekly": "Every week",
-        "monthly": "Every month"
-      }
-    },
     "filters": {
       "all": "All",
       "active": "Active",
       "completed": "Completed",
       "priority": "Priority",
       "completedTasks": "Completed Tasks"
-    },
-    "labels": {
-      "untitledTask": "untitled task",
-      "taskName": "Task name",
-      "priority": "Priority",
-      "dueDate": "Due date",
-      "status": "Status",
-      "noTasksForPeriod": "No tasks for this period"
-    },
-    "alerts": {
-      "softLimit": {
-        "title": "Task limit",
-        "message": "You already have many active tasks for this period. Are you sure you want to add another one?",
-        "confirm": "Yes, add",
-        "cancel": "No, cancel"
-      },
-      "deleteConfirm": {
-        "title": "Delete confirmation",
-        "message": "Are you sure you want to delete this task?",
-        "confirm": "Yes, delete",
-        "cancel": "No, cancel"
-      },
-      "postpone": {
-        "success": "Task postponed",
-        "message": "Task has been postponed to {{date}}",
-        "title": "Postpone successful"
-      }
-    },
-    "errors": {
-      "notAuthenticated": "You must be logged in to manage tasks",
-      "addTask": "Could not add task. Please try again.",
-      "updateTask": "Could not update task. Please try again.",
-      "deleteTask": "Could not delete task. Please try again.",
-      "invalidTime": "Please enter a valid time",
-      "requiredFields": "Please fill in all required fields"
-    },
-    "confirmations": {
-      "timeSet": "Time has been set successfully"
-    },
-    "accessibility": {
-      "taskList": "Task list organized by time periods",
-      "taskStatus": "Task {{title}} is {{status}}",
-      "toggleComplete": "{{action}} task",
-      "editMode": "Edit task",
-      "editTitle": "Edit task title",
-      "editTitleHint": "Enter new task title",
-      "expandHint": "Show tasks in this section",
-      "collapseHint": "Hide tasks in this section",
-      "validation": {
-        "titleTooShort": "Title must be at least 3 characters long",
-        "titleRequired": "@:common.validation.required"
-      }
     },
     "periods": {
       "morning": {

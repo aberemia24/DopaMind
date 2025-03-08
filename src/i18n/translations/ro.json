@@ -167,50 +167,115 @@
   },
   "taskManagement": {
     "title": "Gestionare Sarcini",
+    "labels": {
+      "untitledTask": "sarcină fără titlu",
+      "noTasks": "Nu ai nicio sarcină",
+      "noTasksForPeriod": "Nicio sarcină pentru această perioadă",
+      "noTasksMatchingFilter": "Nicio sarcină nu corespunde filtrului selectat",
+      "addTaskLabel": "Adaugă sarcină",
+      "dueDate": "Data scadentă",
+      "noDueDate": "Fără dată scadentă",
+      "completedAt": "Finalizat la",
+      "taskTitlePlaceholder": "Titlul sarcinii",
+      "priority": "Prioritate",
+      "dragTaskInstructions": "Apasă lung pentru a muta sarcina între perioade"
+    },
+    "quickOptions": {
+      "reminder": {
+        "fiveMin": "5 minute înainte",
+        "fifteenMin": "15 minute înainte",
+        "thirtyMin": "30 minute înainte",
+        "oneHour": "1 oră înainte"
+      },
+      "repeat": {
+        "daily": "În fiecare zi",
+        "weekly": "În fiecare săptămână",
+        "monthly": "În fiecare lună"
+      }
+    },
     "dateTimeSelector": {
       "title": "Setează Data și Ora",
       "comingSoon": "Setările de durată vor fi disponibile în curând",
       "tabs": {
-        "date": "Dată",
-        "duration": "Durată"
+        "date": "Data",
+        "time": "Ora"
       },
-      "calendar": {
+      "buttons": {
+        "nextMonth": "Luna următoare",
         "previousMonth": "Luna anterioară",
-        "nextMonth": "Luna următoare"
+        "ok": "OK",
+        "back": "Înapoi",
+        "confirm": "Confirmă",
+        "setTime": "Setează ora",
+        "setDate": "Setează data",
+        "done": "Gata",
+        "cancel": "Anulează",
+        "clear": "Șterge data/ora",
+        "save": "Salvează",
+        "setDateTime": "Setează data și ora"
+      },
+      "errors": {
+        "invalidHour": "Oră invalidă. Introduceți o valoare între 0-23.",
+        "invalidMinute": "Minute invalide. Introduceți o valoare între 0-59.",
+        "required": "Câmpul este obligatoriu."
       },
       "quickOptions": {
         "today": "Astăzi",
         "tomorrow": "Mâine",
-        "tonight": "Diseară",
         "weekend": "Weekend",
         "nextWeek": "Săptămâna viitoare"
       },
-      "timePicker": {
-        "title": "Selectează ora",
+      "timePeriods": {
         "morning": "Dimineață",
         "afternoon": "După-amiază",
-        "evening": "Seară",
-        "custom": "Personalizat"
-      },
-      "reminders": {
-        "title": "Memento",
-        "atTime": "La ora exactă",
-        "before15m": "Cu 15 minute înainte",
-        "before30m": "Cu 30 minute înainte",
-        "before1h": "Cu 1 oră înainte",
-        "before2h": "Cu 2 ore înainte"
+        "evening": "Seară"
       }
     },
     "buttons": {
-      "addTask": "Adaugă sarcină",
-      "deleteTask": "Șterge sarcină",
-      "editTask": "Editează sarcină",
-      "setDateTime": "Setează data și ora",
-      "close": "Închide",
-      "ok": "OK",
-      "back": "Înapoi",
+      "addTask": "Adaugă sarcină nouă",
+      "editTask": "Editează sarcina",
+      "deleteTask": "Șterge sarcina",
+      "setPriority": "Setează prioritate",
+      "setDate": "Setează data",
       "expandSection": "Extinde secțiunea {{section}}",
-      "collapseSection": "Restrânge secțiunea {{section}}"
+      "collapseSection": "Restrânge secțiunea {{section}}",
+      "completeTask": "Marchează ca finalizată",
+      "uncompleteTask": "Marchează ca nefinalizată",
+      "postponeTask": "Amână sarcina"
+    },
+    "accessibility": {
+      "expandHintText": "Extinde pentru a vedea sarcinile din această perioadă",
+      "collapseHint": "Restrânge pentru a ascunde sarcinile din această perioadă",
+      "taskItem": "Sarcină: {{title}}",
+      "taskCompleted": "Sarcină finalizată: {{title}}",
+      "taskDueDate": "Data scadentă: {{date}}",
+      "deleteTask": "Șterge sarcina {{title}}",
+      "editTask": "Editează sarcina {{title}}",
+      "dragTask": "Mută sarcina {{title}}",
+      "draggableTask": "Sarcină care poate fi mutată între perioade",
+      "dragHint": "Apasă lung și trage pentru a muta sarcina în altă perioadă",
+      "dropSuccess": "Sarcina a fost mutată în perioada {{period}}",
+      "taskList": "Listă de sarcini organizate pe perioade de timp",
+      "taskStatus": "Sarcina {{title}} este {{status}}",
+      "toggleComplete": "{{action}} sarcina",
+      "editMode": "Editare sarcină",
+      "editTitle": "Editează titlul sarcinii",
+      "editTitleHint": "Introdu noul titlu al sarcinii",
+      "expandHint": "Arată sarcinile din această secțiune",
+      "validation": {
+        "titleTooShort": "Titlul trebuie să aibă cel puțin 3 caractere",
+        "titleRequired": "@:common.validation.required"
+      }
+    },
+    "errors": {
+      "fetchTasks": "Eroare la încărcarea sarcinilor",
+      "addTaskError": "Eroare la adăugarea sarcinii",
+      "updateTaskError": "Eroare la actualizarea sarcinii",
+      "deleteTaskError": "Eroare la ștergerea sarcinii",
+      "toggleTask": "Eroare la schimbarea stării sarcinii"
+    },
+    "success": {
+      "taskMoved": "Sarcina a fost mutată în perioada {{period}}"
     },
     "actions": {
       "create": "Creează sarcină nouă",
@@ -251,70 +316,6 @@
       "important": "Importantă",
       "urgent": "Urgentă",
       "later": "Mai târziu"
-    },
-    "quickOptions": {
-      "reminder": {
-        "fiveMin": "5 minute înainte",
-        "fifteenMin": "15 minute înainte",
-        "thirtyMin": "30 minute înainte",
-        "oneHour": "1 oră înainte"
-      },
-      "repeat": {
-        "daily": "În fiecare zi",
-        "weekly": "În fiecare săptămână",
-        "monthly": "În fiecare lună"
-      }
-    },
-    "filters": {
-      "all": "toate",
-      "active": "active",
-      "completed": "finalizate",
-      "priority": "prioritare",
-      "completedTasks": "Sarcini Finalizate"
-    },
-    "labels": {
-      "untitledTask": "sarcină fără titlu",
-      "taskName": "Numele sarcinii",
-      "priority": "Prioritate",
-      "dueDate": "Data scadentă",
-      "status": "Status",
-      "noTasksForPeriod": "Nu există sarcini pentru această perioadă"
-    },
-    "errors": {
-      "notAuthenticated": "Trebuie să fii conectat pentru a gestiona sarcinile",
-      "addTask": "Nu s-a putut adăuga sarcina. Te rugăm să încerci din nou.",
-      "updateTask": "Nu s-a putut actualiza sarcina. Te rugăm să încerci din nou.",
-      "deleteTask": "Nu s-a putut șterge sarcina. Te rugăm să încerci din nou."
-    },
-    "accessibility": {
-      "taskList": "Listă de sarcini organizate pe perioade de timp",
-      "taskStatus": "Sarcina {{title}} este {{status}}",
-      "toggleComplete": "{{action}} sarcina",
-      "editMode": "Editare sarcină",
-      "editTitle": "Editează titlul sarcinii",
-      "editTitleHint": "Introdu noul titlu al sarcinii",
-      "validation": {
-        "titleTooShort": "Titlul trebuie să aibă cel puțin 3 caractere",
-        "titleRequired": "@:common.validation.required"
-      }
-    },
-    "periods": {
-      "morning": {
-        "title": "Dimineață",
-        "description": "Perioada de dimineață"
-      },
-      "afternoon": {
-        "title": "După-amiază",
-        "description": "Perioada de după-amiază"
-      },
-      "evening": {
-        "title": "Seară",
-        "description": "Perioada de seară"
-      },
-      "night": {
-        "title": "Noapte",
-        "description": "Perioada de noapte"
-      }
     }
   },
   "app": {

@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { 
   View, 
   StyleSheet, 
@@ -8,7 +8,8 @@ import {
   Platform,
   Alert,
   TouchableOpacity,
-  Text 
+  Text,
+  ToastAndroid
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -22,6 +23,17 @@ import { useAuth } from '../../contexts/auth';
 import type { Task } from '../../services/taskService';
 import { getDayTimeColors } from '../../utils/daytime';
 
+// Interfață pentru zonele de drop
+interface DropZone {
+  periodId: TimePeriodKey;
+  layout: {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  };
+}
+
 const TaskManagementScreen: React.FC = () => {
   const { logout, user, isAuthenticated } = useAuth();
   const { t } = useTranslation();
@@ -29,6 +41,15 @@ const TaskManagementScreen: React.FC = () => {
   const [currentFilter, setCurrentFilter] = useState<FilterOption>('all');
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const dayTimeColors = getDayTimeColors();
+  
+  // State pentru zonele de drop - necesar pentru funcționalitatea de drag and drop
+  const [dropZones, setDropZones] = useState<DropZone[]>([]);
+  
+  // Dezactivăm scrollarea când este activă o operațiune de drag
+  const [isScrollEnabled, setIsScrollEnabled] = useState(true);
+  
+  // Referință la ScrollView pentru a controla scrollarea
+  const scrollViewRef = useRef<ScrollView>(null);
 
   // Monitorizăm starea de autentificare 
   useEffect(() => {
@@ -36,6 +57,22 @@ const TaskManagementScreen: React.FC = () => {
       // Handle logout completion
     }
   }, [isAuthenticated, isLoggingOut]);
+
+  useEffect(() => {
+    // Această funcție va fi apelată la fiecare randare și la modificarea task-urilor
+    // pentru a se asigura că zonele de drop sunt mereu actualizate
+    const updateDropZones = () => {
+      // Forțăm măsurarea din nou a tuturor secțiunilor
+      setDropZones([]); // Resetăm zonele pentru a forța reînregistrarea
+    };
+    
+    // Se asigură că zonele de drop sunt actualizate la modificările taskurilor
+    updateDropZones();
+    
+    return () => {
+      // Funcția de cleanup
+    };
+  }, [tasks]);
 
   const filterTasks = (taskList: Task[]): Task[] => {
     switch (currentFilter) {
@@ -143,6 +180,86 @@ const TaskManagementScreen: React.FC = () => {
     }
   };
 
+  /**
+   * Înregistrează o zonă de drop pentru o perioadă
+   * Este folosită de componenta TimeSection pentru a comunica poziția sa
+   */
+  const registerDropZone = useCallback((periodId: TimePeriodKey, layout: { x: number, y: number, width: number, height: number }) => {
+    setDropZones(prev => {
+      // Eliminăm zona existentă pentru această perioadă dacă există
+      const filtered = prev.filter(zone => zone.periodId !== periodId);
+      // Adăugăm noua zonă
+      return [...filtered, { periodId, layout }];
+    });
+  }, []);
+
+  /**
+   * Gestionează mutarea unui task de la o perioadă la alta
+   * Această funcție este pasată componentei TaskDraggable prin intermediul TimeSection
+   */
+  const handleMoveTask = useCallback(async (taskId: string, toPeriodId: TimePeriodKey) => {
+    try {
+      const taskToMove = [...tasks.MORNING, ...tasks.AFTERNOON, ...tasks.EVENING]
+        .find(task => task.id === taskId);
+      
+      if (!taskToMove) return;
+      
+      // Verificăm dacă nu este deja în perioada destinație
+      if (taskToMove.period === toPeriodId) return;
+      
+      // Actualizăm task-ul cu noua perioadă
+      await updateTask(taskId, { 
+        period: toPeriodId,
+        updatedAt: Date.now()
+      });
+      
+      // Afișăm un mesaj de succes
+      const periodName = t(TIME_PERIODS[toPeriodId].titleKey);
+      
+      if (Platform.OS === 'android') {
+        ToastAndroid.show(
+          t('taskManagement.success.taskMoved', { period: periodName.toLowerCase() }),
+          ToastAndroid.SHORT
+        );
+      } else {
+        // Pentru iOS am putea folosi o bibliotecă de notificări sau un alert
+        // Dar pentru simplitate, nu afișăm nimic momentan
+      }
+    } catch (error) {
+      console.error('Failed to move task:', error);
+      Alert.alert(
+        t('common.error'),
+        t('taskManagement.errors.updateTaskError')
+      );
+    }
+  }, [tasks, updateTask, t]);
+
+  /**
+   * Gestionează începerea operațiunii de drag
+   * Dezactivează scrollarea pentru a preveni conflictele cu gesturile de drag
+   */
+  const handleDragStart = useCallback(() => {
+    setIsScrollEnabled(false);
+  }, []);
+
+  /**
+   * Gestionează terminarea operațiunii de drag
+   * Reactivează scrollarea
+   */
+  const handleDragEnd = useCallback(() => {
+    setIsScrollEnabled(true);
+  }, []);
+
+  /**
+   * Handler pentru ScrollView pentru a preveni conflictele între scroll și drag
+   * Această funcție ajută la o experiență de utilizare mai fluidă
+   */
+  const handleScroll = useCallback(() => {
+    // Resetăm zonele de drop pentru a le actualiza la următoarea măsurare
+    // Acest lucru asigură că zonele de drop sunt mereu sincronizate cu poziția reală
+    setDropZones([]);
+  }, []);
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={[styles.header, { borderBottomColor: dayTimeColors.PRIMARY }]}>
@@ -167,7 +284,13 @@ const TaskManagementScreen: React.FC = () => {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.keyboardAvoidingView}
       >
-        <ScrollView contentContainerStyle={styles.scrollContent}>
+        <ScrollView 
+          ref={scrollViewRef}
+          contentContainerStyle={styles.scrollContent}
+          scrollEnabled={isScrollEnabled}
+          onScroll={handleScroll}
+          scrollEventThrottle={16} // Optimizare pentru performanță - 60fps
+        >
           <TaskFilter
             currentFilter={currentFilter}
             onFilterChange={setCurrentFilter}
@@ -186,6 +309,11 @@ const TaskManagementScreen: React.FC = () => {
                 onToggleTask={toggleTask}
                 onDeleteTask={deleteTask}
                 onUpdateTask={(taskId, updates) => updateTask(taskId, updates as Partial<Omit<Task, 'id' | 'userId'>>)}
+                dropZones={dropZones}
+                onDropInZone={handleMoveTask}
+                registerDropZone={registerDropZone}
+                onDragStart={handleDragStart}
+                onDragEnd={handleDragEnd}
               />
           ))}
 

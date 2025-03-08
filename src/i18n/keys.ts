@@ -394,72 +394,12 @@ export const TASK_MANAGEMENT_TRANSLATIONS = {
     ALL: 'taskManagement.filters.all',
     ACTIVE: 'taskManagement.filters.active',
     COMPLETED: 'taskManagement.filters.completed',
+    MORNING: 'taskManagement.filters.morning',
+    AFTERNOON: 'taskManagement.filters.afternoon',
+    EVENING: 'taskManagement.filters.evening',
     PRIORITY: 'taskManagement.filters.priority',
-    COMPLETED_TASKS: 'taskManagement.filters.completedTasks',
-  },
-  BUTTONS: {
-    ADD_TASK: 'taskManagement.buttons.addTask',
-    DELETE_TASK: 'taskManagement.buttons.deleteTask',
-    ADD_PRIORITY: 'taskManagement.buttons.addPriority',
-    REMOVE_PRIORITY: 'taskManagement.buttons.removePriority',
-  },
-  LABELS: {
-    UNTITLED_TASK: 'taskManagement.labels.untitledTask',
-    EDIT_TASK: 'taskManagement.labels.editTask',
-  },
-  ALERTS: {
-    SOFT_LIMIT: {
-      TITLE: 'taskManagement.alerts.softLimit.title',
-      MESSAGE: 'taskManagement.alerts.softLimit.message',
-      CONFIRM: 'taskManagement.alerts.softLimit.confirm',
-      CANCEL: 'taskManagement.alerts.softLimit.cancel',
-    },
-    POSTPONE: {
-      SUCCESS: 'taskManagement.alerts.postpone.success',
-      MESSAGE: 'taskManagement.alerts.postpone.message',
-      TITLE: 'taskManagement.alerts.postpone.title',
-    },
-  },
-  ACTIONS: {
-    POSTPONE: 'taskManagement.actions.postpone',
-  },
-  POSTPONE: {
-    LATER_TODAY: 'taskManagement.postpone.laterToday',
-    TOMORROW: 'taskManagement.postpone.tomorrow',
-    WEEKEND: 'taskManagement.postpone.weekend',
-    NEXT_WEEK: 'taskManagement.postpone.nextWeek',
-    CUSTOM: 'taskManagement.postpone.custom',
-  },
-  ERRORS: {
-    NOT_AUTHENTICATED: 'taskManagement.errors.notAuthenticated',
-    ADD_TASK: 'taskManagement.errors.addTask',
-  },
-  FILTER: {
-    ACCESSIBILITY: {
-      FILTER_BUTTON: 'taskFilter.accessibility.filterButton',
-      FILTER_OPTIONS: 'taskFilter.accessibility.filterOptions',
-      SELECTED_FILTER: 'taskFilter.accessibility.selectedFilter',
-    },
-    OPTIONS: {
-      ALL: 'taskFilter.options.all',
-      ACTIVE: 'taskFilter.options.active',
-      COMPLETED: 'taskFilter.options.completed',
-      PRIORITY: 'taskFilter.options.priority',
-    },
-  },
-  PERIODS: {
-    MORNING: {
-      TITLE: 'taskManagement.periods.morning.title',
-      DESCRIPTION: 'taskManagement.periods.morning.description',
-    },
-    AFTERNOON: {
-      TITLE: 'taskManagement.periods.afternoon.title',
-      DESCRIPTION: 'taskManagement.periods.afternoon.description',
-    },
-    EVENING: {
-      TITLE: 'taskManagement.periods.evening.title',
-      DESCRIPTION: 'taskManagement.periods.evening.description',
-    },
+    DUE_DATE: 'taskManagement.filters.dueDate',
+    COMPLETED_TASKS: 'taskManagement.filters.completedTasks'
   },
   QUICK_OPTIONS: {
     REMINDER: {
@@ -474,12 +414,71 @@ export const TASK_MANAGEMENT_TRANSLATIONS = {
       MONTHLY: 'taskManagement.quickOptions.repeat.monthly'
     }
   },
-  TAGS: {
-    QUICK_WIN: 'taskManagement.tags.quickWin',
-    IMPORTANT: 'taskManagement.tags.important',
-    URGENT: 'taskManagement.tags.urgent',
-    LATER: 'taskManagement.tags.later'
+  PERIODS: {
+    MORNING: {
+      TITLE: 'taskManagement.periods.morning.title',
+      DESCRIPTION: 'taskManagement.periods.morning.description'
+    },
+    AFTERNOON: {
+      TITLE: 'taskManagement.periods.afternoon.title',
+      DESCRIPTION: 'taskManagement.periods.afternoon.description'
+    },
+    EVENING: {
+      TITLE: 'taskManagement.periods.evening.title',
+      DESCRIPTION: 'taskManagement.periods.evening.description'
+    },
+    COMPLETED: {
+      TITLE: 'taskManagement.periods.completed.title',
+      DESCRIPTION: 'taskManagement.periods.completed.description'
+    }
   },
+  LABELS: {
+    NO_TASKS: 'taskManagement.labels.noTasks',
+    NO_TASKS_FOR_PERIOD: 'taskManagement.labels.noTasksForPeriod',
+    NO_TASKS_MATCHING_FILTER: 'taskManagement.labels.noTasksMatchingFilter',
+    ADD_TASK: 'taskManagement.labels.addTask',
+    DUE_DATE: 'taskManagement.labels.dueDate',
+    NO_DUE_DATE: 'taskManagement.labels.noDueDate',
+    COMPLETED_AT: 'taskManagement.labels.completedAt',
+    TASK_TITLE_PLACEHOLDER: 'taskManagement.labels.taskTitlePlaceholder',
+    PRIORITY: 'taskManagement.labels.priority',
+    DRAG_TASK_INSTRUCTIONS: 'taskManagement.labels.dragTaskInstructions'
+  },
+  BUTTONS: {
+    ADD_TASK: 'taskManagement.buttons.addTask',
+    EDIT_TASK: 'taskManagement.buttons.editTask',
+    DELETE_TASK: 'taskManagement.buttons.deleteTask',
+    SET_PRIORITY: 'taskManagement.buttons.setPriority',
+    SET_DATE: 'taskManagement.buttons.setDate',
+    EXPAND_SECTION: 'taskManagement.buttons.expandSection',
+    COLLAPSE_SECTION: 'taskManagement.buttons.collapseSection',
+    COMPLETE_TASK: 'taskManagement.buttons.completeTask',
+    UNCOMPLETE_TASK: 'taskManagement.buttons.uncompleteTask',
+    POSTPONE_TASK: 'taskManagement.buttons.postponeTask'
+  },
+  ACCESSIBILITY: {
+    EXPAND_HINT: 'taskManagement.accessibility.expandHint',
+    COLLAPSE_HINT: 'taskManagement.accessibility.collapseHint',
+    TASK_ITEM: 'taskManagement.accessibility.taskItem',
+    TASK_COMPLETED: 'taskManagement.accessibility.taskCompleted',
+    TASK_DUE_DATE: 'taskManagement.accessibility.taskDueDate',
+    DELETE_TASK: 'taskManagement.accessibility.deleteTask',
+    EDIT_TASK: 'taskManagement.accessibility.editTask',
+    DRAG_TASK: 'taskManagement.accessibility.dragTask',
+    DRAGGABLE_TASK: 'taskManagement.accessibility.draggableTask',
+    DRAG_HINT: 'taskManagement.accessibility.dragHint',
+    DROP_SUCCESS: 'taskManagement.accessibility.dropSuccess'
+  },
+  ERRORS: {
+    FETCH_TASKS: 'taskManagement.errors.fetchTasks',
+    ADD_TASK: 'taskManagement.errors.addTask',
+    UPDATE_TASK: 'taskManagement.errors.updateTask',
+    DELETE_TASK: 'taskManagement.errors.deleteTask',
+    TOGGLE_TASK: 'taskManagement.errors.toggleTask'
+  },
+  SUCCESS: {
+    TASK_MOVED: 'taskManagement.success.taskMoved'
+  }
 } as const;
 
 /**

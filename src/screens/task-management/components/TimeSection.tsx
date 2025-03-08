@@ -1,12 +1,29 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, LayoutAnimation, Platform, UIManager } from 'react-native';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, LayoutAnimation, Platform, UIManager, findNodeHandle } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import TaskItem from './TaskItem';
+import TaskDraggable from './TaskDraggable';
 import { MaterialIcons } from '@expo/vector-icons';
 import { ACCESSIBILITY } from '../../../constants/accessibility';
 import type { Task } from '../../../services/taskService';
-import type { TimePeriod } from '../../../constants/taskTypes';
+import type { TimePeriod, TimePeriodKey } from '../../../constants/taskTypes';
 import { getDayTimeColors } from '../../../utils/daytime';
+
+// Stiluri pentru efectul de highlight pentru zonele de drop
+const dropZoneHighlightStyles = StyleSheet.create({
+  highlight: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    borderWidth: 2,
+    borderRadius: 12,
+    borderStyle: 'dashed',
+    backgroundColor: 'rgba(76, 175, 80, 0.1)',  // Accent color cu opacitate scăzută
+    zIndex: 1,
+  }
+});
 
 // Activăm LayoutAnimation pentru Android - Necesar pentru ca animațiile să funcționeze pe Android
 // IMPACT: Dacă este eliminat, animațiile nu vor funcționa pe Android, dar vor funcționa în continuare pe iOS
@@ -26,6 +43,11 @@ interface TimeSectionProps {
   onToggleTask: (taskId: string) => void;             // Handler pentru schimbarea stării de finalizare a unei sarcini
   onDeleteTask: (taskId: string) => void;             // Handler pentru ștergerea unei sarcini
   onUpdateTask: (taskId: string, updates: Partial<Task>) => void;  // Handler pentru actualizarea unei sarcini
+  dropZones?: Array<{periodId: TimePeriodKey, layout: {x: number, y: number, width: number, height: number}}>;  // Zonele disponibile pentru drag and drop
+  onDropInZone?: (taskId: string, newPeriodId: TimePeriodKey) => void;  // Handler pentru mutarea unei sarcini în altă perioadă
+  registerDropZone?: (periodId: TimePeriodKey, layout: { x: number, y: number, width: number, height: number }) => void; // Înregistrează zona în care pot fi plasate sarcinile trase
+  onDragStart?: () => void;  // Handler pentru începerea operațiunii de drag
+  onDragEnd?: () => void;    // Handler pentru terminarea operațiunii de drag
 }
 
 /**
@@ -42,12 +64,33 @@ const TimeSection: React.FC<TimeSectionProps> = ({
   onToggleTask,
   onDeleteTask,
   onUpdateTask,
+  dropZones = [],
+  onDropInZone,
+  registerDropZone,
+  onDragStart,
+  onDragEnd
 }) => {
   const { t } = useTranslation(); // Inițializarea hook-ului de traducere pentru internaționalizare
   
   // Stare pentru a urmări dacă secțiunea este expandată sau restrânsă
   // IMPACT: Valoarea implicită controlează dacă secțiunile sunt deschise sau închise la randarea inițială
   const [isExpanded, setIsExpanded] = useState(true);
+  
+  // Referință pentru a măsura poziția secțiunii pentru drag and drop
+  const sectionRef = useRef<View>(null);
+  
+  // Înregistrăm zona de drop pentru această perioadă când componenta este montată
+  useEffect(() => {
+    if (registerDropZone && sectionRef.current && isExpanded) {
+      // Măsurăm poziția și dimensiunile secțiunii pentru a ști unde să permitem plasarea sarcinilor
+      const nodeHandle = findNodeHandle(sectionRef.current);
+      if (nodeHandle) {
+        sectionRef.current.measureInWindow((x, y, width, height) => {
+          registerDropZone(period.id, { x, y, width, height });
+        });
+      }
+    }
+  }, [period.id, registerDropZone, isExpanded]);
   
   // Obținem culorile specifice acestei perioade de timp
   const periodColors = getPeriodColors();
@@ -142,9 +185,31 @@ const TimeSection: React.FC<TimeSectionProps> = ({
     }
   };
 
+  // Stare pentru a urmări dacă această secțiune este o zonă de drop activă
+  const [isActiveDropZone, setIsActiveDropZone] = useState(false);
+
+  // Handler pentru evenimente de drag
+  const handleDragStart = useCallback(() => {
+    if (onDragStart) onDragStart();
+  }, [onDragStart]);
+
+  const handleDragEnd = useCallback(() => {
+    // Resetăm starea de drop zone activă
+    setIsActiveDropZone(false);
+    if (onDragEnd) onDragEnd();
+  }, [onDragEnd]);
+
+  // Handler pentru când un task este tras deasupra acestei secțiuni
+  const handleDragOver = useCallback((periodId: string, isOver: boolean) => {
+    // Verificăm dacă această secțiune este cea peste care se face drag
+    if (periodId === period.id) {
+      setIsActiveDropZone(isOver);
+    }
+  }, [period.id]);
+
   // Începe randarea componentei
   return (
-    <View style={styles.container}>
+    <View style={styles.container} ref={sectionRef}>
       {/* Spațiu între categorii */}
       <View style={styles.categorySpacing} />
       
@@ -156,7 +221,7 @@ const TimeSection: React.FC<TimeSectionProps> = ({
       
       {/* Containerul principal cu bordură colorată
           IMPACT: Utilizează culorile specifice perioadei pentru bordură */}
-      <View style={[styles.sectionContainer, { borderLeftColor: periodColors.BORDER }]}>
+      <View style={[styles.sectionContainer, { borderLeftColor: periodColors.BORDER }, isActiveDropZone && dropZoneHighlightStyles.highlight]}>
         {/* Header-ul secțiunii - este mereu vizibil
             IMPACT: Acest TouchableOpacity controlează expandarea/restrângerea întregii secțiuni */}
         <TouchableOpacity
@@ -169,7 +234,7 @@ const TimeSection: React.FC<TimeSectionProps> = ({
           }
           accessibilityHint={isExpanded ? 
             t('taskManagement.accessibility.collapseHint') : 
-            t('taskManagement.accessibility.expandHint')
+            t('taskManagement.accessibility.expandHintText')
           }
         >
           <View style={[
@@ -237,19 +302,39 @@ const TimeSection: React.FC<TimeSectionProps> = ({
                 IMPACT: Condiția determină dacă se afișează lista de sarcini sau mesajul "nicio sarcină" */}
             {activeTasks.length > 0 ? (
               <View style={styles.taskList}>
-                {/* Mapează fiecare sarcină la o componentă TaskItem 
+                {/* Mapează fiecare sarcină la o componentă TaskItem cu TaskDraggable
                     IMPACT: Randează lista dinamică de sarcini cu handleri specifici */}
                 {activeTasks.map((task) => (
                   <View key={task.id} style={[
                     styles.taskItemWrapper,
                     period.id === 'COMPLETED' && styles.completedTaskItemWrapper
                   ]}>
-                    <TaskItem
-                      task={task}
-                      onToggle={() => handleToggleTask(task.id)}
-                      onDelete={() => onDeleteTask(task.id)}
-                      onUpdate={(updates: Partial<Task>) => onUpdateTask(task.id, updates)}
-                    />
+                    {period.id !== 'COMPLETED' && onDropInZone && dropZones ? (
+                      // Aplicăm TaskDraggable doar pentru sarcinile care nu sunt completate
+                      <TaskDraggable 
+                        task={task}
+                        dropZones={dropZones}
+                        onDropInZone={onDropInZone}
+                        onDragStart={handleDragStart}
+                        onDragEnd={handleDragEnd}
+                        onDragOver={handleDragOver}
+                      >
+                        <TaskItem
+                          task={task}
+                          onToggle={() => handleToggleTask(task.id)}
+                          onDelete={() => onDeleteTask(task.id)}
+                          onUpdate={(updates: Partial<Task>) => onUpdateTask(task.id, updates)}
+                        />
+                      </TaskDraggable>
+                    ) : (
+                      // Pentru sarcinile completate, nu aplicăm funcționalitatea de drag and drop
+                      <TaskItem
+                        task={task}
+                        onToggle={() => handleToggleTask(task.id)}
+                        onDelete={() => onDeleteTask(task.id)}
+                        onUpdate={(updates: Partial<Task>) => onUpdateTask(task.id, updates)}
+                      />
+                    )}
                   </View>
                 ))}
               </View>
