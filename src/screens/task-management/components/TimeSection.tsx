@@ -37,15 +37,16 @@ if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental
  * IMPACT: Adăugarea de proprietăți opționale nu va strica codul existent, dar necesită gestionare adecvată
  */
 interface TimeSectionProps {
-  period: TimePeriod;                                 // Datele perioadei de timp (dimineață, după-amiază, seară)
-  tasks: Task[];                                      // Lista de sarcini pentru această perioadă de timp
-  onAddTask: () => void;                              // Handler pentru adăugarea unei noi sarcini
-  onToggleTask: (taskId: string) => void;             // Handler pentru schimbarea stării de finalizare a unei sarcini
-  onDeleteTask: (taskId: string) => void;             // Handler pentru ștergerea unei sarcini
+  period: TimePeriod;          // Perioada de timp (dimineață, după-amiază, seară)
+  tasks: Task[];               // Lista de sarcini pentru această perioadă
+  onAddTask: () => void;        // Handler pentru adăugarea unei noi sarcini
+  onToggleTask: (taskId: string) => void;  // Handler pentru schimbarea stării de finalizare a unei sarcini
+  onDeleteTask: (taskId: string) => void;  // Handler pentru ștergerea unei sarcini
   onUpdateTask: (taskId: string, updates: Partial<Task>) => void;  // Handler pentru actualizarea unei sarcini
   dropZones?: Array<{periodId: TimePeriodKey, layout: {x: number, y: number, width: number, height: number}}>;  // Zonele disponibile pentru drag and drop
-  onDropInZone?: (taskId: string, newPeriodId: TimePeriodKey) => void;  // Handler pentru mutarea unei sarcini în altă perioadă
+  onDropTask?: (taskId: string, newPeriodId: TimePeriodKey) => void;  // Handler pentru mutarea unei sarcini în altă perioadă
   registerDropZone?: (periodId: TimePeriodKey, layout: { x: number, y: number, width: number, height: number }) => void; // Înregistrează zona în care pot fi plasate sarcinile trase
+  unregisterDropZone?: (periodId: TimePeriodKey) => void; // Deînregistrează zona de drop
   onDragStart?: () => void;  // Handler pentru începerea operațiunii de drag
   onDragEnd?: () => void;    // Handler pentru terminarea operațiunii de drag
 }
@@ -65,8 +66,9 @@ const TimeSection: React.FC<TimeSectionProps> = ({
   onDeleteTask,
   onUpdateTask,
   dropZones = [],
-  onDropInZone,
+  onDropTask,
   registerDropZone,
+  unregisterDropZone,
   onDragStart,
   onDragEnd
 }) => {
@@ -76,21 +78,55 @@ const TimeSection: React.FC<TimeSectionProps> = ({
   // IMPACT: Valoarea implicită controlează dacă secțiunile sunt deschise sau închise la randarea inițială
   const [isExpanded, setIsExpanded] = useState(true);
   
-  // Referință pentru a măsura poziția secțiunii pentru drag and drop
+  // Referință pentru a măsura poziția secțiunii
   const sectionRef = useRef<View>(null);
   
-  // Înregistrăm zona de drop pentru această perioadă când componenta este montată
-  useEffect(() => {
+  // Stare pentru a urmări dacă această secțiune este o zonă de drop activă
+  const [isActiveDropZone, setIsActiveDropZone] = useState(false);
+  
+  // Stare pentru a urmări dacă este în curs de drag
+  const [isDragOver, setIsDragOver] = useState(false);
+  
+  // Funcție pentru măsurarea și înregistrarea zonei de drop
+  const measureAndRegisterDropZone = useCallback(() => {
     if (registerDropZone && sectionRef.current && isExpanded) {
-      // Măsurăm poziția și dimensiunile secțiunii pentru a ști unde să permitem plasarea sarcinilor
-      const nodeHandle = findNodeHandle(sectionRef.current);
-      if (nodeHandle) {
-        sectionRef.current.measureInWindow((x, y, width, height) => {
+      // Ensure we're using the correct method for measurement
+      sectionRef.current.measure((x, y, width, height) => {
+        // Only register if we have valid measurements
+        if (width > 0 && height > 0) {
           registerDropZone(period.id, { x, y, width, height });
-        });
-      }
+          // Log for debugging
+          console.log(`Registered drop zone for ${period.id}:`, { x, y, width, height });
+        }
+      });
     }
   }, [period.id, registerDropZone, isExpanded]);
+
+  // Măsurăm și înregistrăm zona de drop la montare și când se modifică expandarea
+  useEffect(() => {
+    // Adăugăm un delay pentru a permite randarea completă
+    const timer = setTimeout(() => {
+      measureAndRegisterDropZone();
+    }, 300);
+    
+    // Adăugăm un interval pentru a asigura că zona este măsurată periodic
+    // Acest lucru ajută la rezolvarea problemelor de timing
+    const intervalId = setInterval(() => {
+      if (isExpanded) {
+        measureAndRegisterDropZone();
+      }
+    }, 2000);
+    
+    // Curățăm zona de drop la demontare
+    return () => {
+      clearTimeout(timer);
+      clearInterval(intervalId);
+      // Dacă există o funcție de deînregistrare, o apelăm
+      if (unregisterDropZone) {
+        unregisterDropZone(period.id);
+      }
+    };
+  }, [isExpanded, period.id, unregisterDropZone, measureAndRegisterDropZone]); // Adăugăm measureAndRegisterDropZone ca dependență
   
   // Obținem culorile specifice acestei perioade de timp
   const periodColors = getPeriodColors();
@@ -185,25 +221,24 @@ const TimeSection: React.FC<TimeSectionProps> = ({
     }
   };
 
-  // Stare pentru a urmări dacă această secțiune este o zonă de drop activă
-  const [isActiveDropZone, setIsActiveDropZone] = useState(false);
-
   // Handler pentru evenimente de drag
   const handleDragStart = useCallback(() => {
     if (onDragStart) onDragStart();
   }, [onDragStart]);
 
   const handleDragEnd = useCallback(() => {
-    // Resetăm starea de drop zone activă
-    setIsActiveDropZone(false);
+    setIsDragOver(false);
     if (onDragEnd) onDragEnd();
   }, [onDragEnd]);
 
-  // Handler pentru când un task este tras deasupra acestei secțiuni
+  /**
+   * Gestionează evenimentele de drag-over pentru această secțiune
+   * @param periodId ID-ul perioadei peste care se face drag
+   * @param isOver Dacă task-ul este deasupra acestei zone
+   */
   const handleDragOver = useCallback((periodId: string, isOver: boolean) => {
-    // Verificăm dacă această secțiune este cea peste care se face drag
     if (periodId === period.id) {
-      setIsActiveDropZone(isOver);
+      setIsDragOver(isOver);
     }
   }, [period.id]);
 
@@ -221,7 +256,7 @@ const TimeSection: React.FC<TimeSectionProps> = ({
       
       {/* Containerul principal cu bordură colorată
           IMPACT: Utilizează culorile specifice perioadei pentru bordură */}
-      <View style={[styles.sectionContainer, { borderLeftColor: periodColors.BORDER }, isActiveDropZone && dropZoneHighlightStyles.highlight]}>
+      <View style={[styles.sectionContainer, { borderLeftColor: periodColors.BORDER }, isDragOver && dropZoneHighlightStyles.highlight]}>
         {/* Header-ul secțiunii - este mereu vizibil
             IMPACT: Acest TouchableOpacity controlează expandarea/restrângerea întregii secțiuni */}
         <TouchableOpacity
@@ -309,23 +344,16 @@ const TimeSection: React.FC<TimeSectionProps> = ({
                     styles.taskItemWrapper,
                     period.id === 'COMPLETED' && styles.completedTaskItemWrapper
                   ]}>
-                    {period.id !== 'COMPLETED' && onDropInZone && dropZones ? (
+                    {period.id !== 'COMPLETED' && onDropTask && dropZones ? (
                       // Aplicăm TaskDraggable doar pentru sarcinile care nu sunt completate
                       <TaskDraggable 
                         task={task}
                         dropZones={dropZones}
-                        onDropInZone={onDropInZone}
+                        onDropTask={onDropTask}
                         onDragStart={handleDragStart}
                         onDragEnd={handleDragEnd}
                         onDragOver={handleDragOver}
-                      >
-                        <TaskItem
-                          task={task}
-                          onToggle={() => handleToggleTask(task.id)}
-                          onDelete={() => onDeleteTask(task.id)}
-                          onUpdate={(updates: Partial<Task>) => onUpdateTask(task.id, updates)}
-                        />
-                      </TaskDraggable>
+                      />
                     ) : (
                       // Pentru sarcinile completate, nu aplicăm funcționalitatea de drag and drop
                       <TaskItem

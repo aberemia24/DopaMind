@@ -57,6 +57,7 @@
         }
       ]
     ],
+    "newArchEnabled": true,
     "extra": {
       "eas": {
         "projectId": "d25c7299-7ca0-476b-8c1a-19cf32aed1d1"

@@ -51,6 +51,12 @@ const TaskManagementScreen: React.FC = () => {
   // Referință la ScrollView pentru a controla scrollarea
   const scrollViewRef = useRef<ScrollView>(null);
 
+  // Timeout pentru debounce
+  const scrollDebounceTimeout = useRef<NodeJS.Timeout | null>(null);
+
+  // Stocăm offset-ul curent al ScrollView
+  const [scrollOffset, setScrollOffset] = useState(0);
+
   // Monitorizăm starea de autentificare 
   useEffect(() => {
     if (!isAuthenticated && isLoggingOut) {
@@ -63,6 +69,7 @@ const TaskManagementScreen: React.FC = () => {
     // pentru a se asigura că zonele de drop sunt mereu actualizate
     const updateDropZones = () => {
       // Forțăm măsurarea din nou a tuturor secțiunilor
+      console.log("Forțăm actualizarea zonelor de drop");
       setDropZones([]); // Resetăm zonele pentru a forța reînregistrarea
     };
     
@@ -181,22 +188,56 @@ const TaskManagementScreen: React.FC = () => {
   };
 
   /**
-   * Înregistrează o zonă de drop pentru o perioadă
-   * Este folosită de componenta TimeSection pentru a comunica poziția sa
+   * Înregistrează o zonă de drop pentru a permite plasarea task-urilor
+   * @param periodId ID-ul perioadei care va fi înregistrată ca zonă de drop
+   * @param layout Dimensiunile și poziția zonei de drop
    */
   const registerDropZone = useCallback((periodId: TimePeriodKey, layout: { x: number, y: number, width: number, height: number }) => {
+    console.log(`Registering drop zone for ${periodId}:`, layout);
+    
+    // Adăugăm o validare suplimentară pentru a ne asigura că valorile sunt valide
+    if (layout.width <= 0 || layout.height <= 0) {
+      console.log(`Invalid layout for ${periodId}, skipping registration`);
+      return;
+    }
+    
+    // Ajustăm coordonatele pentru a ține cont de scroll
+    // Folosim scrollOffset pentru a ajusta coordonatele y
+    const adjustedLayout = {
+      ...layout,
+      y: layout.y + scrollOffset
+    };
+    
+    console.log(`Adjusted layout for ${periodId}:`, adjustedLayout);
+    console.log(`Current scroll offset: ${scrollOffset}`);
+    
+    // Înregistrăm zona de drop
     setDropZones(prev => {
-      // Eliminăm zona existentă pentru această perioadă dacă există
-      const filtered = prev.filter(zone => zone.periodId !== periodId);
-      // Adăugăm noua zonă
-      return [...filtered, { periodId, layout }];
+      // Verificăm dacă zona este deja înregistrată pentru a evita duplicatele
+      const existingZoneIndex = prev.findIndex(zone => zone.periodId === periodId);
+      
+      if (existingZoneIndex !== -1) {
+        // Actualizăm zona existentă
+        const updatedZones = [...prev];
+        updatedZones[existingZoneIndex] = { periodId, layout: adjustedLayout };
+        console.log(`Registered drop zone for ${periodId}:`, adjustedLayout);
+        return updatedZones;
+      } else {
+        // Adăugăm o zonă nouă
+        console.log(`Registered drop zone for ${periodId}:`, adjustedLayout);
+        return [...prev, { periodId, layout: adjustedLayout }];
+      }
     });
+  }, [scrollOffset]);
+  
+  /**
+   * Deînregistrează o zonă de drop
+   * @param periodId ID-ul perioadei care va fi deînregistrată
+   */
+  const unregisterDropZone = useCallback((periodId: TimePeriodKey) => {
+    setDropZones(prev => prev.filter(zone => zone.periodId !== periodId));
   }, []);
 
-  /**
-   * Gestionează mutarea unui task de la o perioadă la alta
-   * Această funcție este pasată componentei TaskDraggable prin intermediul TimeSection
-   */
   const handleMoveTask = useCallback(async (taskId: string, toPeriodId: TimePeriodKey) => {
     try {
       const taskToMove = [...tasks.MORNING, ...tasks.AFTERNOON, ...tasks.EVENING]
@@ -204,26 +245,28 @@ const TaskManagementScreen: React.FC = () => {
       
       if (!taskToMove) return;
       
-      // Verificăm dacă nu este deja în perioada destinație
-      if (taskToMove.period === toPeriodId) return;
+      // Chiar dacă task-ul este deja în aceeași perioadă, permitem mutarea
+      // pentru a implementa reordonarea în viitor
       
-      // Actualizăm task-ul cu noua perioadă
+      // Actualizăm task-ul cu noua perioadă și un timestamp actualizat
       await updateTask(taskId, { 
         period: toPeriodId,
         updatedAt: Date.now()
       });
       
-      // Afișăm un mesaj de succes
-      const periodName = t(TIME_PERIODS[toPeriodId].titleKey);
-      
-      if (Platform.OS === 'android') {
-        ToastAndroid.show(
-          t('taskManagement.success.taskMoved', { period: periodName.toLowerCase() }),
-          ToastAndroid.SHORT
-        );
-      } else {
-        // Pentru iOS am putea folosi o bibliotecă de notificări sau un alert
-        // Dar pentru simplitate, nu afișăm nimic momentan
+      // Afișăm un mesaj de succes doar dacă perioada s-a schimbat
+      if (taskToMove.period !== toPeriodId) {
+        const periodName = t(TIME_PERIODS[toPeriodId].titleKey);
+        
+        if (Platform.OS === 'android') {
+          ToastAndroid.show(
+            t('taskManagement.success.taskMoved', { period: periodName.toLowerCase() }),
+            ToastAndroid.SHORT
+          );
+        } else {
+          // Pentru iOS am putea folosi o bibliotecă de notificări sau un alert
+          // Dar pentru simplitate, nu afișăm nimic momentan
+        }
       }
     } catch (error) {
       console.error('Failed to move task:', error);
@@ -234,31 +277,49 @@ const TaskManagementScreen: React.FC = () => {
     }
   }, [tasks, updateTask, t]);
 
-  /**
-   * Gestionează începerea operațiunii de drag
-   * Dezactivează scrollarea pentru a preveni conflictele cu gesturile de drag
-   */
   const handleDragStart = useCallback(() => {
     setIsScrollEnabled(false);
+    
+    // Măsurăm din nou zonele de drop pentru a ne asigura că sunt actualizate
+    if (scrollViewRef.current) {
+      // Folosim un cast pentru a accesa proprietatea contentOffset
+      const scrollView = scrollViewRef.current as any;
+      const currentOffset = scrollView._scrollView?.contentOffset?.y || 0;
+      setScrollOffset(currentOffset);
+    }
   }, []);
 
-  /**
-   * Gestionează terminarea operațiunii de drag
-   * Reactivează scrollarea
-   */
   const handleDragEnd = useCallback(() => {
-    setIsScrollEnabled(true);
+    // Adăugăm un mic delay pentru a evita scrollarea accidentală imediat după drop
+    setTimeout(() => {
+      setIsScrollEnabled(true);
+    }, 100);
   }, []);
 
   /**
    * Handler pentru ScrollView pentru a preveni conflictele între scroll și drag
    * Această funcție ajută la o experiență de utilizare mai fluidă
    */
-  const handleScroll = useCallback(() => {
-    // Resetăm zonele de drop pentru a le actualiza la următoarea măsurare
-    // Acest lucru asigură că zonele de drop sunt mereu sincronizate cu poziția reală
-    setDropZones([]);
-  }, []);
+  const handleScroll = useCallback((event: { nativeEvent: { contentOffset: { y: number } } }) => {
+    // Actualizăm offset-ul de scroll
+    const newOffset = event.nativeEvent.contentOffset.y;
+    setScrollOffset(newOffset);
+    console.log(`Scroll offset updated: ${newOffset}`);
+    
+    // Actualizăm zonele de drop doar dacă nu este în curs o operațiune de drag
+    if (isScrollEnabled) {
+      // Folosim un debounce pentru a nu actualiza prea des
+      if (scrollDebounceTimeout.current) {
+        clearTimeout(scrollDebounceTimeout.current);
+      }
+      
+      scrollDebounceTimeout.current = setTimeout(() => {
+        // Resetăm zonele de drop pentru a forța reînregistrarea
+        console.log("Resetăm zonele de drop după scroll");
+        setDropZones([]);
+      }, 150); // Debounce de 150ms
+    }
+  }, [isScrollEnabled]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -310,8 +371,9 @@ const TaskManagementScreen: React.FC = () => {
                 onDeleteTask={deleteTask}
                 onUpdateTask={(taskId, updates) => updateTask(taskId, updates as Partial<Omit<Task, 'id' | 'userId'>>)}
                 dropZones={dropZones}
-                onDropInZone={handleMoveTask}
+                onDropTask={handleMoveTask}
                 registerDropZone={registerDropZone}
+                unregisterDropZone={unregisterDropZone}
                 onDragStart={handleDragStart}
                 onDragEnd={handleDragEnd}
               />

@@ -8,6 +8,7 @@ import { GlobalErrorBoundary } from './src/core/error/ErrorBoundary';
 import { TaskProvider } from './src/contexts/TaskContext';
 import { AuthProvider } from './src/contexts/auth';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import 'react-native-reanimated';
 import './src/i18n';  // Import i18n configuration
 
 export default function App() {

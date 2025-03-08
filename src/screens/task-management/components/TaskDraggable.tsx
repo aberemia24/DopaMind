@@ -1,23 +1,21 @@
-import React, { useRef, useState, useEffect } from 'react';
-import { 
-  View, 
-  PanResponder, 
-  Animated, 
-  StyleSheet, 
-  Vibration, 
-  Dimensions,
-  LayoutChangeEvent,
-  AccessibilityInfo,
-  findNodeHandle
-} from 'react-native';
+import React, { useEffect, useState, useRef } from 'react';
+import { View, StyleSheet, Vibration, AccessibilityInfo, Platform } from 'react-native';
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+import Animated, { 
+  useSharedValue,
+  useAnimatedStyle,
+  withSpring,
+  withTiming,
+  runOnJS
+} from 'react-native-reanimated';
 import { Task } from '../../../services/taskService';
 import { TimePeriodKey } from '../../../constants/taskTypes';
-import { ACCESSIBILITY } from '../../../constants/accessibility';
+import TaskItem from './TaskItem';
 import { useTranslation } from 'react-i18next';
+import { ACCESSIBILITY } from '../../../constants/accessibility';
 
 /**
- * Interfața pentru drop zones - reprezintă zonele unde se poate plasa un task
- * IMPACT: Definește structura de date necesară pentru a identifica zonele de drop
+ * Interfața pentru zonele de drop
  */
 interface DropZone {
   periodId: TimePeriodKey;
@@ -31,59 +29,66 @@ interface DropZone {
 
 /**
  * Interfața Props pentru componenta TaskDraggable
- * IMPACT: Modificarea proprietăților obligatorii va necesita actualizări în toate utilizările componentei
  */
 interface TaskDraggableProps {
-  task: Task;                     // Task-ul curent
-  children: React.ReactNode;      // Componenta copil (TaskItem) care va fi înfășurată
-  dropZones: DropZone[];          // Zonele disponibile pentru drop
+  task: Task;                     // Sarcina curentă
+  dropZones: Array<DropZone>;     // Zonele de drop disponibile
+  onDropTask: (taskId: string, newPeriodId: TimePeriodKey) => void; // Handler pentru drop reușit
   onDragStart?: () => void;       // Handler apelat când începe operațiunea de drag
-  onDragEnd?: () => void;         // Handler apelat când se termină operațiunea de drag (anulare)
-  onDropInZone: (taskId: string, newPeriodId: TimePeriodKey) => void; // Handler pentru drop reușit
-  onDragOver?: (taskId: string, isOver: boolean) => void; // Handler pentru când task-ul este tras deasupra unei zone
+  onDragEnd?: () => void;         // Handler apelat când se termină operațiunea de drag
+  onDragOver?: (periodId: string, isOver: boolean) => void; // Handler pentru când sarcina este trasă peste o zonă
 }
 
 /**
  * Componenta TaskDraggable
- * Adaugă funcționalitatea de drag and drop unui task existent
- * 
- * IMPACT: Aceasta este o componentă wrapper care nu modifică funcționalitățile existente ale TaskItem
+ * Permite utilizatorului să tragă o sarcină între diferite perioade de timp
  */
 const TaskDraggable: React.FC<TaskDraggableProps> = ({
   task,
-  children,
   dropZones,
+  onDropTask,
   onDragStart,
   onDragEnd,
-  onDropInZone,
   onDragOver
 }) => {
   const { t } = useTranslation();
   
-  // Referințe pentru animație și poziție
-  const viewRef = useRef<View>(null);
-  const pan = useRef(new Animated.ValueXY()).current;
-  const scale = useRef(new Animated.Value(1)).current;
-  const opacity = useRef(new Animated.Value(1)).current;
+  // Determină dacă funcțiile de accesibilitate sunt activate
+  const [isAccessibilityEnabled, setIsAccessibilityEnabled] = useState(false);
   
-  // Stări pentru tracking-ul operațiunii de drag
+  // Inițializăm starea și referințele
   const [isDragging, setIsDragging] = useState(false);
   const [initialPosition, setInitialPosition] = useState({ x: 0, y: 0 });
   const [taskLayout, setTaskLayout] = useState({ width: 0, height: 0 });
-  const longPressTimeout = useRef<NodeJS.Timeout | null>(null);
+  const viewRef = useRef<View>(null);
   
-  // Determin dacă utilizatorul are activate caracteristici de accesibilitate
-  const [isAccessibilityEnabled, setIsAccessibilityEnabled] = useState(false);
+  // Variabile pentru animații
+  const translateX = useSharedValue(0);
+  const translateY = useSharedValue(0);
+  const opacity = useSharedValue(1);
+  const scale = useSharedValue(1);
   
+  // Stilul animat pentru task
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        { translateX: translateX.value },
+        { translateY: translateY.value },
+        { scale: scale.value }
+      ],
+      opacity: opacity.value,
+      zIndex: isDragging ? 1000 : 1,
+    };
+  });
+  
+  // Verifică funcțiile de accesibilitate
   useEffect(() => {
-    // Verifică dacă screen reader-ul este activ
     AccessibilityInfo.isScreenReaderEnabled().then(
       screenReaderEnabled => {
         setIsAccessibilityEnabled(screenReaderEnabled);
       }
     );
     
-    // Adaugă listener pentru schimbări în starea screen reader-ului
     const listener = AccessibilityInfo.addEventListener(
       'screenReaderChanged',
       screenReaderEnabled => {
@@ -92,317 +97,326 @@ const TaskDraggable: React.FC<TaskDraggableProps> = ({
     );
     
     return () => {
-      // Curăță listener-ul
       listener.remove();
     };
   }, []);
   
-  // Configurăm PanResponder pentru a gestiona gesturile touch
-  const panResponder = useRef(
-    PanResponder.create({
-      // Pentru a permite componenta copil (TaskItem) să proceseze restul gesturilor
-      onMoveShouldSetPanResponderCapture: () => isDragging,
-      
-      // Începe drag-ul după o apăsare lungă
-      onStartShouldSetPanResponder: () => false,
-      onStartShouldSetPanResponderCapture: () => false,
-      
-      // Verifică mișcarea pentru a începe drag-ul după apăsarea lungă
-      onMoveShouldSetPanResponder: (_, gestureState) => {
-        if (isDragging) {
-          // Permitem mișcarea doar dacă drag-ul a fost inițiat
-          return Math.abs(gestureState.dx) > 2 || Math.abs(gestureState.dy) > 2;
-        }
-        return false;
-      },
-      
-      // Când utilizatorul începe să țină apăsat task-ul
-      onPanResponderGrant: (_, __) => {
-        // Inițiem un timer pentru apăsare lungă
-        longPressTimeout.current = setTimeout(() => {
-          // Apăsare lungă detectată, începem drag-ul
-          setIsDragging(true);
+  // Măsoară poziția sarcinii pentru detectarea zonelor de drop
+  const measureTaskPosition = () => {
+    console.log('Measuring task position');
+    if (viewRef.current) {
+      // Folosim setTimeout pentru a ne asigura că măsurarea se face după ce componenta este complet randată
+      setTimeout(() => {
+        viewRef.current?.measure((x, y, width, height, pageX, pageY) => {
+          console.log('Task position measured:', { x, y, width, height, pageX, pageY });
           
-          // Mărim elementul pentru a oferi feedback vizual
-          Animated.parallel([
-            Animated.spring(scale, {
-              toValue: 1.05,
-              friction: 5,
-              useNativeDriver: true
-            }),
-            Animated.spring(opacity, {
-              toValue: 0.8,
-              friction: 5,
-              useNativeDriver: true
-            })
-          ]).start();
+          // Folosim coordonatele pageX și pageY pentru poziția inițială
+          // Acestea sunt coordonatele absolute în raport cu pagina
+          setInitialPosition({ x: pageX, y: pageY });
+          setTaskLayout({ width, height });
           
-          // Feedback haptic pentru a indica începerea drag-ului
-          Vibration.vibrate(50); // Folosim o vibrație scurtă de 50ms pentru feedback
+          // Afișăm și dimensiunile minime recomandate pentru accesibilitate
+          const minTouchTargetWidth = ACCESSIBILITY.TOUCH_TARGET.MIN_WIDTH;
+          const minTouchTargetHeight = ACCESSIBILITY.TOUCH_TARGET.MIN_HEIGHT;
+          console.log(`Minimum recommended touch target size: ${minTouchTargetWidth}x${minTouchTargetHeight}`);
+          console.log(`Current task size: ${width}x${height}`);
           
-          // Apelăm handler-ul de început de drag dacă există
-          if (onDragStart) {
-            onDragStart();
+          // Verificăm dacă task-ul respectă dimensiunile minime recomandate
+          if (width < minTouchTargetWidth || height < minTouchTargetHeight) {
+            console.warn('Task size is smaller than the recommended minimum touch target size');
           }
-          
-          // Măsurăm poziția inițială a task-ului pentru a reseta animația dacă e nevoie
-          if (viewRef.current) {
-            viewRef.current.measure((x, y, width, height, pageX, pageY) => {
-              setInitialPosition({ x: pageX, y: pageY });
-              setTaskLayout({ width, height });
-            });
-          }
-        }, 300); // Reducem timpul la 300ms pentru o experiență mai responsivă
-      },
-      
-      // Când utilizatorul mută task-ul
-      onPanResponderMove: (_, gestureState) => {
-        if (!isDragging) return;
-        
-        // Actualizăm poziția
-        pan.setValue({
-          x: initialPosition.x + gestureState.dx,
-          y: initialPosition.y + gestureState.dy
         });
-        
-        // Verificăm dacă task-ul se află deasupra unei zone de drop
-        const currentPosition = {
-          x: initialPosition.x + gestureState.dx,
-          y: initialPosition.y + gestureState.dy
-        };
-        
-        // Găsim zona de drop actuală
-        const currentDropZone = findDropZone(currentPosition);
-        
-        // Notificăm despre starea de drag over pentru toate zonele
-        if (onDragOver && dropZones) {
-          // Notificăm zonele că task-ul nu mai este deasupra lor
-          dropZones.forEach(zone => {
-            // Verificăm dacă zona este diferită de perioada actuală și dacă task-ul este deasupra ei
-            const isOverCurrentZone = currentDropZone !== null && 
-                                    zone.periodId === currentDropZone.periodId && 
-                                    zone.periodId !== task.period;
-            
-            // Apelăm onDragOver cu ID-ul zonei și starea de "over"
-            onDragOver(zone.periodId, isOverCurrentZone);
-          });
-        }
-      },
-      
-      // Când utilizatorul termină operațiunea de drag
-      onPanResponderRelease: (_, gestureState) => {
-        if (!isDragging) return;
-        
-        // Verificăm dacă task-ul a fost eliberat într-o zonă de drop validă
-        const dropPosition = {
-          x: initialPosition.x + gestureState.dx,
-          y: initialPosition.y + gestureState.dy
-        };
-        
-        // Căutăm zona de drop
-        const targetZone = findDropZone(dropPosition);
-        
-        // Animația de revenire la starea inițială (scală, opacitate)
-        const resetAnimations = [
-          Animated.spring(scale, {
-            toValue: 1,
-            friction: 5,
-            useNativeDriver: true
-          }),
-          Animated.spring(opacity, {
-            toValue: 1,
-            friction: 5,
-            useNativeDriver: true
-          })
-        ];
-        
-        // Verificăm dacă avem o zonă de drop validă
-        if (targetZone && targetZone.periodId !== task.period) {
-          // Adăugăm un feedback haptic suplimentar pentru drop reușit
-          Vibration.vibrate(100);
-          
-          // Animație de succes - task-ul dispare cu efect de fade out
-          Animated.timing(opacity, {
-            toValue: 0,
-            duration: 150,
-            useNativeDriver: true
-          }).start(() => {
-            // După ce animația s-a terminat, resetăm poziția
-            pan.setValue({ x: 0, y: 0 });
-            opacity.setValue(1);
-            
-            // Executăm acțiunea de mutare a task-ului
-            onDropInZone(task.id, targetZone.periodId);
-            
-            // Resetăm starea de drag
-            setIsDragging(false);
-            
-            // Notificăm părinte că s-a terminat operațiunea de drag
-            if (onDragEnd) {
-              onDragEnd();
-            }
-          });
-        } else {
-          // Animație de spring pentru revenirea la poziția inițială
-          resetAnimations.push(
-            Animated.spring(pan, {
-              toValue: { x: 0, y: 0 },
-              friction: 5,
-              tension: 40,
-              useNativeDriver: true
-            })
-          );
-          
-          // Executăm toate animațiile în paralel
-          Animated.parallel(resetAnimations).start(() => {
-            // Resetăm starea de drag
-            setIsDragging(false);
-            
-            // Notificăm părinte că s-a terminat operațiunea de drag
-            if (onDragEnd) {
-              onDragEnd();
-            }
-          });
-        }
-        
-        // Anulăm orice timer în curs
-        if (longPressTimeout.current) {
-          clearTimeout(longPressTimeout.current);
-        }
-      },
-      
-      // Anulăm drag-ul dacă utilizatorul își retrage degetul
-      onPanResponderTerminate: () => {
-        // Anulăm timeout-ul pentru apăsare lungă dacă există
-        if (longPressTimeout.current) {
-          clearTimeout(longPressTimeout.current);
-          longPressTimeout.current = null;
-        }
-        
-        if (isDragging) {
-          // Resetăm poziția și animațiile
-          Animated.parallel([
-            Animated.spring(pan, {
-              toValue: { x: 0, y: 0 },
-              friction: 5,
-              useNativeDriver: true
-            }),
-            Animated.spring(scale, {
-              toValue: 1,
-              friction: 5,
-              useNativeDriver: true
-            }),
-            Animated.spring(opacity, {
-              toValue: 1,
-              friction: 5,
-              useNativeDriver: true
-            })
-          ]).start(() => {
-            setIsDragging(false);
-            
-            // Apelăm handler-ul de încheiere a drag-ului dacă există
-            if (onDragEnd) {
-              onDragEnd();
-            }
-          });
-        }
-      }
-    })
-  ).current;
-
-  /**
-   * Verifică dacă task-ul este într-o zonă de drop validă
-   * 
-   * IMPACT: Această funcție determină în ce perioadă va fi mutat task-ul
-   * 
-   * @param position Poziția curentă a task-ului
-   * @returns Zona de drop găsită sau null dacă nu există nicio potrivire
-   */
-  const findDropZone = (position: { x: number, y: number }): DropZone | null => {
-    if (!dropZones || dropZones.length === 0) return null;
+      }, 100);
+    } else {
+      console.log('viewRef.current is null');
+    }
+  };
+  
+  // Măsurăm poziția task-ului la montare și când se schimbă task-ul
+  useEffect(() => {
+    console.log('Measuring task position on mount or task change');
+    const timer = setTimeout(() => {
+      measureTaskPosition();
+    }, 100);
     
-    // Calculăm centrul task-ului
-    const taskCenterX = position.x + (taskLayout.width / 2);
-    const taskCenterY = position.y + (taskLayout.height / 2);
+    return () => clearTimeout(timer);
+  }, [task.id]);
+  
+  // Re-măsoară și când se schimbă zonele de drop
+  useEffect(() => {
+    if (dropZones.length > 0) {
+      console.log(`Drop zones updated: ${dropZones.length} zones available`);
+      const timer = setTimeout(() => {
+        measureTaskPosition();
+      }, 100);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [dropZones]);
+  
+  // Găsește dacă poziția este peste o zonă de drop
+  const findDropZone = (x: number, y: number): DropZone | null => {
+    if (!dropZones || dropZones.length === 0) {
+      console.log('No drop zones available');
+      return null;
+    }
     
-    // Adăugăm o marjă pentru a face drop-ul mai permisiv
-    // Acest lucru ajută utilizatorii cu ADHD care ar putea avea dificultăți cu precizia
-    const margin = 20; // marjă de 20 pixeli
+    console.log(`Finding drop zone for position: (${x}, ${y}), with ${dropZones.length} zones available`);
     
-    // Căutăm o zonă de drop validă
-    const foundZone = dropZones.find(zone => {
-      const { x, y, width, height } = zone.layout;
-      
-      // Verifică dacă centrul task-ului este în zona de drop (cu marjă)
-      const isInXRange = taskCenterX >= (x - margin) && taskCenterX <= (x + width + margin);
-      const isInYRange = taskCenterY >= (y - margin) && taskCenterY <= (y + height + margin);
-      
-      // Verifică suplimentar dacă o parte substanțială din task se află în zona de drop
-      const taskOverlapThreshold = 0.3; // 30% din task trebuie să fie în zona
-      const taskRight = position.x + taskLayout.width;
-      const taskBottom = position.y + taskLayout.height;
-      const zoneRight = x + width;
-      const zoneBottom = y + height;
-      
-      // Calculează suprapunerea
-      const overlapX = Math.max(0, Math.min(taskRight, zoneRight) - Math.max(position.x, x));
-      const overlapY = Math.max(0, Math.min(taskBottom, zoneBottom) - Math.max(position.y, y));
-      const overlapArea = overlapX * overlapY;
-      const taskArea = taskLayout.width * taskLayout.height;
-      const overlapRatio = overlapArea / taskArea;
-      
-      return (isInXRange && isInYRange) || (overlapRatio > taskOverlapThreshold);
+    // Afișăm toate zonele disponibile pentru debugging
+    dropZones.forEach(zone => {
+      console.log(`Available zone: ${zone.periodId}`, zone.layout);
     });
     
-    return foundZone || null;
+    // Calculează centrul sarcinii
+    const taskCenterX = x + (taskLayout.width / 2);
+    const taskCenterY = y + (taskLayout.height / 2);
+    
+    console.log(`Task center position: (${taskCenterX}, ${taskCenterY})`);
+    
+    // Sortăm zonele în funcție de distanța față de centrul task-ului
+    // pentru a găsi cea mai apropiată zonă
+    const sortedZones = [...dropZones].sort((a, b) => {
+      const aCenter = {
+        x: a.layout.x + a.layout.width / 2,
+        y: a.layout.y + a.layout.height / 2
+      };
+      
+      const bCenter = {
+        x: b.layout.x + b.layout.width / 2,
+        y: b.layout.y + b.layout.height / 2
+      };
+      
+      // Calculăm distanța ponderată - dăm mai multă importanță apropierii pe axa Y
+      const distanceToA = Math.abs(taskCenterY - aCenter.y);
+      const distanceToB = Math.abs(taskCenterY - bCenter.y);
+      
+      return distanceToA - distanceToB;
+    });
+    
+    console.log('Sorted zones by Y distance:', sortedZones.map(z => z.periodId));
+    
+    // Luăm prima zonă (cea mai apropiată pe axa Y)
+    // Aceasta este o abordare simplificată care va permite mutarea task-urilor
+    // între perioade chiar dacă coordonatele nu se aliniază perfect
+    if (sortedZones.length > 0) {
+      const closestZone = sortedZones[0];
+      console.log(`Selected closest zone: ${closestZone.periodId}`);
+      return closestZone;
+    }
+    
+    return null;
   };
   
-  /**
-   * Handler pentru măsurarea dimensiunilor task-ului
-   * 
-   * IMPACT: Dimensiunile sunt necesare pentru calcularea centrului task-ului când este tras
-   */
-  const handleLayout = (event: LayoutChangeEvent) => {
-    const { width, height } = event.nativeEvent.layout;
-    setTaskLayout({ width, height });
+  // Funcție pentru a notifica despre drag over
+  const updateDragOverState = (x: number, y: number) => {
+    if (!onDragOver || !dropZones) return;
+    
+    console.log('Checking drop zones at position:', { x, y });
+    console.log('Available drop zones:', dropZones.length);
+    
+    const currentDropZone = findDropZone(x, y);
+    console.log('Current drop zone:', currentDropZone ? currentDropZone.periodId : 'none');
+    
+    // Notifică toate zonele despre starea de drag over
+    dropZones.forEach(zone => {
+      const isOverCurrentZone = currentDropZone !== null && 
+                              zone.periodId === currentDropZone.periodId;
+      
+      console.log(`Zone ${zone.periodId} is over: ${isOverCurrentZone}`);
+      onDragOver(zone.periodId, isOverCurrentZone);
+    });
   };
   
-  // Nu activăm drag-and-drop dacă screen reader-ul este activ
+  // Resetează valorile animației
+  const resetAnimations = (runEndCallback = true) => {
+    console.log('Resetting animations');
+    // Folosim damping pentru a obține o animație mai naturală
+    translateX.value = withSpring(0, { damping: 15 });
+    translateY.value = withSpring(0, { damping: 15 });
+    scale.value = withSpring(1);
+    opacity.value = withTiming(1, { duration: 150 });
+    
+    if (runEndCallback && onDragEnd) {
+      runOnJS(onDragEnd)();
+    }
+    
+    runOnJS(setIsDragging)(false);
+  };
+  
+  // Funcție pentru a începe operațiunea de drag
+  const startDrag = () => {
+    console.log('Starting drag operation');
+    setIsDragging(true);
+    
+    // Afișăm zonele de drop disponibile pentru debugging
+    console.log(`Drop zones available at start: ${dropZones.length}`);
+    dropZones.forEach(zone => {
+      console.log(`Zone ${zone.periodId}:`, zone.layout);
+    });
+    
+    // Notificăm că a început operațiunea de drag
+    if (onDragStart) {
+      onDragStart();
+    }
+    
+    // Aplicăm un efect de scalare pentru a indica că task-ul este selectat
+    scale.value = withTiming(1.03, { duration: 150 });
+  };
+  
+  // Funcție pentru a finaliza operațiunea de drag
+  const endDrag = (event: any) => {
+    console.log('Ending drag operation');
+    
+    if (!isDragging) {
+      console.log('Not dragging, ignoring end drag event');
+      return;
+    }
+    
+    // Calculăm poziția finală
+    const finalX = initialPosition.x + (event?.translationX || 0);
+    const finalY = initialPosition.y + (event?.translationY || 0);
+    
+    console.log(`Final position: (${finalX}, ${finalY})`);
+    
+    // Verificăm dacă suntem peste o zonă de drop validă
+    const dropZone = findDropZone(finalX, finalY);
+    console.log('Drop zone found:', dropZone ? dropZone.periodId : 'none');
+    
+    // Verificăm dacă am găsit o zonă de drop validă
+    if (dropZone) {
+      // Verificăm dacă zona de drop este diferită de perioada curentă a task-ului
+      // sau dacă este aceeași perioadă (pentru reordonare)
+      console.log(`Moving task ${task.id} to ${dropZone.periodId}`);
+      Vibration.vibrate(100);
+      
+      opacity.value = withTiming(0, { duration: 150 }, () => {
+        translateX.value = 0;
+        translateY.value = 0;
+        
+        // Apelăm onDropTask chiar dacă este aceeași perioadă
+        // Acest lucru va permite reordonarea în aceeași perioadă
+        runOnJS(onDropTask)(task.id, dropZone.periodId);
+        runOnJS(setIsDragging)(false);
+        
+        if (onDragEnd) {
+          runOnJS(onDragEnd)();
+        }
+        
+        opacity.value = 1;
+      });
+    } else {
+      console.log('No valid drop zone found, resetting');
+      resetAnimations();
+    }
+    
+    // Resetăm starea de drag over pentru toate zonele
+    if (onDragOver && dropZones) {
+      dropZones.forEach(zone => {
+        onDragOver(zone.periodId, false);
+      });
+    }
+  };
+  
+  // Configurăm gesturile
+  // Folosim o abordare simplificată pentru emulatoare
+  
+  // Gestul de apăsare lungă pentru începerea operațiunii de drag
+  const longPressGesture = Gesture.LongPress()
+    .minDuration(200) // Durata minimă pentru apăsare lungă (ms)
+    .maxDistance(15)  // Distanța maximă permisă în timpul apăsării lungi
+    .onStart(() => {
+      console.log('LongPress started');
+      runOnJS(startDrag)();
+    });
+  
+  // Gestul de pan pentru mișcarea sarcinii
+  const panGesture = Gesture.Pan()
+    .activateAfterLongPress(200) // Activează pan doar după long press
+    .minDistance(5)  // Distanța minimă pentru a activa pan-ul
+    .onStart(() => {
+      console.log('Pan gesture started');
+      runOnJS(startDrag)();
+    })
+    .onUpdate((event) => {
+      console.log(`Pan update: x=${event.translationX}, y=${event.translationY}`);
+      
+      // Restricționăm mișcarea doar pe axa Y (vertical)
+      translateX.value = 0;
+      translateY.value = event.translationY;
+      
+      // Calculăm poziția curentă a task-ului
+      const currentX = initialPosition.x;
+      const currentY = initialPosition.y + event.translationY;
+      
+      // Verificăm dacă suntem în apropierea unei zone de drop
+      // și actualizăm starea de drag over
+      runOnJS(updateDragOverState)(currentX, currentY);
+    })
+    .onEnd((event) => {
+      console.log('Pan gesture ended');
+      runOnJS(endDrag)(event);
+    })
+    .onFinalize(() => {
+      console.log('Pan gesture finalized');
+      if (isDragging) {
+        runOnJS(resetAnimations)();
+      }
+    });
+  
+  // Combinăm gesturile într-un singur gest compus
+  const gesture = Gesture.Simultaneous(longPressGesture, panGesture);
+  
+  // Nu activăm funcționalitatea de drag pentru utilizatorii de accesibilitate
   if (isAccessibilityEnabled) {
-    // Returnăm doar copiii pentru utilizatorii cu screen reader
-    return <View accessible={true}>{children}</View>;
+    return (
+      <TaskItem
+        task={task}
+        onToggle={() => {}}
+        onDelete={() => {}}
+        onUpdate={() => {}}
+      />
+    );
   }
   
-  // Returnăm componenta Animated.View cu proprietățile de animație și responder-ul
   return (
-    <Animated.View
-      ref={viewRef}
-      {...panResponder.panHandlers}
-      style={[
-        styles.container,
-        {
-          transform: [
-            { translateX: pan.x },
-            { translateY: pan.y },
-            { scale: scale }
-          ],
-          opacity: opacity,
-          zIndex: isDragging ? 999 : 1,
-        }
-      ]}
-      onLayout={handleLayout}
-      accessibilityLabel={t('taskManagement.accessibility.draggableTask')}
-      accessibilityHint={t('taskManagement.accessibility.dragHint')}
-      accessibilityRole="button"
+    <View 
+      ref={viewRef} 
+      collapsable={false}
+      style={styles.wrapper}
+      pointerEvents="box-none"
     >
-      {children}
-    </Animated.View>
+      <GestureDetector gesture={gesture}>
+        <Animated.View 
+          style={[styles.container, animatedStyle]}
+          accessibilityLabel={t('taskManagement.accessibility.draggableTask')}
+          accessibilityHint={t('taskManagement.accessibility.dragHint')}
+          accessibilityRole="button"
+          accessible={true}
+          pointerEvents="auto"
+        >
+          <TaskItem
+            task={task}
+            onToggle={() => {}}
+            onDelete={() => {}}
+            onUpdate={() => {}}
+          />
+        </Animated.View>
+      </GestureDetector>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  wrapper: {
+    width: '100%',
+    minHeight: ACCESSIBILITY.TOUCH_TARGET.MIN_HEIGHT,
+    position: 'relative',
+  },
   container: {
     width: '100%',
+    position: 'relative',
+    zIndex: 1,
   }
 });
 
