@@ -414,10 +414,38 @@ export const TASK_MANAGEMENT_TRANSLATIONS = {
       CONFIRM: 'taskManagement.alerts.softLimit.confirm',
       CANCEL: 'taskManagement.alerts.softLimit.cancel',
     },
+    POSTPONE: {
+      SUCCESS: 'taskManagement.alerts.postpone.success',
+      MESSAGE: 'taskManagement.alerts.postpone.message',
+      TITLE: 'taskManagement.alerts.postpone.title',
+    },
+  },
+  ACTIONS: {
+    POSTPONE: 'taskManagement.actions.postpone',
+  },
+  POSTPONE: {
+    LATER_TODAY: 'taskManagement.postpone.laterToday',
+    TOMORROW: 'taskManagement.postpone.tomorrow',
+    WEEKEND: 'taskManagement.postpone.weekend',
+    NEXT_WEEK: 'taskManagement.postpone.nextWeek',
+    CUSTOM: 'taskManagement.postpone.custom',
   },
   ERRORS: {
     NOT_AUTHENTICATED: 'taskManagement.errors.notAuthenticated',
     ADD_TASK: 'taskManagement.errors.addTask',
+  },
+  FILTER: {
+    ACCESSIBILITY: {
+      FILTER_BUTTON: 'taskFilter.accessibility.filterButton',
+      FILTER_OPTIONS: 'taskFilter.accessibility.filterOptions',
+      SELECTED_FILTER: 'taskFilter.accessibility.selectedFilter',
+    },
+    OPTIONS: {
+      ALL: 'taskFilter.options.all',
+      ACTIVE: 'taskFilter.options.active',
+      COMPLETED: 'taskFilter.options.completed',
+      PRIORITY: 'taskFilter.options.priority',
+    },
   },
   PERIODS: {
     MORNING: {

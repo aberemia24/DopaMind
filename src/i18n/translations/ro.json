@@ -88,7 +88,7 @@
     },
     "errors": {
       "unknown": "A apărut o eroare necunoscută",
-      "invalidEmail": "Adresa de email este invalidă",
+      "invalidEmail": "Adresă de email invalidă",
       "wrongPassword": "Parolă incorectă",
       "userNotFound": "Utilizatorul nu a fost găsit",
       "emailInUse": "Această adresă de email este deja folosită",
@@ -203,8 +203,8 @@
     },
     "buttons": {
       "addTask": "Adaugă sarcină",
-      "deleteTask": "Șterge sarcina",
-      "editTask": "Editează sarcina",
+      "deleteTask": "Șterge sarcină",
+      "editTask": "Editează sarcină",
       "setDateTime": "Setează data și ora",
       "close": "Închide",
       "ok": "OK",
@@ -214,12 +214,37 @@
     },
     "actions": {
       "create": "Creează sarcină nouă",
-      "edit": "Editează sarcina",
-      "delete": "Șterge sarcina",
+      "edit": "Editează sarcină",
+      "delete": "Șterge sarcină",
       "markComplete": "@:common.actions.markComplete",
       "markIncomplete": "@:common.actions.markIncomplete",
-      "addPriority": "Marchează ca prioritară",
-      "removePriority": "Elimină prioritatea"
+      "postpone": "Amână"
+    },
+    "postpone": {
+      "laterToday": "Mai târziu azi",
+      "tomorrow": "Mâine",
+      "weekend": "Weekend",
+      "nextWeek": "Săptămâna viitoare",
+      "custom": "Personalizat"
+    },
+    "alerts": {
+      "deleteConfirm": {
+        "title": "Șterge Sarcină",
+        "message": "Ești sigur că vrei să ștergi această sarcină?",
+        "confirm": "Da, șterge",
+        "cancel": "Nu, renunță"
+      },
+      "softLimit": {
+        "title": "Limită de Sarcini Atinsă",
+        "message": "Ai atins limita recomandată de sarcini pentru această perioadă. Adăugarea prea multor sarcini ar putea face dificilă finalizarea lor. Dorești totuși să adaugi această sarcină?",
+        "confirm": "Da, adaugă sarcina",
+        "cancel": "Nu, voi gestiona mai întâi sarcinile existente"
+      },
+      "postpone": {
+        "success": "Sarcină amânată",
+        "message": "Sarcina a fost amânată pentru {{date}}",
+        "title": "Amânare reușită"
+      }
     },
     "tags": {
       "quickWin": "Victorie rapidă",
@@ -254,20 +279,6 @@
       "dueDate": "Data scadentă",
       "status": "Status",
       "noTasksForPeriod": "Nu există sarcini pentru această perioadă"
-    },
-    "alerts": {
-      "softLimit": {
-        "title": "Limită de sarcini",
-        "message": "Ai deja multe sarcini active pentru această perioadă. Ești sigur că vrei să adaugi încă una?",
-        "confirm": "Da, adaugă",
-        "cancel": "Nu, renunță"
-      },
-      "deleteConfirm": {
-        "title": "Confirmare ștergere",
-        "message": "Ești sigur că vrei să ștergi această sarcină?",
-        "confirm": "Da, șterge",
-        "cancel": "Nu, renunță"
-      }
     },
     "errors": {
       "notAuthenticated": "Trebuie să fii conectat pentru a gestiona sarcinile",

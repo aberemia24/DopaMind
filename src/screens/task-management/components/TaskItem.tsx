@@ -8,6 +8,8 @@ import {
   Alert,
   Vibration,
   Animated,
+  Modal,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { format } from 'date-fns';
@@ -17,12 +19,11 @@ import { Swipeable } from 'react-native-gesture-handler';
 
 import { ACCESSIBILITY } from '../../../constants/accessibility';
 import { Task } from '../../../services/taskService';
-import { DateTimeSelector } from './DateTimeSelector';
+import { QUICK_DATE_OPTIONS } from '../../../constants/quickOptions';
+import { getDayPeriod } from '../../../utils/daytime';
 
 /**
  * Interfața Props pentru componenta TaskItem
- * IMPACT: Adăugarea de proprietăți obligatorii va strica utilizările existente ale componentei
- * IMPACT: Adăugarea de proprietăți opționale nu va strica codul existent, dar necesită gestionare adecvată
  */
 interface TaskItemProps {
   task: Task;                               // Obiectul task care conține toate datele sarcinii
@@ -35,8 +36,6 @@ interface TaskItemProps {
 /**
  * Componenta TaskItem
  * Afișează o sarcină individuală cu opțiuni pentru finalizare, editare, ștergere și setare prioritate
- * 
- * IMPACT: Modificările aduse acestei componente vor afecta aspectul și comportamentul tuturor sarcinilor din aplicație
  */
 const TaskItem: React.FC<TaskItemProps> = ({
   task,
@@ -46,24 +45,31 @@ const TaskItem: React.FC<TaskItemProps> = ({
   isCompact = false,
 }) => {
   // Stare pentru modul de editare a titlului
-  // IMPACT: Controlează dacă titlul sarcinii poate fi editat
   const [isEditing, setIsEditing] = useState(false);
   
   // Stare pentru textul titlului în timpul editării
-  // IMPACT: Păstrează valoarea temporară a titlului înainte de confirmare
   const [title, setTitle] = useState(task.title);
+  
+  // Stare pentru afișarea menu-ului de amânare
+  const [showPostponeMenu, setShowPostponeMenu] = useState(false);
+  
+  // Poziția TaskItem - folosită pentru poziționarea meniului de amânare
+  const [taskPosition, setTaskPosition] = useState({ x: 0, y: 0, width: 0, height: 0 });
   
   // Inițializare hook pentru traduceri
   const { t, i18n } = useTranslation();
 
   // Referință pentru componenta Swipeable
   const swipeableRef = useRef<Swipeable>(null);
+  
+  // Referință pentru View-ul care conține task-ul
+  const taskItemRef = useRef<View>(null);
 
   // Stare pentru animația de ștergere
   const [isDeleting, setIsDeleting] = useState(false);
   const deleteAnim = useRef(new Animated.Value(1)).current;
 
-  // Efect pentru animația de ștergere
+  // Efecte pentru animația de ștergere
   useEffect(() => {
     if (isDeleting) {
       Animated.timing(deleteAnim, {
@@ -76,53 +82,114 @@ const TaskItem: React.FC<TaskItemProps> = ({
     }
   }, [isDeleting, onDelete]);
 
-  // Referință pentru a urmări dacă s-a declanșat deja vibrația
-  const hasVibrated = useRef(false);
-  const listenerIdRef = useRef<string | null>(null);
+  // Referințe pentru gestionarea vibrațiilor
+  const hasLeftVibrated = useRef(false);
+  const hasRightVibrated = useRef(false);
+  const leftDragListenerIdRef = useRef<string | null>(null);
+  const rightDragListenerIdRef = useRef<string | null>(null);
   
   // Stocăm dragX într-o referință pentru curățare
-  const dragXRef = useRef<Animated.AnimatedInterpolation<number> | null>(null);
+  const leftDragXRef = useRef<Animated.AnimatedInterpolation<number> | null>(null);
+  const rightDragXRef = useRef<Animated.AnimatedInterpolation<number> | null>(null);
 
   // Curățăm listener-ul când componenta se demontează
   useEffect(() => {
     return () => {
-      // Asigurăm curățarea corectă a listener-ului la demontare
-      if (listenerIdRef.current && dragXRef.current) {
-        dragXRef.current.removeListener(listenerIdRef.current);
+      // Asigurăm curățarea corectă a listener-ului pentru drag la stânga
+      if (leftDragListenerIdRef.current && leftDragXRef.current) {
+        leftDragXRef.current.removeListener(leftDragListenerIdRef.current);
+      }
+      
+      // Asigurăm curățarea corectă a listener-ului pentru drag la dreapta
+      if (rightDragListenerIdRef.current && rightDragXRef.current) {
+        rightDragXRef.current.removeListener(rightDragListenerIdRef.current);
       }
     };
   }, []);
+  
+  /**
+   * Actualizează poziția curentă a task-ului pentru plasarea corectă a meniului
+   * Se apelează la prima randare și la modificări de layout
+   */
+  const measureTaskPosition = useCallback(() => {
+    if (taskItemRef.current) {
+      taskItemRef.current.measure((x, y, width, height, pageX, pageY) => {
+        setTaskPosition({
+          x: pageX,
+          y: pageY,
+          width,
+          height
+        });
+      });
+    }
+  }, []);
 
-  // Funcție pentru a monitoriza valoarea dragX și a declanșa vibrația
-  const handleDragXChange = useCallback((dragX: Animated.AnimatedInterpolation<number>) => {
+  // Măsurăm poziția după prima randare și când se schimbă task-ul
+  useEffect(() => {
+    // Întârziem măsurarea pentru a permite randarea completă
+    const timer = setTimeout(() => {
+      measureTaskPosition();
+    }, 100);
+    
+    return () => clearTimeout(timer);
+  }, [task.id, measureTaskPosition]);
+
+  /**
+   * Funcție pentru a monitoriza valoarea dragX spre stânga și a declanșa vibrația
+   */
+  const handleLeftDragXChange = useCallback((dragX: Animated.AnimatedInterpolation<number>) => {
     // Stocăm referința pentru curățare
-    dragXRef.current = dragX;
+    leftDragXRef.current = dragX;
     
     // Curățăm listener-ul anterior dacă există
-    if (listenerIdRef.current && dragXRef.current) {
-      dragXRef.current.removeListener(listenerIdRef.current);
+    if (leftDragListenerIdRef.current && leftDragXRef.current) {
+      leftDragXRef.current.removeListener(leftDragListenerIdRef.current);
     }
     
     // Adăugăm un nou listener
     const listenerId = dragX.addListener(({ value }) => {
       // Verificăm dacă valoarea este suficient de mică (tragere spre stânga)
-      // Declanșăm vibrația doar când utilizatorul trage mai mult de 50% din lățimea butonului
-      if (value <= -80 && !hasVibrated.current) {
+      if (value <= -80 && !hasLeftVibrated.current) {
         Vibration.vibrate(50); // Vibrație scurtă
-        hasVibrated.current = true;
+        hasLeftVibrated.current = true;
       } else if (value > -80) {
-        hasVibrated.current = false;
+        hasLeftVibrated.current = false;
       }
     });
     
     // Salvăm ID-ul listener-ului pentru curățare ulterioară
-    listenerIdRef.current = listenerId;
+    leftDragListenerIdRef.current = listenerId;
+  }, []);
+
+  /**
+   * Funcție pentru a monitoriza valoarea dragX spre dreapta și a declanșa vibrația
+   */
+  const handleRightDragXChange = useCallback((dragX: Animated.AnimatedInterpolation<number>) => {
+    // Stocăm referința pentru curățare
+    rightDragXRef.current = dragX;
+    
+    // Curățăm listener-ul anterior dacă există
+    if (rightDragListenerIdRef.current && rightDragXRef.current) {
+      rightDragXRef.current.removeListener(rightDragListenerIdRef.current);
+    }
+    
+    // Adăugăm un nou listener
+    const listenerId = dragX.addListener(({ value }) => {
+      // Verificăm dacă valoarea este suficient de mare (tragere spre dreapta)
+      if (value >= 80 && !hasRightVibrated.current) {
+        Vibration.vibrate(50); // Vibrație scurtă
+        hasRightVibrated.current = true;
+      } else if (value < 80) {
+        hasRightVibrated.current = false;
+      }
+    });
+    
+    // Salvăm ID-ul listener-ului pentru curățare ulterioară
+    rightDragListenerIdRef.current = listenerId;
   }, []);
 
   /**
    * Procesează finalizarea editării titlului
-   * IMPACT: Trimite actualizarea doar dacă titlul s-a schimbat efectiv
-   * IMPACT: Modificarea ar putea afecta modul în care title-urile sunt salvate
    */
   const handleSubmitEditing = () => {
     if (title.trim() !== task.title) {
@@ -133,9 +200,6 @@ const TaskItem: React.FC<TaskItemProps> = ({
 
   /**
    * Formatează data de finalizare a sarcinii într-un format localizat
-   * IMPACT: Afectează modul în care este afișată data de finalizare
-   * IMPACT: Utilizează localizarea corectă în funcție de limba selectată (ro sau default)
-   * @returns String formatat cu data completării sau string gol dacă nu există
    */
   const formatCompletionDate = () => {
     if (!task.completedAt) return '';
@@ -146,9 +210,6 @@ const TaskItem: React.FC<TaskItemProps> = ({
 
   /**
    * Formatează data scadentă a sarcinii într-un format localizat
-   * IMPACT: Afectează modul în care este afișată data scadentă
-   * IMPACT: Utilizează localizarea corectă în funcție de limba selectată (ro sau default)
-   * @returns String formatat cu data scadentă sau string gol dacă nu există
    */
   const formatDueDate = () => {
     if (!task.dueDate) return '';
@@ -158,54 +219,7 @@ const TaskItem: React.FC<TaskItemProps> = ({
   };
 
   /**
-   * Determină stilurile containerului în funcție de starea sarcinii
-   * 
-   * IMPACT: Modificarea acestei logici va afecta aspectul vizual al sarcinii
-   * IMPACT: Ordinea aplicării stilurilor este importantă pentru a asigura prioritatea corectă
-   */
-  const containerStyle = [
-    styles.container,
-    isCompact && styles.containerCompact,
-    task.completed && (isCompact ? styles.completedContainerCompact : styles.completedContainer),
-    task.isPriority && !task.completed && styles.priorityContainer,
-    task.isPriority && task.completed && styles.priorityCompletedContainer,
-  ];
-
-  /**
-   * Determină stilurile pentru checkbox în funcție de starea task-ului
-   * IMPACT: Afectează dimensiunea și aspectul checkbox-ului
-   */
-  const checkboxStyle = [
-    styles.checkbox,
-    task.completed ? styles.completedCheckbox : null,
-  ];
-
-  /**
-   * Determină stilurile pentru container-ul de conținut
-   * IMPACT: Afectează layoutul și spațierea în interiorul sarcinii
-   */
-  const contentContainerStyle = [
-    styles.contentContainer,
-    task.completed ? styles.completedContentContainer : null,
-  ];
-
-  /**
-   * Determină stilurile titlului în funcție de starea sarcinii
-   * 
-   * IMPACT: Modificarea acestei logici va afecta aspectul vizual al titlului sarcinii
-   * IMPACT: Ordinea aplicării stilurilor este importantă pentru a asigura prioritatea corectă
-   */
-  const titleStyle = [
-    styles.title,
-    task.completed && styles.completedTitle,
-    !task.title && styles.untitledTask,
-    task.isPriority && !task.completed && styles.priorityTitle,
-    task.isPriority && task.completed && styles.priorityCompletedTitle,
-  ];
-
-  /**
    * Gestionează confirmarea ștergerii unei sarcini
-   * IMPACT: Afectează modul în care utilizatorul poate șterge o sarcină
    */
   const handleDeleteConfirmation = () => {
     Alert.alert(
@@ -234,47 +248,159 @@ const TaskItem: React.FC<TaskItemProps> = ({
   };
 
   // Stare pentru a urmări dacă swipe-ul a fost intenționat
-  const [intentionalSwipe, setIntentionalSwipe] = useState(false);
+  const [intentionalLeftSwipe, setIntentionalLeftSwipe] = useState(false);
+  const [intentionalRightSwipe, setIntentionalRightSwipe] = useState(false);
 
   /**
    * Funcție pentru a închide swipeable și a reseta starea de swipe intenționat
-   * IMPACT: Asigură comportamentul consistent al interfeței după interacțiunile utilizatorului
    */
   const closeSwipeable = useCallback(() => {
     if (swipeableRef.current) {
       swipeableRef.current.close();
       // Resetăm starea de swipe intenționat după ce animația se încheie
-      setTimeout(() => setIntentionalSwipe(false), 300);
+      setTimeout(() => {
+        setIntentionalLeftSwipe(false);
+        setIntentionalRightSwipe(false);
+      }, 300);
     }
   }, []);
 
   /**
-   * Funcție pentru a gestiona swipe-ul care depășește un anumit prag
-   * IMPACT: Determină când un swipe este considerat intenționat
+   * Funcție pentru a gestiona swipe-ul spre stânga care depășește un anumit prag
    */
-  const handleSwipeWillOpen = useCallback(() => {
+  const handleLeftSwipeWillOpen = useCallback(() => {
     // Marcăm swipe-ul ca fiind intenționat când se va deschide
-    setIntentionalSwipe(true);
+    setIntentionalLeftSwipe(true);
   }, []);
 
   /**
-   * Funcție modificată pentru a gestiona deschiderea swipe-ului
-   * IMPACT: Previne declanșarea accidentală a dialogului de confirmare pentru ștergere
+   * Funcție pentru a gestiona swipe-ul spre dreapta care depășește un anumit prag
    */
-  const handleSwipeOpen = useCallback(() => {
+  const handleRightSwipeWillOpen = useCallback(() => {
+    // Marcăm swipe-ul ca fiind intenționat când se va deschide
+    setIntentionalRightSwipe(true);
+  }, []);
+
+  /**
+   * Funcție pentru a gestiona deschiderea swipe-ului spre stânga
+   */
+  const handleLeftSwipeOpen = useCallback(() => {
     // Declanșăm dialogul de confirmare doar dacă swipe-ul a fost intenționat
-    if (intentionalSwipe) {
+    if (intentionalLeftSwipe) {
       handleDeleteConfirmation();
     } else {
       // Dacă swipe-ul nu a fost intenționat, închidem swipe-ul
       closeSwipeable();
     }
-  }, [intentionalSwipe, handleDeleteConfirmation, closeSwipeable]);
+  }, [intentionalLeftSwipe, handleDeleteConfirmation, closeSwipeable]);
+
+  /**
+   * Funcție pentru a gestiona deschiderea swipe-ului spre dreapta
+   */
+  const handleRightSwipeOpen = useCallback(() => {
+    // Afișăm meniul de amânare doar dacă swipe-ul a fost intenționat
+    if (intentionalRightSwipe) {
+      // Măsurăm poziția task-ului pentru a poziționa corect meniul
+      measureTaskPosition();
+      // Afișăm meniul de amânare
+      setShowPostponeMenu(true);
+      // Închidem swipe-ul după ce am deschis meniul
+      closeSwipeable();
+    } else {
+      // Dacă swipe-ul nu a fost intenționat, închidem swipe-ul
+      closeSwipeable();
+    }
+  }, [intentionalRightSwipe, closeSwipeable, measureTaskPosition]);
 
   // Resetăm starea când componenta se montează sau când task-ul se schimbă
   useEffect(() => {
-    setIntentionalSwipe(false);
+    setIntentionalLeftSwipe(false);
+    setIntentionalRightSwipe(false);
   }, [task.id]);
+
+  /**
+   * Gestionează amânarea sarcinii cu opțiunea selectată
+   */
+  const handlePostpone = (option: 'TODAY_LATER' | 'TOMORROW' | 'WEEKEND' | 'NEXT_WEEK' | 'CUSTOM') => {
+    let newDate: Date;
+    
+    const now = new Date();
+    
+    switch (option) {
+      case 'TODAY_LATER':
+        // Amână pentru mai târziu azi - în funcție de perioada curentă a task-ului
+        if (task.period === 'MORNING') {
+          // Dacă task-ul e dimineață, amână pentru după-amiază
+          newDate = new Date();
+          newDate.setHours(14, 0, 0, 0);
+        } else if (task.period === 'AFTERNOON') {
+          // Dacă task-ul e după-amiază, amână pentru seară
+          newDate = new Date();
+          newDate.setHours(19, 0, 0, 0);
+        } else {
+          // Dacă task-ul e seară, amână pentru mâine dimineață (nu ar trebui să ajungă aici)
+          newDate = new Date();
+          newDate.setDate(newDate.getDate() + 1);
+          newDate.setHours(9, 0, 0, 0);
+        }
+        break;
+        
+      case 'TOMORROW':
+        // Amână pentru mâine
+        newDate = QUICK_DATE_OPTIONS.TOMORROW.getDate();
+        break;
+        
+      case 'WEEKEND':
+        // Amână pentru weekend
+        newDate = QUICK_DATE_OPTIONS.WEEKEND.getDate();
+        break;
+        
+      case 'NEXT_WEEK':
+        // Amână pentru săptămâna viitoare
+        newDate = QUICK_DATE_OPTIONS.NEXT_WEEK.getDate();
+        break;
+        
+      case 'CUSTOM':
+        // Deschide selectorul de dată și oră
+        // Implementare viitoare
+        return;
+        
+      default:
+        newDate = new Date();
+        break;
+    }
+    
+    // Aplicăm actualizarea la task
+    onUpdate({
+      dueDate: newDate,
+      period: getTaskPeriodFromDate(newDate)
+    });
+    
+    // Afișăm mesaj de confirmare
+    const formattedDate = format(newDate, 'dd MMMM, HH:mm', { locale: i18n.language === 'ro' ? ro : undefined });
+    Alert.alert(
+      t('taskManagement.alerts.postpone.title'),
+      t('taskManagement.alerts.postpone.message', { date: formattedDate })
+    );
+    
+    // Închidem meniul de amânare
+    setShowPostponeMenu(false);
+  };
+  
+  /**
+   * Determină perioada de task din data specificată
+   */
+  const getTaskPeriodFromDate = (date: Date) => {
+    const hours = date.getHours();
+    
+    if (hours >= 5 && hours < 12) {
+      return 'MORNING';
+    } else if (hours >= 12 && hours < 18) {
+      return 'AFTERNOON';
+    } else {
+      return 'EVENING';
+    }
+  };
 
   /**
    * Renderizează acțiunile din dreapta (swipe stânga) pentru ștergere
@@ -299,7 +425,7 @@ const TaskItem: React.FC<TaskItemProps> = ({
     });
 
     // Monitorizăm dragX pentru a declanșa vibrația
-    handleDragXChange(dragX);
+    handleLeftDragXChange(dragX);
 
     return (
       <Animated.View
@@ -317,157 +443,295 @@ const TaskItem: React.FC<TaskItemProps> = ({
           size={24}
           color="white"
         />
-        <Text style={styles.deleteActionText}>{t('common.actions.delete')}</Text>
+        <Text style={styles.actionText}>{t('common.actions.delete')}</Text>
       </Animated.View>
     );
   };
 
-  return (
-    <Animated.View
-      style={[
-        styles.container,
-        isCompact && styles.containerCompact,
-        task.completed && (isCompact ? styles.completedContainerCompact : styles.completedContainer),
-        task.isPriority && !task.completed && styles.priorityContainer,
-        task.isPriority && task.completed && styles.priorityCompletedContainer,
-        {
-          opacity: deleteAnim,
-          transform: [
-            {
-              scale: deleteAnim.interpolate({
-                inputRange: [0, 1],
-                outputRange: [0.8, 1],
-              }),
-            },
-          ],
-        },
-      ]}
-    >
-      <Swipeable
-        ref={swipeableRef}
-        renderRightActions={renderRightActions}
-        rightThreshold={80} // Pragul pentru declanșarea acțiunii (80px)
-        friction={2} // Rezistența la swipe redusă pentru o experiență mai fluidă
-        overshootRight={false} // Previne depășirea limitei la dreapta
-        onSwipeableWillOpen={handleSwipeWillOpen} // Marcăm swipe-ul ca fiind intenționat
-        onSwipeableRightOpen={handleSwipeOpen} // Folosim noua funcție pentru a gestiona deschiderea
-        containerStyle={{ width: '100%' }}
+  /**
+   * Renderizează acțiunile din stânga (swipe dreapta) pentru amânare
+   * 
+   * @param progress Progresul animației de swipe (0-1)
+   * @param dragX Distanța de tragere pe axa X
+   */
+  const renderLeftActions = (progress: Animated.AnimatedInterpolation<number>, dragX: Animated.AnimatedInterpolation<number>) => {
+    // Lățime fixă pentru butonul de amânare
+    const width = 100;
+    
+    // Calculează opacitatea în funcție de progresul tragerii
+    const opacity = progress.interpolate({
+      inputRange: [0, 1],
+      outputRange: [0, 1],
+    });
+
+    // Calculează scara pentru efect de zoom
+    const scale = progress.interpolate({
+      inputRange: [0, 1],
+      outputRange: [0.8, 1],
+    });
+
+    // Monitorizăm dragX pentru a declanșa vibrația
+    handleRightDragXChange(dragX);
+
+    return (
+      <Animated.View
+        style={[
+          styles.postponeAction,
+          {
+            width,
+            opacity,
+            transform: [{ scale }],
+          },
+        ]}
       >
-        <View style={styles.taskContainer}>
-          {/* Checkbox pentru marcarea sarcinii ca finalizată/nefinalizată
-              IMPACT: Controlează funcționalitatea principală a sarcinii */}
-          <TouchableOpacity
-            style={checkboxStyle}
-            onPress={onToggle}
-            accessibilityRole="checkbox"
-            accessibilityState={{ checked: task.completed }}
-            accessibilityLabel={task.title || t('taskManagement.labels.untitledTask')}
-          >
-            <MaterialIcons
-              name={task.completed ? 'check-box' : 'check-box-outline-blank'}
-              size={task.completed ? 16 : 24}
-              color={ACCESSIBILITY.COLORS.TEXT.SECONDARY}
-            />
-          </TouchableOpacity>
+        <MaterialIcons
+          name="schedule"
+          size={24}
+          color="white"
+        />
+        <Text style={styles.actionText}>{t('taskManagement.actions.postpone')}</Text>
+      </Animated.View>
+    );
+  };
 
-          {!task.completed ? (
-            // Layout pentru task-uri active (necompletate)
-            <View style={styles.activeContentContainer}>
-              {/* Primul rând: Titlu și stea de prioritate */}
-              <View style={styles.titleRow}>
-                {/* Afișează fie un input de editare, fie textul titlului */}
-                {isEditing ? (
-                  <TextInput
-                    style={styles.input}
-                    value={title}
-                    onChangeText={setTitle}
-                    onBlur={handleSubmitEditing}
-                    onSubmitEditing={handleSubmitEditing}
-                    autoFocus
-                    accessibilityLabel={t('taskManagement.labels.editTask')}
-                  />
-                ) : (
-                  <TouchableOpacity
-                    style={styles.titleContainer}
-                    onPress={() => setIsEditing(true)}
-                    accessibilityRole="button"
-                    accessibilityLabel={t('taskManagement.labels.editTask')}
-                  >
-                    <Text style={titleStyle}>
-                      {task.title || t('taskManagement.labels.untitledTask')}
-                    </Text>
-                  </TouchableOpacity>
-                )}
+  const renderPostponeMenu = () => {
+    if (!showPostponeMenu) return null;
 
-                {/* Indicator de prioritate (stea) */}
-                {!isEditing && (
-                  <TouchableOpacity
-                    style={styles.priorityIndicator}
-                    onPress={() => onUpdate({ isPriority: !task.isPriority })}
-                    accessibilityRole="button"
-                    accessibilityLabel={t(
-                      task.isPriority
-                        ? 'taskManagement.buttons.removePriority'
-                        : 'taskManagement.buttons.addPriority'
-                    )}
-                  >
-                    <MaterialIcons
-                      name={task.isPriority ? 'star' : 'star-outline'}
-                      size={20}
-                      color={task.isPriority 
-                        ? 'rgba(234, 88, 12, 0.9)' 
-                        : ACCESSIBILITY.COLORS.TEXT.SECONDARY}
-                    />
-                  </TouchableOpacity>
-                )}
-              </View>
-
-              {/* Al doilea rând: Data/ora scadentă (opțional) */}
-              {task.dueDate && (
-                <View style={styles.dueDateContainer}>
-                  <MaterialIcons
-                    name="schedule"
-                    size={14}
-                    color={ACCESSIBILITY.COLORS.TEXT.SECONDARY}
-                    style={styles.dueDateIcon}
-                  />
-                  <Text style={styles.dueDate}>
-                    {formatDueDate()}
-                  </Text>
-                </View>
-              )}
-            </View>
-          ) : (
-            // Layout pentru task-uri completate (păstrăm așa cum este)
-            <View style={contentContainerStyle}>
-              {/* Afișează textul titlului */}
-              <TouchableOpacity
-                style={styles.titleContainer}
-                accessibilityRole="button"
-                accessibilityLabel={t('taskManagement.labels.viewTask')}
+    return (
+      <Modal
+        transparent
+        visible={showPostponeMenu}
+        animationType="fade"
+        onRequestClose={() => setShowPostponeMenu(false)}
+      >
+        <TouchableWithoutFeedback onPress={() => setShowPostponeMenu(false)}>
+          <View style={styles.modalOverlay}>
+            <TouchableWithoutFeedback onPress={e => e.stopPropagation()}>
+              <View 
+                style={[
+                  styles.postponeMenu,
+                  {
+                    position: 'absolute',
+                    top: taskPosition.y + taskPosition.height / 2,
+                    left: taskPosition.x + 20,
+                  }
+                ]}
               >
-                <Text style={titleStyle}>
-                  {task.title || t('taskManagement.labels.untitledTask')}
-                </Text>
-              </TouchableOpacity>
-
-              {/* Afișează data completării */}
-              <View style={styles.completionInfo}>
-                <Text style={styles.completionDate}>
-                  {formatCompletionDate()}
-                </Text>
+                <Text style={styles.postponeMenuTitle}>{t('taskManagement.actions.postpone')}</Text>
+                
+                {/* Afișăm opțiunea "Mai târziu azi" doar dacă task-ul nu este în perioada de seară */}
+                {task.period !== 'EVENING' && (
+                  <TouchableOpacity 
+                    style={styles.postponeMenuItem}
+                    onPress={() => handlePostpone('TODAY_LATER')}
+                  >
+                    <MaterialIcons name="access-time" size={20} color={ACCESSIBILITY.COLORS.TEXT.PRIMARY} />
+                    <Text style={styles.postponeMenuItemText}>{t('taskManagement.postpone.laterToday')}</Text>
+                  </TouchableOpacity>
+                )}
+                
+                <TouchableOpacity 
+                  style={styles.postponeMenuItem}
+                  onPress={() => handlePostpone('TOMORROW')}
+                >
+                  <MaterialIcons name="event" size={20} color={ACCESSIBILITY.COLORS.TEXT.PRIMARY} />
+                  <Text style={styles.postponeMenuItemText}>{t('taskManagement.postpone.tomorrow')}</Text>
+                </TouchableOpacity>
+                
+                <TouchableOpacity 
+                  style={styles.postponeMenuItem}
+                  onPress={() => handlePostpone('WEEKEND')}
+                >
+                  <MaterialIcons name="weekend" size={20} color={ACCESSIBILITY.COLORS.TEXT.PRIMARY} />
+                  <Text style={styles.postponeMenuItemText}>{t('taskManagement.postpone.weekend')}</Text>
+                </TouchableOpacity>
+                
+                <TouchableOpacity 
+                  style={styles.postponeMenuItem}
+                  onPress={() => handlePostpone('NEXT_WEEK')}
+                >
+                  <MaterialIcons name="event-note" size={20} color={ACCESSIBILITY.COLORS.TEXT.PRIMARY} />
+                  <Text style={styles.postponeMenuItemText}>{t('taskManagement.postpone.nextWeek')}</Text>
+                </TouchableOpacity>
+                
+                <TouchableOpacity 
+                  style={styles.postponeMenuItem}
+                  onPress={() => handlePostpone('CUSTOM')}
+                >
+                  <MaterialIcons name="calendar-today" size={20} color={ACCESSIBILITY.COLORS.TEXT.PRIMARY} />
+                  <Text style={styles.postponeMenuItemText}>{t('taskManagement.postpone.custom')}</Text>
+                </TouchableOpacity>
               </View>
-            </View>
-          )}
-        </View>
-      </Swipeable>
-    </Animated.View>
+            </TouchableWithoutFeedback>
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
+    );
+  };
+
+  return (
+    <View ref={taskItemRef} onLayout={measureTaskPosition}>
+      <Animated.View
+        style={[
+          styles.container,
+          isCompact && styles.containerCompact,
+          task.completed && (isCompact ? styles.completedContainerCompact : styles.completedContainer),
+          task.isPriority && !task.completed && styles.priorityContainer,
+          task.isPriority && task.completed && styles.priorityCompletedContainer,
+          {
+            opacity: deleteAnim,
+            transform: [
+              {
+                scale: deleteAnim.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [0.8, 1],
+                }),
+              },
+            ],
+          },
+        ]}
+      >
+        <Swipeable
+          ref={swipeableRef}
+          renderRightActions={renderRightActions}
+          renderLeftActions={renderLeftActions}
+          friction={2} // Rezistența la swipe redusă pentru o experiență mai fluidă
+          overshootRight={false} // Previne depășirea limitei la dreapta
+          overshootLeft={false} // Previne depășirea limitei la stânga
+          rightThreshold={80} // Pragul pentru declanșarea acțiunii de ștergere (80px)
+          leftThreshold={80} // Pragul pentru declanșarea acțiunii de amânare (80px)
+          onSwipeableRightWillOpen={handleLeftSwipeWillOpen} // Marcăm swipe-ul la stânga ca fiind intenționat
+          onSwipeableLeftWillOpen={handleRightSwipeWillOpen} // Marcăm swipe-ul la dreapta ca fiind intenționat
+          onSwipeableRightOpen={handleLeftSwipeOpen} // Gestionăm deschiderea swipe-ului la stânga
+          onSwipeableLeftOpen={handleRightSwipeOpen} // Gestionăm deschiderea swipe-ului la dreapta
+          containerStyle={{ width: '100%' }}
+        >
+          <View style={styles.taskContainer}>
+            {/* Checkbox pentru marcarea sarcinii ca finalizată/nefinalizată */}
+            <TouchableOpacity
+              style={task.completed ? styles.completedCheckbox : styles.checkbox}
+              onPress={onToggle}
+              accessibilityRole="checkbox"
+              accessibilityState={{ checked: task.completed }}
+              accessibilityLabel={task.title || t('taskManagement.labels.untitledTask')}
+            >
+              <MaterialIcons
+                name={task.completed ? 'check-box' : 'check-box-outline-blank'}
+                size={task.completed ? 16 : 24}
+                color={ACCESSIBILITY.COLORS.TEXT.SECONDARY}
+              />
+            </TouchableOpacity>
+
+            {!task.completed ? (
+              // Layout pentru task-uri active (necompletate)
+              <View style={styles.activeContentContainer}>
+                {/* Primul rând: Titlu și stea de prioritate */}
+                <View style={styles.titleRow}>
+                  {/* Afișează fie un input de editare, fie textul titlului */}
+                  {isEditing ? (
+                    <TextInput
+                      style={styles.input}
+                      value={title}
+                      onChangeText={setTitle}
+                      onBlur={handleSubmitEditing}
+                      onSubmitEditing={handleSubmitEditing}
+                      autoFocus
+                      accessibilityLabel={t('taskManagement.labels.editTask')}
+                    />
+                  ) : (
+                    <TouchableOpacity
+                      style={styles.titleContainer}
+                      onPress={() => setIsEditing(true)}
+                      accessibilityRole="button"
+                      accessibilityLabel={t('taskManagement.labels.editTask')}
+                    >
+                      <Text style={[
+                        styles.title,
+                        !task.title && styles.untitledTask,
+                        task.isPriority && styles.priorityTitle
+                      ]}>
+                        {task.title || t('taskManagement.labels.untitledTask')}
+                      </Text>
+                    </TouchableOpacity>
+                  )}
+
+                  {/* Indicator de prioritate (stea) */}
+                  {!isEditing && (
+                    <TouchableOpacity
+                      style={styles.priorityIndicator}
+                      onPress={() => onUpdate({ isPriority: !task.isPriority })}
+                      accessibilityRole="button"
+                      accessibilityLabel={t(
+                        task.isPriority
+                          ? 'taskManagement.buttons.removePriority'
+                          : 'taskManagement.buttons.addPriority'
+                      )}
+                    >
+                      <MaterialIcons
+                        name={task.isPriority ? 'star' : 'star-outline'}
+                        size={20}
+                        color={task.isPriority 
+                          ? 'rgba(234, 88, 12, 0.9)' 
+                          : ACCESSIBILITY.COLORS.TEXT.SECONDARY}
+                      />
+                    </TouchableOpacity>
+                  )}
+                </View>
+
+                {/* Al doilea rând: Data/ora scadentă (opțional) */}
+                {task.dueDate && (
+                  <View style={styles.dueDateContainer}>
+                    <MaterialIcons
+                      name="schedule"
+                      size={14}
+                      color={ACCESSIBILITY.COLORS.TEXT.SECONDARY}
+                      style={styles.dueDateIcon}
+                    />
+                    <Text style={styles.dueDate}>
+                      {formatDueDate()}
+                    </Text>
+                  </View>
+                )}
+              </View>
+            ) : (
+              // Layout pentru task-uri completate
+              <View style={styles.completedContentContainer}>
+                {/* Afișează textul titlului */}
+                <TouchableOpacity
+                  style={styles.titleContainer}
+                  accessibilityRole="button"
+                  accessibilityLabel={t('taskManagement.labels.viewTask')}
+                >
+                  <Text style={[
+                    styles.completedTitle,
+                    !task.title && styles.untitledTask,
+                    task.isPriority && styles.priorityCompletedTitle
+                  ]}>
+                    {task.title || t('taskManagement.labels.untitledTask')}
+                  </Text>
+                </TouchableOpacity>
+
+                {/* Afișează data completării */}
+                {task.completedAt && (
+                  <View style={styles.completionInfo}>
+                    <Text style={styles.completionDate}>
+                      {formatCompletionDate()}
+                    </Text>
+                  </View>
+                )}
+              </View>
+            )}
+          </View>
+        </Swipeable>
+      </Animated.View>
+
+      {renderPostponeMenu()}
+    </View>
   );
 };
 
 /**
  * Stilurile componentei
- * IMPACT: Modificarea acestor stiluri va afecta aspectul vizual al tuturor sarcinilor
  */
 const styles = StyleSheet.create({
   container: {
@@ -527,15 +791,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginLeft: 2,                   // Marjă stânga adăugată
   },
-  contentContainer: {
-    flex: 1,                         // Ocupă tot spațiul disponibil
+  taskContainer: {
     flexDirection: 'row',            // Aranjează elementele pe orizontală
-    justifyContent: 'space-between', // Spațiază elementele uniform
-    alignItems: 'center',            // Centrează elementele pe verticală
-  },
-  completedContentContainer: {
-    paddingVertical: 0,              // Elimină spațierea verticală
-    height: 30,                      // Înălțime fixă redusă
+    alignItems: 'center',            // Centrează pe verticală
+    flex: 1,                         // Ocupă tot spațiul disponibil
   },
   activeContentContainer: {
     flex: 1,                         // Ocupă tot spațiul disponibil
@@ -543,15 +802,21 @@ const styles = StyleSheet.create({
     justifyContent: 'center',        // Centrează pe verticală
     paddingLeft: ACCESSIBILITY.SPACING.XS, // Spațiere la stânga
   },
-  titleContainer: {
+  completedContentContainer: {
     flex: 1,                         // Ocupă tot spațiul disponibil
+    flexDirection: 'column',         // Aranjează elementele pe verticală
     justifyContent: 'center',        // Centrează pe verticală
-    minHeight: ACCESSIBILITY.TOUCH_TARGET.MIN_HEIGHT,  // Înălțime minimă pentru accesibilitate
+    paddingLeft: ACCESSIBILITY.SPACING.XS, // Spațiere la stânga
   },
   titleRow: {
     flexDirection: 'row',            // Aranjează elementele pe orizontală
     alignItems: 'center',            // Centrează pe verticală
     justifyContent: 'space-between', // Spațiază elementele uniform
+  },
+  titleContainer: {
+    flex: 1,                         // Ocupă tot spațiul disponibil
+    justifyContent: 'center',        // Centrează pe verticală
+    minHeight: 28,                   // Înălțime minimă pentru accesibilitate
   },
   title: {
     fontSize: 14,                    // Dimensiunea fontului
@@ -560,7 +825,9 @@ const styles = StyleSheet.create({
   completedTitle: {
     color: ACCESSIBILITY.COLORS.TEXT.SECONDARY,  // Culoare secundară - mai puțin accentuată
     fontSize: 13,                    // Font mic pentru textul finalizat
-    lineHeight: 18,                  // Spațiere între linii
+    textDecorationLine: 'line-through', // Adăugăm linie prin text pentru task-urile finalizate
+    textDecorationStyle: 'solid',
+    textDecorationColor: ACCESSIBILITY.COLORS.TEXT.SECONDARY,
   },
   priorityTitle: {
     fontWeight: ACCESSIBILITY.TYPOGRAPHY.WEIGHTS.MEDIUM, // Un pic mai gros pentru task-urile prioritare
@@ -613,13 +880,8 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',             // Stil italic
     marginRight: ACCESSIBILITY.SPACING.XS,        // Spațiere între data completării și alte elemente
   },
-  taskContainer: {
-    flexDirection: 'row',            // Aranjează elementele pe orizontală
-    alignItems: 'center',            // Centrează pe verticală
-    flex: 1,                         // Ocupă tot spațiul disponibil
-  },
   deleteAction: {
-    backgroundColor: '#DC2626',      // Roșu pentru acțiunea de ștergere
+    backgroundColor: ACCESSIBILITY.COLORS.STATES.ERROR, // Roșu pentru acțiunea de ștergere
     justifyContent: 'center',        // Centrare pe verticală
     alignItems: 'center',            // Centrare pe orizontală
     width: 100,                      // Lățimea zonei de acțiune
@@ -628,12 +890,60 @@ const styles = StyleSheet.create({
     borderTopRightRadius: ACCESSIBILITY.SPACING.SM,    // Colțuri rotunjite în dreapta
     borderBottomRightRadius: ACCESSIBILITY.SPACING.SM, // Colțuri rotunjite în dreapta
   },
-  deleteActionText: {
+  postponeAction: {
+    backgroundColor: ACCESSIBILITY.COLORS.INTERACTIVE.PRIMARY, // Verde pentru acțiunea de amânare
+    justifyContent: 'center',        // Centrare pe verticală
+    alignItems: 'center',            // Centrare pe orizontală
+    width: 100,                      // Lățimea zonei de acțiune
+    height: '100%',                  // Înălțimea completă
+    flexDirection: 'row',            // Aranjează elementele pe orizontală
+    borderTopLeftRadius: ACCESSIBILITY.SPACING.SM,     // Colțuri rotunjite în stânga
+    borderBottomLeftRadius: ACCESSIBILITY.SPACING.SM,  // Colțuri rotunjite în stânga
+  },
+  actionText: {
     color: 'white',                  // Text alb pentru contrast
     fontSize: 14,                    // Dimensiune font
     fontWeight: '600',               // Grosime font mărită pentru vizibilitate
     marginLeft: ACCESSIBILITY.SPACING.XS, // Spațiere la stânga
   },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  postponeMenu: {
+    backgroundColor: ACCESSIBILITY.COLORS.BACKGROUND.PRIMARY,
+    borderRadius: ACCESSIBILITY.SPACING.SM,
+    padding: ACCESSIBILITY.SPACING.SM,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    maxWidth: 300, // Limităm lățimea meniului pentru a evita depășirea ecranului
+  },
+  postponeMenuItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: ACCESSIBILITY.SPACING.SM,
+    minHeight: ACCESSIBILITY.TOUCH_TARGET.MIN_HEIGHT, // Înălțime minimă pentru accesibilitate
+    borderRadius: ACCESSIBILITY.SPACING.XS,
+  },
+  postponeMenuItemText: {
+    fontSize: ACCESSIBILITY.TYPOGRAPHY.SIZES.BASE,
+    color: ACCESSIBILITY.COLORS.TEXT.PRIMARY,
+    marginLeft: ACCESSIBILITY.SPACING.SM,
+  },
+  postponeMenuTitle: {
+    fontSize: ACCESSIBILITY.TYPOGRAPHY.SIZES.BASE,
+    color: ACCESSIBILITY.COLORS.TEXT.PRIMARY,
+    marginBottom: ACCESSIBILITY.SPACING.XS,
+  },
 });
 
+// Adăugăm exportul implicit la sfârșitul fișierului
 export default TaskItem;
