@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   View,
   Text,
@@ -232,6 +232,33 @@ const TaskItem: React.FC<TaskItemProps> = ({
     );
   };
 
+  // Stare pentru a urmări dacă swipe-ul a fost intenționat
+  const [intentionalSwipe, setIntentionalSwipe] = useState(false);
+
+  // Funcție pentru a gestiona swipe-ul care depășește un anumit prag
+  const handleSwipeWillOpen = useCallback(() => {
+    // Marcăm swipe-ul ca fiind intenționat când se va deschide
+    setIntentionalSwipe(true);
+  }, []);
+
+  // Funcție modificată pentru a gestiona deschiderea swipe-ului
+  const handleSwipeOpen = useCallback(() => {
+    // Declanșăm dialogul de confirmare doar dacă swipe-ul a fost intenționat
+    if (intentionalSwipe) {
+      handleDeleteConfirmation();
+    } else {
+      // Dacă swipe-ul nu a fost intenționat, închidem swipe-ul
+      if (swipeableRef.current) {
+        swipeableRef.current.close();
+      }
+    }
+  }, [intentionalSwipe]);
+
+  // Resetăm starea când componenta se montează sau când task-ul se schimbă
+  useEffect(() => {
+    setIntentionalSwipe(false);
+  }, [task.id]);
+
   /**
    * Renderizează acțiunile din dreapta (swipe stânga) pentru ștergere
    * 
@@ -323,10 +350,11 @@ const TaskItem: React.FC<TaskItemProps> = ({
       <Swipeable
         ref={swipeableRef}
         renderRightActions={renderRightActions}
-        rightThreshold={0.5} // Pragul pentru declanșarea acțiunii (50% din lățimea cardului)
-        friction={2} // Crește rezistența la swipe (valoare mai mare = mai rezistent)
-        overshootFriction={8} // Limitează cât de mult poate fi tras card-ul peste limită
-        onSwipeableRightWillOpen={handleDeleteConfirmation} // Declanșează confirmarea când se va deschide complet
+        rightThreshold={0.6} // Pragul pentru declanșarea acțiunii (60% din lățimea cardului)
+        friction={2.5} // Rezistența la swipe
+        overshootFriction={10} // Limitează cât de mult poate fi tras card-ul peste limită
+        onSwipeableOpen={handleSwipeOpen} // Folosim noua funcție pentru a gestiona deschiderea
+        onSwipeableRightWillOpen={handleSwipeWillOpen} // Marcăm swipe-ul ca fiind intenționat
         containerStyle={{ width: '100%' }}
       >
         <View style={styles.taskContainer}>
