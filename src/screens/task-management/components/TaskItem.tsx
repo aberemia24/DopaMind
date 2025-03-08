@@ -79,23 +79,28 @@ const TaskItem: React.FC<TaskItemProps> = ({
   // Referință pentru a urmări dacă s-a declanșat deja vibrația
   const hasVibrated = useRef(false);
   const listenerIdRef = useRef<string | null>(null);
+  
+  // Stocăm dragX într-o referință pentru curățare
+  const dragXRef = useRef<Animated.AnimatedInterpolation<number> | null>(null);
 
   // Curățăm listener-ul când componenta se demontează
   useEffect(() => {
     return () => {
-      if (listenerIdRef.current) {
-        // Asigurăm curățarea corectă a listener-ului
-        // Nu putem apela removeListener direct aici deoarece nu avem acces la obiectul dragX
-        listenerIdRef.current = null;
+      // Asigurăm curățarea corectă a listener-ului la demontare
+      if (listenerIdRef.current && dragXRef.current) {
+        dragXRef.current.removeListener(listenerIdRef.current);
       }
     };
   }, []);
 
   // Funcție pentru a monitoriza valoarea dragX și a declanșa vibrația
-  const handleDragXChange = (dragX: Animated.AnimatedInterpolation<number>) => {
+  const handleDragXChange = useCallback((dragX: Animated.AnimatedInterpolation<number>) => {
+    // Stocăm referința pentru curățare
+    dragXRef.current = dragX;
+    
     // Curățăm listener-ul anterior dacă există
-    if (listenerIdRef.current) {
-      dragX.removeListener(listenerIdRef.current);
+    if (listenerIdRef.current && dragXRef.current) {
+      dragXRef.current.removeListener(listenerIdRef.current);
     }
     
     // Adăugăm un nou listener
@@ -112,7 +117,7 @@ const TaskItem: React.FC<TaskItemProps> = ({
     
     // Salvăm ID-ul listener-ului pentru curățare ulterioară
     listenerIdRef.current = listenerId;
-  };
+  }, []);
 
   /**
    * Procesează finalizarea editării titlului
@@ -212,9 +217,7 @@ const TaskItem: React.FC<TaskItemProps> = ({
           style: 'cancel',
           onPress: () => {
             // Închide swipe-ul când utilizatorul anulează ștergerea
-            if (swipeableRef.current) {
-              swipeableRef.current.close();
-            }
+            closeSwipeable();
           }
         },
         {
@@ -225,9 +228,7 @@ const TaskItem: React.FC<TaskItemProps> = ({
       ],
       { cancelable: true, onDismiss: () => {
         // Închide swipe-ul și când utilizatorul apasă în afara dialogului
-        if (swipeableRef.current) {
-          swipeableRef.current.close();
-        }
+        closeSwipeable();
       }}
     );
   };
@@ -235,24 +236,40 @@ const TaskItem: React.FC<TaskItemProps> = ({
   // Stare pentru a urmări dacă swipe-ul a fost intenționat
   const [intentionalSwipe, setIntentionalSwipe] = useState(false);
 
-  // Funcție pentru a gestiona swipe-ul care depășește un anumit prag
+  /**
+   * Funcție pentru a închide swipeable și a reseta starea de swipe intenționat
+   * IMPACT: Asigură comportamentul consistent al interfeței după interacțiunile utilizatorului
+   */
+  const closeSwipeable = useCallback(() => {
+    if (swipeableRef.current) {
+      swipeableRef.current.close();
+      // Resetăm starea de swipe intenționat după ce animația se încheie
+      setTimeout(() => setIntentionalSwipe(false), 300);
+    }
+  }, []);
+
+  /**
+   * Funcție pentru a gestiona swipe-ul care depășește un anumit prag
+   * IMPACT: Determină când un swipe este considerat intenționat
+   */
   const handleSwipeWillOpen = useCallback(() => {
     // Marcăm swipe-ul ca fiind intenționat când se va deschide
     setIntentionalSwipe(true);
   }, []);
 
-  // Funcție modificată pentru a gestiona deschiderea swipe-ului
+  /**
+   * Funcție modificată pentru a gestiona deschiderea swipe-ului
+   * IMPACT: Previne declanșarea accidentală a dialogului de confirmare pentru ștergere
+   */
   const handleSwipeOpen = useCallback(() => {
     // Declanșăm dialogul de confirmare doar dacă swipe-ul a fost intenționat
     if (intentionalSwipe) {
       handleDeleteConfirmation();
     } else {
       // Dacă swipe-ul nu a fost intenționat, închidem swipe-ul
-      if (swipeableRef.current) {
-        swipeableRef.current.close();
-      }
+      closeSwipeable();
     }
-  }, [intentionalSwipe]);
+  }, [intentionalSwipe, handleDeleteConfirmation, closeSwipeable]);
 
   // Resetăm starea când componenta se montează sau când task-ul se schimbă
   useEffect(() => {
@@ -266,35 +283,19 @@ const TaskItem: React.FC<TaskItemProps> = ({
    * @param dragX Distanța de tragere pe axa X
    */
   const renderRightActions = (progress: Animated.AnimatedInterpolation<number>, dragX: Animated.AnimatedInterpolation<number>) => {
-    // Calculează transformarea pe baza tragerii
-    const trans = dragX.interpolate({
-      inputRange: [-100, -50, 0],
-      outputRange: [0, 50, 100],
-      extrapolate: 'clamp',
-    });
+    // Lățime fixă pentru butonul de ștergere
+    const width = 100;
     
     // Calculează opacitatea în funcție de progresul tragerii
     const opacity = progress.interpolate({
-      inputRange: [0, 0.5, 1],
-      outputRange: [0, 0.5, 1],
+      inputRange: [0, 1],
+      outputRange: [0, 1],
     });
 
     // Calculează scara pentru efect de zoom
     const scale = progress.interpolate({
-      inputRange: [0, 0.5, 1],
-      outputRange: [0.8, 0.9, 1],
-    });
-
-    // Calculează rotația pentru iconița de ștergere
-    const rotate = progress.interpolate({
       inputRange: [0, 1],
-      outputRange: ['0deg', '360deg'],
-    });
-
-    // Calculează culoarea de fundal în funcție de progres
-    const backgroundColor = progress.interpolate({
-      inputRange: [0, 1],
-      outputRange: ['rgba(220, 38, 38, 0.8)', 'rgba(220, 38, 38, 1)'],
+      outputRange: [0.8, 1],
     });
 
     // Monitorizăm dragX pentru a declanșa vibrația
@@ -305,22 +306,17 @@ const TaskItem: React.FC<TaskItemProps> = ({
         style={[
           styles.deleteAction,
           {
-            transform: [
-              { translateX: trans },
-              { scale: scale }
-            ],
+            width,
             opacity,
-            backgroundColor,
+            transform: [{ scale }],
           },
         ]}
       >
-        <Animated.View style={{ transform: [{ rotate }] }}>
-          <MaterialIcons
-            name="delete-outline"
-            size={24}
-            color="white"
-          />
-        </Animated.View>
+        <MaterialIcons
+          name="delete-outline"
+          size={24}
+          color="white"
+        />
         <Text style={styles.deleteActionText}>{t('common.actions.delete')}</Text>
       </Animated.View>
     );
@@ -350,11 +346,11 @@ const TaskItem: React.FC<TaskItemProps> = ({
       <Swipeable
         ref={swipeableRef}
         renderRightActions={renderRightActions}
-        rightThreshold={0.6} // Pragul pentru declanșarea acțiunii (60% din lățimea cardului)
-        friction={2.5} // Rezistența la swipe
-        overshootFriction={10} // Limitează cât de mult poate fi tras card-ul peste limită
-        onSwipeableOpen={handleSwipeOpen} // Folosim noua funcție pentru a gestiona deschiderea
-        onSwipeableRightWillOpen={handleSwipeWillOpen} // Marcăm swipe-ul ca fiind intenționat
+        rightThreshold={80} // Pragul pentru declanșarea acțiunii (80px)
+        friction={2} // Rezistența la swipe redusă pentru o experiență mai fluidă
+        overshootRight={false} // Previne depășirea limitei la dreapta
+        onSwipeableWillOpen={handleSwipeWillOpen} // Marcăm swipe-ul ca fiind intenționat
+        onSwipeableRightOpen={handleSwipeOpen} // Folosim noua funcție pentru a gestiona deschiderea
         containerStyle={{ width: '100%' }}
       >
         <View style={styles.taskContainer}>
