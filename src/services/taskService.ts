@@ -19,10 +19,12 @@ export interface Task {
     frequency: 'daily' | 'weekly' | 'monthly';
     interval: number;
   };
+  notes?: string; // Note adiționale pentru task
+  category?: string; // Categoria task-ului
 }
 
 // Tip pentru actualizări care permite și FieldValue pentru câmpurile care pot fi șterse
-type TaskUpdateData = {
+export type TaskUpdateData = {
   [K in keyof Omit<Task, 'id'>]?: K extends 'completedAt' ? Task[K] | FieldValue : Task[K];
 };
 
@@ -58,7 +60,9 @@ const validateTaskData = (data: unknown): TaskData => {
     dueDate,
     reminderMinutes,
     repeat,
-    completedAt
+    completedAt,
+    notes,
+    category
   } = data as Record<string, unknown>;
 
   if (typeof title !== 'string' || !title) {
@@ -119,6 +123,14 @@ const validateTaskData = (data: unknown): TaskData => {
     throw new Error('Invalid task data: repeat interval must be a valid number if present');
   }
 
+  if (notes !== undefined && typeof notes !== 'string') {
+    throw new Error('Invalid task data: notes must be a string if present');
+  }
+
+  if (category !== undefined && typeof category !== 'string') {
+    throw new Error('Invalid task data: category must be a string if present');
+  }
+
   const validatedRepeat = repeat as Task['repeat'];
 
   return {
@@ -133,7 +145,9 @@ const validateTaskData = (data: unknown): TaskData => {
     dueDate,
     reminderMinutes,
     repeat: validatedRepeat,
-    completedAt
+    completedAt,
+    notes,
+    category
   };
 };
 

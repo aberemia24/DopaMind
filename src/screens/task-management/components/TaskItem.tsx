@@ -443,9 +443,7 @@ const TaskItem: React.FC<TaskItemProps> = ({
    * Deschide modalul de editare a task-ului
    */
   const handleOpenEditModal = () => {
-    if (!isEditing) {
-      setShowEditModal(true);
-    }
+    setShowEditModal(true);
   };
 
   /**
@@ -499,7 +497,8 @@ const TaskItem: React.FC<TaskItemProps> = ({
       doubleTapTimeoutRef.current = setTimeout(() => {
         // Dacă nu a fost detectat un double tap, considerăm că este un single tap
         if (lastTapRef.current !== 0) {
-          // Nu facem nimic aici, tap-ul simplu va fi gestionat de TouchableOpacity părinte
+          // Deschide modalul de editare la single tap
+          handleOpenEditModal();
           lastTapRef.current = 0;
         }
       }, DOUBLE_PRESS_DELAY);
@@ -867,6 +866,7 @@ const TaskItem: React.FC<TaskItemProps> = ({
         task={task}
         onClose={handleCloseEditModal}
         onUpdate={handleUpdateFromModal}
+        onDelete={onDelete}
       />
     </View>
   );

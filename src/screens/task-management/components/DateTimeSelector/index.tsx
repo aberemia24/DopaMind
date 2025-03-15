@@ -16,6 +16,8 @@ interface DateTimeSelectorProps {
   reminderMinutes?: number;
   onDateTimeChange: (updates: Partial<Task>) => void;
   isCompleted?: boolean;
+  initialModalVisible?: boolean;
+  onClose?: () => void;
 }
 
 type TabType = 'date' | 'duration';
@@ -32,6 +34,8 @@ export const DateTimeSelector: React.FC<DateTimeSelectorProps> = ({
   reminderMinutes,
   onDateTimeChange,
   isCompleted = false,
+  initialModalVisible = false,
+  onClose,
 }) => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<TabType>('date');
@@ -40,7 +44,7 @@ export const DateTimeSelector: React.FC<DateTimeSelectorProps> = ({
     return typeof dueDate === 'string' ? new Date(dueDate) : dueDate;
   });
   const [showTimePicker, setShowTimePicker] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
+  const [modalVisible, setModalVisible] = useState(initialModalVisible);
 
   const handleDateSelect = (date: Date) => {
     setSelectedDate(date);
@@ -236,7 +240,10 @@ export const DateTimeSelector: React.FC<DateTimeSelectorProps> = ({
         animationType="slide"
         transparent={true}
         visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}
+        onRequestClose={() => {
+          setModalVisible(false);
+          if (onClose) onClose();
+        }}
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
@@ -247,7 +254,10 @@ export const DateTimeSelector: React.FC<DateTimeSelectorProps> = ({
                   {t(TASK_TRANSLATIONS.DATE_TIME_SELECTOR.TITLE)}
                 </Text>
                 <TouchableOpacity
-                  onPress={() => setModalVisible(false)}
+                  onPress={() => {
+                    setModalVisible(false);
+                    if (onClose) onClose();
+                  }}
                   accessibilityRole="button"
                   accessibilityLabel={t(TASK_TRANSLATIONS.BUTTONS.CLOSE)}
                 >
@@ -280,7 +290,10 @@ export const DateTimeSelector: React.FC<DateTimeSelectorProps> = ({
                 </Text>
                 <TouchableOpacity
                   style={styles.headerButton}
-                  onPress={() => setModalVisible(false)}
+                  onPress={() => {
+                    setModalVisible(false);
+                    if (onClose) onClose();
+                  }}
                   accessibilityRole="button"
                   accessibilityLabel={t(TASK_TRANSLATIONS.BUTTONS.CLOSE)}
                 >
@@ -309,7 +322,10 @@ export const DateTimeSelector: React.FC<DateTimeSelectorProps> = ({
                     <View style={styles.buttonContainer}>
                       <TouchableOpacity
                         style={styles.iconButton}
-                        onPress={() => setModalVisible(false)}
+                        onPress={() => {
+                          setModalVisible(false);
+                          if (onClose) onClose();
+                        }}
                         accessibilityRole="button"
                         accessibilityLabel={t(TASK_TRANSLATIONS.BUTTONS.OK)}
                       >
@@ -332,6 +348,7 @@ export const DateTimeSelector: React.FC<DateTimeSelectorProps> = ({
                           if (selectedDate) {
                             // Închide modalul direct dacă avem deja o dată selectată
                             setModalVisible(false);
+                            if (onClose) onClose();
                           }
                         }}
                         accessibilityRole="button"
