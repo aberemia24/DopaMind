@@ -23,67 +23,6 @@ interface QuickOptionsProps {
  */
 const QUICK_OPTIONS: QuickOption[] = [
   {
-    id: 'today',
-    icon: 'today',
-    titleKey: TASK_TRANSLATIONS.DATE_TIME_SELECTOR.QUICK_OPTIONS.TODAY,
-    getDate: () => ({
-      date: new Date(),
-      time: { hours: 12, minutes: 0 }, // Ora implicită pentru astăzi - prânz
-    }),
-  },
-  {
-    id: 'tomorrow',
-    icon: 'event',
-    titleKey: TASK_TRANSLATIONS.DATE_TIME_SELECTOR.QUICK_OPTIONS.TOMORROW,
-    getDate: () => {
-      const tomorrow = new Date();
-      tomorrow.setDate(tomorrow.getDate() + 1);
-      return { 
-        date: tomorrow,
-        time: { hours: 12, minutes: 0 }, // Ora implicită pentru "mâine" - prânz
-      };
-    },
-  },
-  {
-    id: 'tonight',
-    icon: 'nights-stay',
-    titleKey: TASK_TRANSLATIONS.DATE_TIME_SELECTOR.QUICK_OPTIONS.TONIGHT,
-    getDate: () => ({
-      date: new Date(),
-      time: { hours: 20, minutes: 0 }, // Ora implicită pentru "în această seară" - 20:00
-    }),
-  },
-  {
-    id: 'weekend',
-    icon: 'weekend',
-    titleKey: TASK_TRANSLATIONS.DATE_TIME_SELECTOR.QUICK_OPTIONS.WEEKEND,
-    getDate: () => {
-      const today = new Date();
-      const dayOfWeek = today.getDay(); // 0 = Duminică, 6 = Sâmbătă
-      const daysUntilSaturday = dayOfWeek === 6 ? 7 : 6 - dayOfWeek;
-      const weekend = new Date();
-      weekend.setDate(today.getDate() + daysUntilSaturday);
-      return {
-        date: weekend,
-        time: { hours: 10, minutes: 0 }, // Ora implicită pentru weekend - 10:00
-      };
-    },
-  },
-  {
-    id: 'nextWeek',
-    icon: 'date-range',
-    titleKey: TASK_TRANSLATIONS.DATE_TIME_SELECTOR.QUICK_OPTIONS.NEXT_WEEK,
-    getDate: () => {
-      const today = new Date();
-      const nextWeek = new Date();
-      nextWeek.setDate(today.getDate() + 7);
-      return {
-        date: nextWeek,
-        time: { hours: 9, minutes: 0 }, // Ora implicită pentru "săptămâna viitoare" - 9:00
-      };
-    },
-  },
-  {
     id: 'morning',
     icon: 'wb-sunny',
     titleKey: TASK_TRANSLATIONS.DATE_TIME_SELECTOR.QUICK_OPTIONS.MORNING,
@@ -109,6 +48,33 @@ const QUICK_OPTIONS: QuickOption[] = [
       date: new Date(),
       time: { hours: 20, minutes: 0 }, // Ora implicită pentru seară - 20:00
     }),
+  },
+  {
+    id: 'tomorrow',
+    icon: 'event',
+    titleKey: TASK_TRANSLATIONS.DATE_TIME_SELECTOR.QUICK_OPTIONS.TOMORROW,
+    getDate: () => {
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      return { 
+        date: tomorrow,
+        time: { hours: 12, minutes: 0 }, // Ora implicită pentru "mâine" - prânz
+      };
+    },
+  },
+  {
+    id: 'nextWeek',
+    icon: 'date-range',
+    titleKey: TASK_TRANSLATIONS.DATE_TIME_SELECTOR.QUICK_OPTIONS.NEXT_WEEK,
+    getDate: () => {
+      const today = new Date();
+      const nextWeek = new Date();
+      nextWeek.setDate(today.getDate() + 7);
+      return {
+        date: nextWeek,
+        time: { hours: 9, minutes: 0 }, // Ora implicită pentru "săptămâna viitoare" - 9:00
+      };
+    },
   },
 ];
 
