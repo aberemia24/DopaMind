@@ -208,6 +208,11 @@ export const updateTask = async (
     // Procesăm câmpurile null pentru a le transforma în deleteField()
     const processedUpdates = { ...updates };
     
+    // Verificăm dacă titlul este gol și îl înlocuim cu "untitled task"
+    if (processedUpdates.title !== undefined && processedUpdates.title.trim() === '') {
+      processedUpdates.title = 'untitled task';
+    }
+    
     // Verificăm dacă completedAt este null sau undefined și îl înlocuim cu deleteField()
     if (processedUpdates.completedAt === null || processedUpdates.completedAt === undefined) {
       processedUpdates.completedAt = deleteField();

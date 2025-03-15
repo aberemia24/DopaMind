@@ -37,6 +37,9 @@ interface TaskDraggableProps {
   onDragStart?: () => void;       // Handler apelat când începe operațiunea de drag
   onDragEnd?: () => void;         // Handler apelat când se termină operațiunea de drag
   onDragOver?: (periodId: string, isOver: boolean) => void; // Handler pentru când sarcina este trasă peste o zonă
+  onToggle?: () => void;          // Handler pentru schimbarea stării de finalizare
+  onDelete?: () => void;          // Handler pentru ștergerea sarcinii
+  onUpdate?: (updates: Partial<Task>) => void; // Handler pentru actualizarea parțială a sarcinii
 }
 
 /**
@@ -49,7 +52,10 @@ const TaskDraggable: React.FC<TaskDraggableProps> = ({
   onDropTask,
   onDragStart,
   onDragEnd,
-  onDragOver
+  onDragOver,
+  onToggle = () => {},
+  onDelete = () => {},
+  onUpdate = () => {}
 }) => {
   const { t } = useTranslation();
   
@@ -372,9 +378,9 @@ const TaskDraggable: React.FC<TaskDraggableProps> = ({
     return (
       <TaskItem
         task={task}
-        onToggle={() => {}}
-        onDelete={() => {}}
-        onUpdate={() => {}}
+        onToggle={onToggle}
+        onDelete={onDelete}
+        onUpdate={onUpdate}
       />
     );
   }
@@ -397,9 +403,9 @@ const TaskDraggable: React.FC<TaskDraggableProps> = ({
         >
           <TaskItem
             task={task}
-            onToggle={() => {}}
-            onDelete={() => {}}
-            onUpdate={() => {}}
+            onToggle={onToggle}
+            onDelete={onDelete}
+            onUpdate={onUpdate}
           />
         </Animated.View>
       </GestureDetector>

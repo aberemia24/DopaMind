@@ -127,6 +127,17 @@ export const TaskProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // Creăm task-ul actualizat
       const updatedTask = { ...taskToUpdate, ...updates, updatedAt: Date.now() };
       
+      // Verificăm dacă titlul este valid (nu este gol)
+      if (updates.title !== undefined) {
+        if (updates.title.trim() === '') {
+          // Dacă titlul este gol, păstrăm titlul original
+          updatedTask.title = taskToUpdate.title;
+        } else {
+          // Altfel, folosim titlul actualizat
+          updatedTask.title = updates.title.trim();
+        }
+      }
+      
       // Determinăm noua perioadă bazată pe ora din dueDate (dacă a fost actualizată)
       let newPeriod = currentPeriod;
       if (updates.dueDate || updates.period) {

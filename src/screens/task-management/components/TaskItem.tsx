@@ -10,6 +10,7 @@ import {
   Animated,
   Modal,
   TouchableWithoutFeedback,
+  Platform,
 } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { format } from 'date-fns';
@@ -50,8 +51,16 @@ const TaskItem: React.FC<TaskItemProps> = ({
   // Stare pentru textul titlului în timpul editării
   const [title, setTitle] = useState(task.title);
   
+  // Actualizăm starea title când se schimbă task.title
+  useEffect(() => {
+    setTitle(task.title);
+  }, [task.title]);
+  
   // Stare pentru afișarea menu-ului de amânare
   const [showPostponeMenu, setShowPostponeMenu] = useState(false);
+  
+  // Referință pentru animația de scalare
+  const scaleAnim = useRef(new Animated.Value(1)).current;
   
   // Poziția TaskItem - folosită pentru poziționarea meniului de amânare
   const [taskPosition, setTaskPosition] = useState({ x: 0, y: 0, width: 0, height: 0 });
@@ -192,9 +201,42 @@ const TaskItem: React.FC<TaskItemProps> = ({
    * Procesează finalizarea editării titlului
    */
   const handleSubmitEditing = () => {
-    if (title.trim() !== task.title) {
-      onUpdate({ title: title.trim() });
+    // Verificăm dacă titlul s-a schimbat și nu este gol
+    const trimmedTitle = title.trim();
+    if (trimmedTitle === '') {
+      // Dacă titlul este gol, revenim la titlul original sau folosim "untitled task"
+      setTitle(task.title || t('taskManagement.labels.untitledTask'));
+      setIsEditing(false);
+      return;
     }
+
+    if (trimmedTitle !== task.title) {
+      // Actualizăm titlul în baza de date
+      onUpdate({ title: trimmedTitle });
+      
+      // Actualizăm starea locală pentru a reflecta imediat schimbarea
+      setTitle(trimmedTitle);
+      
+      // Animație subtilă pentru feedback vizual
+      Animated.sequence([
+        Animated.timing(scaleAnim, {
+          toValue: 1.05,
+          duration: 100,
+          useNativeDriver: true
+        }),
+        Animated.timing(scaleAnim, {
+          toValue: 1,
+          duration: 100,
+          useNativeDriver: true
+        })
+      ]).start();
+      
+      // Feedback haptic subtil pentru confirmare
+      if (Platform.OS === 'ios' || Platform.OS === 'android') {
+        Vibration.vibrate(20); // Vibrație foarte scurtă pentru feedback
+      }
+    }
+    
     setIsEditing(false);
   };
 
@@ -606,7 +648,12 @@ const TaskItem: React.FC<TaskItemProps> = ({
           onSwipeableLeftOpen={handleRightSwipeOpen} // Gestionăm deschiderea swipe-ului la dreapta
           containerStyle={{ width: '100%' }}
         >
-          <View style={styles.taskContainer}>
+          <Animated.View 
+            style={[
+              styles.taskContainer,
+              { transform: [{ scale: scaleAnim }] }
+            ]}
+          >
             {/* Checkbox pentru marcarea sarcinii ca finalizată/nefinalizată */}
             <TouchableOpacity
               style={task.completed ? styles.completedCheckbox : styles.checkbox}
@@ -721,7 +768,7 @@ const TaskItem: React.FC<TaskItemProps> = ({
                 )}
               </View>
             )}
-          </View>
+          </Animated.View>
         </Swipeable>
       </Animated.View>
 

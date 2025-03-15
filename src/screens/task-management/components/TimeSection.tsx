@@ -353,6 +353,9 @@ const TimeSection: React.FC<TimeSectionProps> = ({
                         onDragStart={handleDragStart}
                         onDragEnd={handleDragEnd}
                         onDragOver={handleDragOver}
+                        onToggle={() => handleToggleTask(task.id)}
+                        onDelete={() => onDeleteTask(task.id)}
+                        onUpdate={(updates: Partial<Task>) => onUpdateTask(task.id, updates)}
                       />
                     ) : (
                       // Pentru sarcinile completate, nu aplicăm funcționalitatea de drag and drop
