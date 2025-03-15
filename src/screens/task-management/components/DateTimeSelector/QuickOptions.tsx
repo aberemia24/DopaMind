@@ -23,30 +23,12 @@ interface QuickOptionsProps {
  */
 const QUICK_OPTIONS: QuickOption[] = [
   {
-    id: 'morning',
-    icon: 'wb-sunny',
-    titleKey: TASK_TRANSLATIONS.DATE_TIME_SELECTOR.TIME_PICKER.MORNING,
+    id: 'today',
+    icon: 'today',
+    titleKey: TASK_TRANSLATIONS.DATE_TIME_SELECTOR.QUICK_OPTIONS.TODAY,
     getDate: () => ({
       date: new Date(),
-      time: { hours: 9, minutes: 0 }, // Ora implicită pentru dimineață - 9:00
-    }),
-  },
-  {
-    id: 'afternoon',
-    icon: 'wb-twilight',
-    titleKey: TASK_TRANSLATIONS.DATE_TIME_SELECTOR.TIME_PICKER.AFTERNOON,
-    getDate: () => ({
-      date: new Date(),
-      time: { hours: 14, minutes: 0 }, // Ora implicită pentru după-amiază - 14:00
-    }),
-  },
-  {
-    id: 'evening',
-    icon: 'nights-stay',
-    titleKey: TASK_TRANSLATIONS.DATE_TIME_SELECTOR.TIME_PICKER.EVENING,
-    getDate: () => ({
-      date: new Date(),
-      time: { hours: 20, minutes: 0 }, // Ora implicită pentru seară - 20:00
+      time: { hours: 12, minutes: 0 }, // Ora implicită pentru astăzi - prânz
     }),
   },
   {
@@ -61,6 +43,72 @@ const QUICK_OPTIONS: QuickOption[] = [
         time: { hours: 12, minutes: 0 }, // Ora implicită pentru "mâine" - prânz
       };
     },
+  },
+  {
+    id: 'tonight',
+    icon: 'nights-stay',
+    titleKey: TASK_TRANSLATIONS.DATE_TIME_SELECTOR.QUICK_OPTIONS.TONIGHT,
+    getDate: () => ({
+      date: new Date(),
+      time: { hours: 20, minutes: 0 }, // Ora implicită pentru "în această seară" - 20:00
+    }),
+  },
+  {
+    id: 'weekend',
+    icon: 'weekend',
+    titleKey: TASK_TRANSLATIONS.DATE_TIME_SELECTOR.QUICK_OPTIONS.WEEKEND,
+    getDate: () => {
+      const today = new Date();
+      const dayOfWeek = today.getDay(); // 0 = Duminică, 6 = Sâmbătă
+      const daysUntilSaturday = dayOfWeek === 6 ? 7 : 6 - dayOfWeek;
+      const weekend = new Date();
+      weekend.setDate(today.getDate() + daysUntilSaturday);
+      return {
+        date: weekend,
+        time: { hours: 10, minutes: 0 }, // Ora implicită pentru weekend - 10:00
+      };
+    },
+  },
+  {
+    id: 'nextWeek',
+    icon: 'date-range',
+    titleKey: TASK_TRANSLATIONS.DATE_TIME_SELECTOR.QUICK_OPTIONS.NEXT_WEEK,
+    getDate: () => {
+      const today = new Date();
+      const nextWeek = new Date();
+      nextWeek.setDate(today.getDate() + 7);
+      return {
+        date: nextWeek,
+        time: { hours: 9, minutes: 0 }, // Ora implicită pentru "săptămâna viitoare" - 9:00
+      };
+    },
+  },
+  {
+    id: 'morning',
+    icon: 'wb-sunny',
+    titleKey: TASK_TRANSLATIONS.DATE_TIME_SELECTOR.QUICK_OPTIONS.MORNING,
+    getDate: () => ({
+      date: new Date(),
+      time: { hours: 9, minutes: 0 }, // Ora implicită pentru dimineață - 9:00
+    }),
+  },
+  {
+    id: 'afternoon',
+    icon: 'wb-twilight',
+    titleKey: TASK_TRANSLATIONS.DATE_TIME_SELECTOR.QUICK_OPTIONS.AFTERNOON,
+    getDate: () => ({
+      date: new Date(),
+      time: { hours: 14, minutes: 0 }, // Ora implicită pentru după-amiază - 14:00
+    }),
+  },
+  {
+    id: 'evening',
+    icon: 'bedtime',
+    titleKey: TASK_TRANSLATIONS.DATE_TIME_SELECTOR.QUICK_OPTIONS.EVENING,
+    getDate: () => ({
+      date: new Date(),
+      time: { hours: 20, minutes: 0 }, // Ora implicită pentru seară - 20:00
+    }),
   },
 ];
 
@@ -124,23 +172,24 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: ACCESSIBILITY.COLORS.BACKGROUND.SECONDARY,
     borderRadius: ACCESSIBILITY.SPACING.SM,
-    padding: ACCESSIBILITY.SPACING.SM,
-    marginRight: ACCESSIBILITY.SPACING.SM,
-    minHeight: ACCESSIBILITY.TOUCH_TARGET.MIN_HEIGHT,
-    minWidth: ACCESSIBILITY.TOUCH_TARGET.MIN_WIDTH * 2,
+    paddingHorizontal: ACCESSIBILITY.SPACING.SM,
+    paddingVertical: ACCESSIBILITY.SPACING.XS,
+    marginHorizontal: ACCESSIBILITY.SPACING.XS,
+    minWidth: 100,
+    minHeight: 44, // Respectă standardul de accesibilitate pentru touch targets
   },
   selectedOption: {
     backgroundColor: ACCESSIBILITY.COLORS.INTERACTIVE.PRIMARY,
   },
-  selectedText: {
-    color: ACCESSIBILITY.COLORS.TEXT.ON_INTERACTIVE,
-  },
   icon: {
-    marginRight: ACCESSIBILITY.SPACING.SM,
+    marginRight: ACCESSIBILITY.SPACING.XS,
   },
   text: {
     fontSize: ACCESSIBILITY.TYPOGRAPHY.SIZES.SM,
     color: ACCESSIBILITY.COLORS.TEXT.PRIMARY,
+  },
+  selectedText: {
+    color: ACCESSIBILITY.COLORS.TEXT.ON_INTERACTIVE,
     fontWeight: ACCESSIBILITY.TYPOGRAPHY.WEIGHTS.MEDIUM,
   },
 });

@@ -141,7 +141,11 @@ export const TASK_TRANSLATIONS = {
       TOMORROW: 'taskManagement.dateTimeSelector.quickOptions.tomorrow',
       TONIGHT: 'taskManagement.dateTimeSelector.quickOptions.tonight',
       WEEKEND: 'taskManagement.dateTimeSelector.quickOptions.weekend',
-      NEXT_WEEK: 'taskManagement.dateTimeSelector.quickOptions.nextWeek'
+      NEXT_WEEK: 'taskManagement.dateTimeSelector.quickOptions.nextWeek',
+      MORNING: 'taskManagement.dateTimeSelector.quickOptions.morning',
+      AFTERNOON: 'taskManagement.dateTimeSelector.quickOptions.afternoon',
+      EVENING: 'taskManagement.dateTimeSelector.quickOptions.evening',
+      CUSTOM: 'taskManagement.dateTimeSelector.quickOptions.custom'
     },
     TIME_PICKER: {
       TITLE: 'taskManagement.dateTimeSelector.timePicker.title',

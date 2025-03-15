@@ -160,7 +160,52 @@
       "completedAt": "Completed at",
       "taskTitlePlaceholder": "Task title",
       "priority": "Priority",
-      "dragTaskInstructions": "Press and hold to drag tasks between periods"
+      "dragTaskInstructions": "Press and hold to drag tasks between periods",
+      "title": "Title",
+      "category": "Category",
+      "notes": "Notes"
+    },
+    "placeholders": {
+      "taskTitle": "Enter task title",
+      "category": "Enter category",
+      "notes": "Enter notes"
+    },
+    "modals": {
+      "editTask": "Edit Task",
+      "taskEditModal": {
+        "title": "Edit Task",
+        "save": "Save",
+        "cancel": "Cancel",
+        "delete": "Delete",
+        "priority": "Priority",
+        "dueDate": "Due Date",
+        "notes": "Notes"
+      }
+    },
+    "accessibility": {
+      "expandHintText": "Expand to see tasks for this period",
+      "collapseHint": "Collapse to hide tasks for this period",
+      "taskItem": "Task: {{title}}",
+      "taskCompleted": "Completed task: {{title}}",
+      "taskDueDate": "Due date: {{date}}",
+      "deleteTask": "Delete task {{title}}",
+      "editTask": "Edit task {{title}}",
+      "dragTask": "Move task {{title}}",
+      "draggableTask": "Task that can be moved between periods",
+      "dragHint": "Long press and drag to move task to another period",
+      "dropSuccess": "Task was moved to {{period}} period",
+      "selectDueDate": "Select due date",
+      "clearDueDate": "Clear due date"
+    },
+    "alerts": {
+      "deleteTaskTitle": "Delete Task",
+      "deleteTaskMessage": "Are you sure you want to delete this task?",
+      "deleteConfirm": {
+        "title": "Delete Task",
+        "message": "Are you sure you want to delete this task?",
+        "confirm": "Yes, delete",
+        "cancel": "No, cancel"
+      }
     },
     "quickOptions": {
       "reminder": {
@@ -173,14 +218,20 @@
         "daily": "Every day",
         "weekly": "Every week",
         "monthly": "Every month"
+      },
+      "timeOfDay": {
+        "morning": "Morning",
+        "afternoon": "Afternoon",
+        "evening": "Evening"
       }
     },
     "dateTimeSelector": {
-      "title": "Set Date & Time",
-      "comingSoon": "Duration settings coming soon",
+      "title": "Set Date and Time",
+      "comingSoon": "Duration settings will be available soon",
       "tabs": {
         "date": "Date",
-        "time": "Time"
+        "time": "Time",
+        "duration": "Duration"
       },
       "buttons": {
         "nextMonth": "Next month",
@@ -194,7 +245,8 @@
         "cancel": "Cancel",
         "clear": "Clear date/time",
         "save": "Save",
-        "setDateTime": "Set date and time"
+        "setDateTime": "Set date and time",
+        "close": "Close"
       },
       "errors": {
         "invalidHour": "Invalid hour. Please enter a value between 0-23.",
@@ -205,12 +257,36 @@
         "today": "Today",
         "tomorrow": "Tomorrow",
         "weekend": "Weekend",
-        "nextWeek": "Next week"
+        "nextWeek": "Next week",
+        "tonight": "Tonight",
+        "morning": "Morning",
+        "afternoon": "Afternoon",
+        "evening": "Evening",
+        "custom": "Custom"
       },
       "timePeriods": {
         "morning": "Morning",
         "afternoon": "Afternoon",
         "evening": "Evening"
+      },
+      "calendar": {
+        "previousMonth": "Previous month",
+        "nextMonth": "Next month",
+        "selectDate": "Select date"
+      },
+      "timePicker": {
+        "title": "Select time",
+        "hour": "Hour",
+        "minute": "Minute",
+        "selectTime": "Select time"
+      },
+      "reminders": {
+        "title": "Set reminder",
+        "atTime": "At time of event",
+        "before15m": "15 minutes before",
+        "before30m": "30 minutes before",
+        "before1h": "1 hour before",
+        "before2h": "2 hours before"
       }
     },
     "buttons": {
@@ -224,19 +300,6 @@
       "completeTask": "Mark as complete",
       "uncompleteTask": "Mark as incomplete",
       "postponeTask": "Postpone task"
-    },
-    "accessibility": {
-      "expandHintText": "Expand to see tasks for this period",
-      "collapseHint": "Collapse to hide tasks for this period",
-      "taskItem": "Task: {{title}}",
-      "taskCompleted": "Completed task: {{title}}",
-      "taskDueDate": "Due date: {{date}}",
-      "deleteTask": "Delete task {{title}}",
-      "editTask": "Edit task {{title}}",
-      "dragTask": "Move task {{title}}",
-      "draggableTask": "Task that can be moved between periods",
-      "dragHint": "Long press and drag to move task to another period",
-      "dropSuccess": "Task was moved to {{period}} period"
     },
     "errors": {
       "fetchTasks": "Error loading tasks",

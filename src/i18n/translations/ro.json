@@ -178,70 +178,27 @@
       "completedAt": "Finalizat la",
       "taskTitlePlaceholder": "Titlul sarcinii",
       "priority": "Prioritate",
-      "dragTaskInstructions": "Apasă lung pentru a muta sarcina între perioade"
+      "dragTaskInstructions": "Apasă lung pentru a muta sarcina între perioade",
+      "title": "Titlu",
+      "category": "Categorie",
+      "notes": "Note"
     },
-    "quickOptions": {
-      "reminder": {
-        "fiveMin": "5 minute înainte",
-        "fifteenMin": "15 minute înainte",
-        "thirtyMin": "30 minute înainte",
-        "oneHour": "1 oră înainte"
-      },
-      "repeat": {
-        "daily": "În fiecare zi",
-        "weekly": "În fiecare săptămână",
-        "monthly": "În fiecare lună"
-      }
+    "placeholders": {
+      "taskTitle": "Introdu titlul sarcinii",
+      "category": "Introdu categoria",
+      "notes": "Introdu note"
     },
-    "dateTimeSelector": {
-      "title": "Setează Data și Ora",
-      "comingSoon": "Setările de durată vor fi disponibile în curând",
-      "tabs": {
-        "date": "Data",
-        "time": "Ora"
-      },
-      "buttons": {
-        "nextMonth": "Luna următoare",
-        "previousMonth": "Luna anterioară",
-        "ok": "OK",
-        "back": "Înapoi",
-        "confirm": "Confirmă",
-        "setTime": "Setează ora",
-        "setDate": "Setează data",
-        "done": "Gata",
-        "cancel": "Anulează",
-        "clear": "Șterge data/ora",
+    "modals": {
+      "editTask": "Editare Sarcină",
+      "taskEditModal": {
+        "title": "Editare Sarcină",
         "save": "Salvează",
-        "setDateTime": "Setează data și ora"
-      },
-      "errors": {
-        "invalidHour": "Oră invalidă. Introduceți o valoare între 0-23.",
-        "invalidMinute": "Minute invalide. Introduceți o valoare între 0-59.",
-        "required": "Câmpul este obligatoriu."
-      },
-      "quickOptions": {
-        "today": "Astăzi",
-        "tomorrow": "Mâine",
-        "weekend": "Weekend",
-        "nextWeek": "Săptămâna viitoare"
-      },
-      "timePeriods": {
-        "morning": "Dimineață",
-        "afternoon": "După-amiază",
-        "evening": "Seară"
+        "cancel": "Anulează",
+        "delete": "Șterge",
+        "priority": "Prioritate",
+        "dueDate": "Data scadentă",
+        "notes": "Note"
       }
-    },
-    "buttons": {
-      "addTask": "Adaugă sarcină nouă",
-      "editTask": "Editează sarcina",
-      "deleteTask": "Șterge sarcina",
-      "setPriority": "Setează prioritate",
-      "setDate": "Setează data",
-      "expandSection": "Extinde secțiunea {{section}}",
-      "collapseSection": "Restrânge secțiunea {{section}}",
-      "completeTask": "Marchează ca finalizată",
-      "uncompleteTask": "Marchează ca nefinalizată",
-      "postponeTask": "Amână sarcina"
     },
     "accessibility": {
       "expandHintText": "Extinde pentru a vedea sarcinile din această perioadă",
@@ -255,6 +212,8 @@
       "draggableTask": "Sarcină care poate fi mutată între perioade",
       "dragHint": "Apasă lung și trage pentru a muta sarcina în altă perioadă",
       "dropSuccess": "Sarcina a fost mutată în perioada {{period}}",
+      "selectDueDate": "Selectează data scadentă",
+      "clearDueDate": "Șterge data scadentă",
       "taskList": "Listă de sarcini organizate pe perioade de timp",
       "taskStatus": "Sarcina {{title}} este {{status}}",
       "toggleComplete": "{{action}} sarcina",
@@ -265,6 +224,27 @@
       "validation": {
         "titleTooShort": "Titlul trebuie să aibă cel puțin 3 caractere",
         "titleRequired": "@:common.validation.required"
+      }
+    },
+    "alerts": {
+      "deleteTaskTitle": "Șterge Sarcină",
+      "deleteTaskMessage": "Ești sigur că vrei să ștergi această sarcină?",
+      "deleteConfirm": {
+        "title": "Șterge Sarcină",
+        "message": "Ești sigur că vrei să ștergi această sarcină?",
+        "confirm": "Da, șterge",
+        "cancel": "Nu, renunță"
+      },
+      "softLimit": {
+        "title": "Limită de Sarcini Atinsă",
+        "message": "Ai atins limita recomandată de sarcini pentru această perioadă. Adăugarea prea multor sarcini ar putea face dificilă finalizarea lor. Dorești totuși să adaugi această sarcină?",
+        "confirm": "Da, adaugă sarcina",
+        "cancel": "Nu, voi gestiona mai întâi sarcinile existente"
+      },
+      "postpone": {
+        "success": "Sarcină amânată",
+        "message": "Sarcina a fost amânată pentru {{date}}",
+        "title": "Amânare reușită"
       }
     },
     "errors": {
@@ -285,31 +265,101 @@
       "markIncomplete": "@:common.actions.markIncomplete",
       "postpone": "Amână"
     },
+    "quickOptions": {
+      "reminder": {
+        "fiveMin": "5 minute înainte",
+        "fifteenMin": "15 minute înainte",
+        "thirtyMin": "30 minute înainte",
+        "oneHour": "1 oră înainte"
+      },
+      "repeat": {
+        "daily": "În fiecare zi",
+        "weekly": "În fiecare săptămână",
+        "monthly": "În fiecare lună"
+      }
+    },
+    "dateTimeSelector": {
+      "title": "Setează Data și Ora",
+      "comingSoon": "Setările de durată vor fi disponibile în curând",
+      "tabs": {
+        "date": "Data",
+        "time": "Ora",
+        "duration": "Durata"
+      },
+      "buttons": {
+        "nextMonth": "Luna următoare",
+        "previousMonth": "Luna anterioară",
+        "ok": "OK",
+        "back": "Înapoi",
+        "confirm": "Confirmă",
+        "setTime": "Setează ora",
+        "setDate": "Setează data",
+        "done": "Gata",
+        "cancel": "Anulează",
+        "clear": "Șterge data/ora",
+        "save": "Salvează",
+        "setDateTime": "Setează data și ora",
+        "close": "Închide"
+      },
+      "errors": {
+        "invalidHour": "Oră invalidă. Introduceți o valoare între 0-23.",
+        "invalidMinute": "Minute invalide. Introduceți o valoare între 0-59.",
+        "required": "Câmpul este obligatoriu."
+      },
+      "quickOptions": {
+        "today": "Astăzi",
+        "tomorrow": "Mâine",
+        "weekend": "Weekend",
+        "nextWeek": "Săptămâna viitoare",
+        "tonight": "În această seară",
+        "morning": "Dimineață",
+        "afternoon": "După-amiază",
+        "evening": "Seară",
+        "custom": "Personalizat"
+      },
+      "timePeriods": {
+        "morning": "Dimineață",
+        "afternoon": "După-amiază",
+        "evening": "Seară"
+      },
+      "calendar": {
+        "previousMonth": "Luna anterioară",
+        "nextMonth": "Luna următoare",
+        "selectDate": "Selectează data"
+      },
+      "timePicker": {
+        "title": "Selectează ora",
+        "hour": "Oră",
+        "minute": "Minut",
+        "selectTime": "Selectează ora"
+      },
+      "reminders": {
+        "title": "Setează memento",
+        "atTime": "La momentul evenimentului",
+        "before15m": "Cu 15 minute înainte",
+        "before30m": "Cu 30 minute înainte",
+        "before1h": "Cu 1 oră înainte",
+        "before2h": "Cu 2 ore înainte"
+      }
+    },
+    "buttons": {
+      "addTask": "Adaugă sarcină nouă",
+      "editTask": "Editează sarcina",
+      "deleteTask": "Șterge sarcina",
+      "setPriority": "Setează prioritate",
+      "setDate": "Setează data",
+      "expandSection": "Extinde secțiunea {{section}}",
+      "collapseSection": "Restrânge secțiunea {{section}}",
+      "completeTask": "Marchează ca finalizată",
+      "uncompleteTask": "Marchează ca nefinalizată",
+      "postponeTask": "Amână"
+    },
     "postpone": {
       "laterToday": "Mai târziu azi",
       "tomorrow": "Mâine",
       "weekend": "Weekend",
       "nextWeek": "Săptămâna viitoare",
       "custom": "Personalizat"
-    },
-    "alerts": {
-      "deleteConfirm": {
-        "title": "Șterge Sarcină",
-        "message": "Ești sigur că vrei să ștergi această sarcină?",
-        "confirm": "Da, șterge",
-        "cancel": "Nu, renunță"
-      },
-      "softLimit": {
-        "title": "Limită de Sarcini Atinsă",
-        "message": "Ai atins limita recomandată de sarcini pentru această perioadă. Adăugarea prea multor sarcini ar putea face dificilă finalizarea lor. Dorești totuși să adaugi această sarcină?",
-        "confirm": "Da, adaugă sarcina",
-        "cancel": "Nu, voi gestiona mai întâi sarcinile existente"
-      },
-      "postpone": {
-        "success": "Sarcină amânată",
-        "message": "Sarcina a fost amânată pentru {{date}}",
-        "title": "Amânare reușită"
-      }
     },
     "tags": {
       "quickWin": "Victorie rapidă",
