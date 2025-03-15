@@ -322,6 +322,8 @@ const TaskManagementScreen: React.FC = () => {
     }
   }, [isScrollEnabled]);
 
+  const hasFutureTasks = tasks.FUTURE.length > 0;
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={[styles.header, { borderBottomColor: dayTimeColors.PRIMARY }]}>
@@ -350,7 +352,7 @@ const TaskManagementScreen: React.FC = () => {
           
           {/* Afișăm categoriile de perioade doar dacă nu suntem în tab-ul "completed" */}
           {currentFilter !== 'completed' && Object.entries(TIME_PERIODS)
-            .filter(([id]) => id !== 'COMPLETED') // Excludem secțiunea COMPLETED din ciclul normal
+            .filter(([id]) => id !== 'COMPLETED' && id !== 'FUTURE') // Excludem secțiunile COMPLETED și FUTURE din ciclul normal
             .map(([id, period]) => (
               <TimeSection
                 key={id}
@@ -368,6 +370,28 @@ const TaskManagementScreen: React.FC = () => {
                 onDragEnd={handleDragEnd}
               />
           ))}
+
+          {/* Secțiunea Future Tasks cu delimitator */}
+          {currentFilter !== 'completed' && (
+            <>
+              <View style={[styles.sectionSeparator, { marginTop: ACCESSIBILITY.SPACING.MD, marginBottom: ACCESSIBILITY.SPACING.MD }]} />
+              <TimeSection
+                key="FUTURE"
+                period={TIME_PERIODS.FUTURE}
+                tasks={filterTasks(tasks.FUTURE)}
+                onAddTask={() => handleAddTask('FUTURE')}
+                onToggleTask={toggleTask}
+                onDeleteTask={deleteTask}
+                onUpdateTask={(taskId, updates) => updateTask(taskId, updates as Partial<Omit<Task, 'id' | 'userId'>>)}
+                dropZones={dropZones}
+                onDropTask={handleMoveTask}
+                registerDropZone={registerDropZone}
+                unregisterDropZone={unregisterDropZone}
+                onDragStart={handleDragStart}
+                onDragEnd={handleDragEnd}
+              />
+            </>
+          )}
 
           {/* Secțiunea pentru task-urile completate - folosind componenta TimeSection */}
           {(currentFilter === 'completed' || (currentFilter === 'all' && getAllCompletedTasks().length > 0)) && (
@@ -462,6 +486,12 @@ const styles = StyleSheet.create({
   },
   taskItemContainer: {
     flex: 1,
+  },
+  sectionSeparator: {
+    borderBottomWidth: 2,
+    borderBottomColor: ACCESSIBILITY.COLORS.INTERACTIVE.SECONDARY,
+    paddingBottom: ACCESSIBILITY.SPACING.SM,
+    marginBottom: ACCESSIBILITY.SPACING.SM,
   },
 });
 

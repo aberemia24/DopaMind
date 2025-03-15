@@ -26,3 +26,31 @@ export const getTimePeriodFromDate = (date: Date | string | undefined): TimePeri
     return 'MORNING'; // Valoare implicită în caz de eroare
   }
 };
+
+/**
+ * Verifică dacă o dată este în viitor (mâine sau mai târziu)
+ * 
+ * @param date Data care trebuie verificată
+ * @returns true dacă data este în viitor, false în caz contrar
+ */
+export const isDateInFuture = (date: Date | string | undefined): boolean => {
+  if (!date) return false;
+  
+  try {
+    // Convertim data la un obiect Date
+    const dateObj = typeof date === 'string' ? new Date(date) : date;
+    
+    // Obținem data curentă și resetăm ora la 00:00:00
+    const today = new Date();
+    const todayDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    
+    // Resetăm ora pentru data de verificat la 00:00:00 pentru a compara doar datele
+    const checkDate = new Date(dateObj.getFullYear(), dateObj.getMonth(), dateObj.getDate());
+    
+    // Comparăm datele folosind timestamp-uri
+    return checkDate.getTime() > todayDate.getTime();
+  } catch (error) {
+    console.error('Error checking if date is in future:', error);
+    return false;
+  }
+};

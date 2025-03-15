@@ -15,7 +15,8 @@ const INITIAL_TASKS: TasksByPeriod = {
   MORNING: [],
   AFTERNOON: [],
   EVENING: [],
-  COMPLETED: []
+  COMPLETED: [],
+  FUTURE: []
 };
 
 export const taskCacheService = {

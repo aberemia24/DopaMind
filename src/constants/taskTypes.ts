@@ -1,5 +1,6 @@
 import { MaterialIcons } from '@expo/vector-icons';
 import { DATE_TIME_TRANSLATIONS } from '../i18n/keys';
+import { Task } from '../types/task';
 
 export interface TimePeriod {
   id: TimePeriodKey;
@@ -22,7 +23,7 @@ interface TimeEstimate {
   icon: string;
 }
 
-export type TimePeriodKey = 'MORNING' | 'AFTERNOON' | 'EVENING' | 'COMPLETED';
+export type TimePeriodKey = 'MORNING' | 'AFTERNOON' | 'EVENING' | 'COMPLETED' | 'FUTURE';
 
 export const TIME_PERIODS: Record<TimePeriodKey, TimePeriod> = {
   MORNING: {
@@ -56,6 +57,14 @@ export const TIME_PERIODS: Record<TimePeriodKey, TimePeriod> = {
     timeFrame: '',
     description: 'Completed Tasks',
     titleKey: 'taskManagement.filters.completedTasks'
+  },
+  FUTURE: {
+    id: 'FUTURE',
+    label: DATE_TIME_TRANSLATIONS.TIME.RANGES.FUTURE,
+    icon: 'event',
+    timeFrame: '',
+    description: DATE_TIME_TRANSLATIONS.TIME.RANGES.FUTURE,
+    titleKey: 'taskManagement.periods.future.title'
   }
 } as const;
 
@@ -106,3 +115,11 @@ export const TIME_ESTIMATES = {
 } as const;
 
 export type TimeEstimateKey = keyof typeof TIME_ESTIMATES;
+
+export interface TasksByPeriod {
+  MORNING: Task[];
+  AFTERNOON: Task[];
+  EVENING: Task[];
+  COMPLETED: Task[];
+  FUTURE: Task[];
+}

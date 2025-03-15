@@ -323,7 +323,10 @@
       "timePeriods": {
         "morning": "Dimineață",
         "afternoon": "După-amiază",
-        "evening": "Seară"
+        "evening": "Seară",
+        "night": "Noapte",
+        "am": "AM",
+        "pm": "PM"
       },
       "calendar": {
         "previousMonth": "Luna anterioară",
@@ -369,6 +372,11 @@
       "important": "Importantă",
       "urgent": "Urgentă",
       "later": "Mai târziu"
+    },
+    "periods": {
+      "future": {
+        "title": "Sarcini Viitoare"
+      }
     }
   },
   "app": {
@@ -456,7 +464,8 @@
         "morning": "06:00 - 12:00",
         "afternoon": "12:00 - 18:00",
         "evening": "18:00 - 00:00",
-        "night": "00:00 - 06:00"
+        "night": "00:00 - 06:00",
+        "future": "Viitor"
       }
     }
   },

@@ -258,7 +258,8 @@ export const DATE_TIME_TRANSLATIONS = {
       MORNING: 'dateTime.time.ranges.morning',
       AFTERNOON: 'dateTime.time.ranges.afternoon',
       EVENING: 'dateTime.time.ranges.evening',
-      NIGHT: 'dateTime.time.ranges.night'
+      NIGHT: 'dateTime.time.ranges.night',
+      FUTURE: 'dateTime.time.ranges.future'
     },
     FORMAT: {
       SHORT: 'dateTime.time.format.short',

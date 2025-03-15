@@ -35,7 +35,8 @@ export const TaskProvider: React.FC<{ children: React.ReactNode }> = ({ children
     MORNING: [],
     AFTERNOON: [],
     EVENING: [],
-    COMPLETED: []
+    COMPLETED: [],
+    FUTURE: []
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
