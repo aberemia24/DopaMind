@@ -22,6 +22,7 @@ import { ACCESSIBILITY } from '../../constants/accessibility';
 import { useAuth } from '../../contexts/auth';
 import type { Task } from '../../services/taskService';
 import { getDayTimeColors } from '../../utils/daytime';
+import TodayDate from '../../components/TodayDate';
 
 // Interfață pentru zonele de drop
 interface DropZone {
@@ -324,21 +325,10 @@ const TaskManagementScreen: React.FC = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={[styles.header, { borderBottomColor: dayTimeColors.PRIMARY }]}>
-        <Text style={styles.title}>{t('taskManagement.title')}</Text>
-        <TouchableOpacity
-          onPress={handleLogout}
-          style={styles.signOutButton}
-          disabled={isLoggingOut}
-          accessibilityRole="button"
-          accessibilityLabel={t('common.signOut')}
-          accessibilityState={{ disabled: isLoggingOut }}
-        >
-          <MaterialIcons 
-            name="logout" 
-            size={24} 
-            color={isLoggingOut ? '#999' : ACCESSIBILITY.COLORS.TEXT.PRIMARY} 
-          />
-        </TouchableOpacity>
+        <View style={styles.headerContent}>
+          <Text style={styles.title}>{t('taskManagement.title')}</Text>
+          <TodayDate />
+        </View>
       </View>
       
       <KeyboardAvoidingView
@@ -414,11 +404,25 @@ const styles = StyleSheet.create({
     paddingBottom: ACCESSIBILITY.SPACING.SM,
     borderBottomWidth: 2,
   },
+  headerContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    flex: 1,
+  },
+  titleContainer: {
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+  },
   title: {
     fontSize: ACCESSIBILITY.TYPOGRAPHY.SIZES.XL,
     fontWeight: ACCESSIBILITY.TYPOGRAPHY.WEIGHTS.BOLD,
     color: ACCESSIBILITY.COLORS.TEXT.PRIMARY,
     letterSpacing: 0.5,
+  },
+  headerRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   signOutButton: {
     width: ACCESSIBILITY.TOUCH_TARGET.MIN_WIDTH,

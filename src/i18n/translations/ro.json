@@ -47,6 +47,9 @@
     },
     "comingSoon": "În curând"
   },
+  "todayDate": {
+    "format": "Astăzi: {{date}}"
+  },
   "auth": {
     "login": {
       "title": "Autentificare",

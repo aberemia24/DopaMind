@@ -499,5 +499,8 @@
   "stats": {
     "title": "Statistics",
     "description": "View statistics about your tasks and activities. This feature will be available soon."
+  },
+  "todayDate": {
+    "format": "Today: {{date}}"
   }
 }
