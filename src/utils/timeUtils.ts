@@ -12,19 +12,36 @@ export const getTimePeriodFromDate = (date: Date | string | undefined): TimePeri
   try {
     const dateObj = typeof date === 'string' ? new Date(date) : date;
     
-    // Verificăm mai întâi dacă data este în viitor
-    if (isDateInFuture(dateObj)) {
+    // Verificăm mai întâi dacă data este în viitor (altă zi)
+    const today = new Date();
+    const todayDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    const checkDate = new Date(dateObj.getFullYear(), dateObj.getMonth(), dateObj.getDate());
+    
+    console.log(`getTimePeriodFromDate: Data verificată: ${dateObj.toISOString()}`);
+    console.log(`getTimePeriodFromDate: Data curentă: ${today.toISOString()}`);
+    console.log(`getTimePeriodFromDate: Data verificată (doar data): ${checkDate.toISOString()}`);
+    console.log(`getTimePeriodFromDate: Data curentă (doar data): ${todayDate.toISOString()}`);
+    console.log(`getTimePeriodFromDate: Timestamp verificat: ${checkDate.getTime()}, Timestamp curent: ${todayDate.getTime()}`);
+    console.log(`getTimePeriodFromDate: Este în viitor: ${checkDate.getTime() > todayDate.getTime()}`);
+    
+    if (checkDate.getTime() > todayDate.getTime()) {
+      console.log(`getTimePeriodFromDate: Returnez FUTURE pentru data ${dateObj.toISOString()}`);
       return 'FUTURE';
     }
     
     // Dacă nu este în viitor, determinăm perioada în funcție de ora din zi
     const hours = dateObj.getHours();
     
+    console.log(`getTimePeriodFromDate: Ora din zi: ${hours}`);
+    
     if (hours >= 5 && hours < 12) {
+      console.log(`getTimePeriodFromDate: Returnez MORNING pentru data ${dateObj.toISOString()}`);
       return 'MORNING';
     } else if (hours >= 12 && hours < 18) {
+      console.log(`getTimePeriodFromDate: Returnez AFTERNOON pentru data ${dateObj.toISOString()}`);
       return 'AFTERNOON';
     } else {
+      console.log(`getTimePeriodFromDate: Returnez EVENING pentru data ${dateObj.toISOString()}`);
       return 'EVENING';
     }
   } catch (error) {

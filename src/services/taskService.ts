@@ -139,25 +139,41 @@ const validateTaskData = (data: unknown): Task => {
       // Convertim dueDate la un obiect Date valid indiferent de formatul său
       if (dueDate instanceof Date) {
         convertedDate = dueDate;
+        console.log(`validateTaskData: dueDate este deja un obiect Date: ${convertedDate.toISOString()}`);
       } else if (typeof dueDate === 'string') {
         convertedDate = new Date(dueDate);
+        console.log(`validateTaskData: dueDate convertit din string: ${dueDate} -> ${convertedDate.toISOString()}`);
       } else if (typeof dueDate === 'object' && dueDate !== null && 'seconds' in dueDate && 'nanoseconds' in dueDate) {
         // Timestamp Firestore
         const timestamp = dueDate as { seconds: number; nanoseconds: number };
         convertedDate = new Date(timestamp.seconds * 1000);
+        console.log(`validateTaskData: dueDate convertit din Firestore timestamp: ${timestamp.seconds} -> ${convertedDate.toISOString()}`);
       } else if (typeof dueDate === 'number') {
         convertedDate = new Date(dueDate);
+        console.log(`validateTaskData: dueDate convertit din număr: ${dueDate} -> ${convertedDate.toISOString()}`);
       } else {
+        console.error(`validateTaskData: Format de dată invalid:`, dueDate);
         throw new Error('Invalid date format');
       }
       
       // Verificăm dacă data convertită este validă
       if (isNaN(convertedDate.getTime())) {
+        console.error(`validateTaskData: Data convertită nu este validă:`, convertedDate);
         throw new Error('Invalid date value');
       }
       
+      console.log(`validateTaskData: dueDate convertit cu succes:`, dueDate, `->`, convertedDate.toISOString(), 
+                  `Este validă: ${!isNaN(convertedDate.getTime())}`);
+      
       // Adăugăm data convertită la obiectul task
       convertedData.dueDate = convertedDate;
+      
+      // Verificăm și actualizăm perioada în funcție de data scadentă
+      const correctPeriod = getTimePeriodFromDate(convertedDate);
+      if (convertedData.period !== correctPeriod) {
+        console.log(`validateTaskData: Actualizez perioada din ${convertedData.period} în ${correctPeriod} bazat pe dueDate`);
+        convertedData.period = correctPeriod;
+      }
     } catch (error) {
       console.error('Error converting dueDate:', error, dueDate);
       throw new Error('Invalid task data: dueDate must be a valid date format if present');
@@ -214,18 +230,32 @@ const validateTaskData = (data: unknown): Task => {
 
 /**
  * Verifică dacă un task are o dată scadentă în viitor
+ * @param task Task-ul care trebuie verificat
+ * @returns true dacă task-ul are o dată scadentă în viitor, false în caz contrar
  */
 const isFutureTask = (task: Task): boolean => {
   if (!task.dueDate) return false;
   
   try {
-    // Utilizăm funcția isDateInFuture pentru a verifica dacă data este în viitor
-    const isFuture = isDateInFuture(task.dueDate);
+    // Obținem data curentă și resetăm ora la 00:00:00
+    const today = new Date();
+    const todayDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    
+    // Resetăm ora pentru data de verificat la 00:00:00 pentru a compara doar datele
+    const taskDate = new Date(task.dueDate);
+    const checkDate = new Date(taskDate.getFullYear(), taskDate.getMonth(), taskDate.getDate());
     
     // Logging pentru debugging
-    console.log(`Task ${task.id} - ${task.title}`);
-    console.log(`Due date: ${task.dueDate instanceof Date ? task.dueDate.toISOString() : 'Invalid Date'}`);
-    console.log(`Is future: ${isFuture}`);
+    console.log(`isFutureTask: Task ${task.id} - ${task.title}`);
+    console.log(`isFutureTask: Data scadentă: ${taskDate.toISOString()}`);
+    console.log(`isFutureTask: Data scadentă (doar data): ${checkDate.toISOString()}`);
+    console.log(`isFutureTask: Data curentă: ${today.toISOString()}`);
+    console.log(`isFutureTask: Data curentă (doar data): ${todayDate.toISOString()}`);
+    console.log(`isFutureTask: Timestamp verificat: ${checkDate.getTime()}, Timestamp curent: ${todayDate.getTime()}`);
+    
+    // Comparăm datele folosind timestamp-uri
+    const isFuture = checkDate.getTime() > todayDate.getTime();
+    console.log(`isFutureTask: Este în viitor: ${isFuture}`);
     
     return isFuture;
   } catch (error) {
@@ -317,22 +347,58 @@ export const addTask = async (taskData: Omit<Task, 'id'>): Promise<Task> => {
   try {
     const db = getFirebaseFirestore();
     
-    // Asigurăm că perioada este setată corect în funcție de dueDate
-    if (taskData.dueDate) {
-      const correctPeriod = getTimePeriodFromDate(taskData.dueDate);
+    // Validăm și procesăm datele task-ului
+    const validatedData = { ...taskData };
+    
+    // Dacă task-ul are o dată scadentă, ne asigurăm că perioada este setată corect
+    if (validatedData.dueDate) {
+      console.log(`addTask: Task cu dueDate: ${validatedData.dueDate instanceof Date ? 
+        validatedData.dueDate.toISOString() : 'Format necunoscut'}`);
       
-      // Actualizăm perioada doar dacă este diferită de cea existentă
-      if (taskData.period !== correctPeriod) {
-        console.log(`Corectare perioadă task nou: ${taskData.period} -> ${correctPeriod}`);
-        taskData.period = correctPeriod;
+      // Ne asigurăm că dueDate este un obiect Date valid
+      let dateObj: Date;
+      if (validatedData.dueDate instanceof Date) {
+        dateObj = validatedData.dueDate;
+      } else if (typeof validatedData.dueDate === 'string') {
+        dateObj = new Date(validatedData.dueDate);
+      } else if (typeof validatedData.dueDate === 'number') {
+        dateObj = new Date(validatedData.dueDate);
+      } else if (typeof validatedData.dueDate === 'object' && validatedData.dueDate !== null && 
+                 'seconds' in validatedData.dueDate && 'nanoseconds' in validatedData.dueDate) {
+        // Timestamp Firestore
+        const timestamp = validatedData.dueDate as unknown as { seconds: number; nanoseconds: number };
+        dateObj = new Date(timestamp.seconds * 1000);
+      } else {
+        console.error('addTask: Format de dată invalid:', validatedData.dueDate);
+        throw new Error('Invalid date format');
+      }
+      
+      // Verificăm dacă data este validă
+      if (isNaN(dateObj.getTime())) {
+        console.error('addTask: Data convertită nu este validă:', dateObj);
+        throw new Error('Invalid date value');
+      }
+      
+      // Actualizăm dueDate cu obiectul Date valid
+      validatedData.dueDate = dateObj;
+      console.log(`addTask: dueDate după conversie: ${dateObj.toISOString()}`);
+      
+      // Determinăm perioada corectă în funcție de dueDate
+      const correctPeriod = getTimePeriodFromDate(dateObj);
+      console.log(`addTask: Perioada determinată: ${correctPeriod}, perioada actuală: ${validatedData.period}`);
+      
+      // Actualizăm perioada dacă este necesar
+      if (validatedData.period !== correctPeriod) {
+        console.log(`addTask: Actualizez perioada din ${validatedData.period} în ${correctPeriod}`);
+        validatedData.period = correctPeriod;
       }
     }
     
-    const docRef = await addDoc(collection(db, TASKS_COLLECTION), taskData);
+    const docRef = await addDoc(collection(db, TASKS_COLLECTION), validatedData);
     
     // Creăm un nou obiect Task combinând datele validate cu id-ul generat
     const newTask: Task = {
-      ...taskData,
+      ...validatedData,
       id: docRef.id
     };
     
@@ -369,11 +435,43 @@ export const updateTask = async (
     
     // Dacă se actualizează dueDate, actualizăm și perioada în funcție de dată
     if (processedUpdates.dueDate !== undefined && processedUpdates.dueDate !== null) {
-      // Determinăm perioada corectă în funcție de dueDate
-      const period = getTimePeriodFromDate(processedUpdates.dueDate);
-      processedUpdates.period = period;
+      // Log dueDate înainte de conversie
+      console.log(`updateTask: dueDate înainte de procesare:`, processedUpdates.dueDate);
       
-      console.log(`Actualizare task ${taskId} - dueDate: ${processedUpdates.dueDate}, period: ${period}`);
+      // Ne asigurăm că dueDate este un obiect Date valid
+      let dateObj: Date;
+      if (processedUpdates.dueDate instanceof Date) {
+        dateObj = processedUpdates.dueDate;
+      } else if (typeof processedUpdates.dueDate === 'string') {
+        dateObj = new Date(processedUpdates.dueDate);
+      } else if (typeof processedUpdates.dueDate === 'number') {
+        dateObj = new Date(processedUpdates.dueDate);
+      } else if (typeof processedUpdates.dueDate === 'object' && processedUpdates.dueDate !== null && 
+                 'seconds' in processedUpdates.dueDate && 'nanoseconds' in processedUpdates.dueDate) {
+        // Timestamp Firestore
+        const timestamp = processedUpdates.dueDate as unknown as { seconds: number; nanoseconds: number };
+        dateObj = new Date(timestamp.seconds * 1000);
+      } else {
+        console.error('updateTask: Format de dată invalid:', processedUpdates.dueDate);
+        throw new Error('Invalid date format');
+      }
+      
+      // Verificăm dacă data este validă
+      if (isNaN(dateObj.getTime())) {
+        console.error('updateTask: Data convertită nu este validă:', dateObj);
+        throw new Error('Invalid date value');
+      }
+      
+      // Actualizăm dueDate cu obiectul Date valid
+      processedUpdates.dueDate = dateObj;
+      console.log(`updateTask: dueDate după conversie:`, dateObj.toISOString());
+      
+      // Determinăm perioada corectă în funcție de dueDate
+      const period = getTimePeriodFromDate(dateObj);
+      console.log(`updateTask: perioada determinată: ${period}`);
+      
+      processedUpdates.period = period;
+      console.log(`updateTask: Actualizare task ${taskId} - dueDate: ${dateObj.toISOString()}, period: ${period}`);
     }
     
     await updateDoc(taskRef, {
