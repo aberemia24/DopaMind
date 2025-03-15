@@ -4,16 +4,22 @@ import { TimePeriodKey } from '../constants/taskTypes';
  * Determină perioada zilei în funcție de ora specificată
  * 
  * @param date Data pentru care se determină perioada
- * @returns Cheia perioadei corespunzătoare (MORNING, AFTERNOON, EVENING)
+ * @returns Cheia perioadei corespunzătoare (MORNING, AFTERNOON, EVENING, FUTURE)
  */
 export const getTimePeriodFromDate = (date: Date | string | undefined): TimePeriodKey => {
   if (!date) return 'MORNING'; // Valoare implicită
   
   try {
     const dateObj = typeof date === 'string' ? new Date(date) : date;
+    
+    // Verificăm mai întâi dacă data este în viitor
+    if (isDateInFuture(dateObj)) {
+      return 'FUTURE';
+    }
+    
+    // Dacă nu este în viitor, determinăm perioada în funcție de ora din zi
     const hours = dateObj.getHours();
     
-    // Determinăm perioada în funcție de ora din zi
     if (hours >= 5 && hours < 12) {
       return 'MORNING';
     } else if (hours >= 12 && hours < 18) {

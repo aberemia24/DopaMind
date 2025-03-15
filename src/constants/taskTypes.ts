@@ -52,18 +52,18 @@ export const TIME_PERIODS: Record<TimePeriodKey, TimePeriod> = {
   },
   COMPLETED: {
     id: 'COMPLETED',
-    label: 'Completed Tasks',
-    icon: 'done-all',
+    label: 'Completed',
+    icon: 'check-circle',
     timeFrame: '',
-    description: 'Completed Tasks',
-    titleKey: 'taskManagement.filters.completedTasks'
+    description: 'Completed tasks',
+    titleKey: 'taskManagement.periods.completed.title'
   },
   FUTURE: {
     id: 'FUTURE',
-    label: DATE_TIME_TRANSLATIONS.TIME.RANGES.FUTURE,
+    label: 'Future Tasks',
     icon: 'event',
     timeFrame: '',
-    description: DATE_TIME_TRANSLATIONS.TIME.RANGES.FUTURE,
+    description: 'Tasks scheduled for future dates',
     titleKey: 'taskManagement.periods.future.title'
   }
 } as const;

@@ -1,7 +1,7 @@
 import { getDocs, query, collection, where, addDoc, updateDoc, deleteDoc, doc, FieldValue, deleteField } from 'firebase/firestore';
 import { getFirebaseFirestore } from '../config/firebase';
 import type { TimePeriodKey } from '../constants/taskTypes';
-import { isDateInFuture } from '../utils/timeUtils';
+import { isDateInFuture, getTimePeriodFromDate } from '../utils/timeUtils';
 
 export interface Task {
   id: string;
@@ -316,6 +316,18 @@ export const fetchTasks = async (userId: string): Promise<TasksByPeriod> => {
 export const addTask = async (taskData: Omit<Task, 'id'>): Promise<Task> => {
   try {
     const db = getFirebaseFirestore();
+    
+    // Asigurăm că perioada este setată corect în funcție de dueDate
+    if (taskData.dueDate) {
+      const correctPeriod = getTimePeriodFromDate(taskData.dueDate);
+      
+      // Actualizăm perioada doar dacă este diferită de cea existentă
+      if (taskData.period !== correctPeriod) {
+        console.log(`Corectare perioadă task nou: ${taskData.period} -> ${correctPeriod}`);
+        taskData.period = correctPeriod;
+      }
+    }
+    
     const docRef = await addDoc(collection(db, TASKS_COLLECTION), taskData);
     
     // Creăm un nou obiect Task combinând datele validate cu id-ul generat
@@ -353,6 +365,15 @@ export const updateTask = async (
     // Verificăm dacă completedAt este null sau undefined și îl înlocuim cu deleteField()
     if (processedUpdates.completedAt === null || processedUpdates.completedAt === undefined) {
       processedUpdates.completedAt = deleteField();
+    }
+    
+    // Dacă se actualizează dueDate, actualizăm și perioada în funcție de dată
+    if (processedUpdates.dueDate !== undefined && processedUpdates.dueDate !== null) {
+      // Determinăm perioada corectă în funcție de dueDate
+      const period = getTimePeriodFromDate(processedUpdates.dueDate);
+      processedUpdates.period = period;
+      
+      console.log(`Actualizare task ${taskId} - dueDate: ${processedUpdates.dueDate}, period: ${period}`);
     }
     
     await updateDoc(taskRef, {
