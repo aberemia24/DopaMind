@@ -22,6 +22,7 @@ import { ACCESSIBILITY } from '../../../constants/accessibility';
 import { Task } from '../../../services/taskService';
 import { QUICK_DATE_OPTIONS } from '../../../constants/quickOptions';
 import { getDayPeriod } from '../../../utils/daytime';
+import TaskEditModal from './TaskEditModal';
 
 /**
  * Interfața Props pentru componenta TaskItem
@@ -47,14 +48,8 @@ const TaskItem: React.FC<TaskItemProps> = ({
 }) => {
   // Stare pentru modul de editare a titlului
   const [isEditing, setIsEditing] = useState(false);
-  
-  // Stare pentru textul titlului în timpul editării
-  const [title, setTitle] = useState(task.title);
-  
-  // Actualizăm starea title când se schimbă task.title
-  useEffect(() => {
-    setTitle(task.title);
-  }, [task.title]);
+  const [title, setTitle] = useState(task.title || '');
+  const [showEditModal, setShowEditModal] = useState(false);
   
   // Stare pentru afișarea menu-ului de amânare
   const [showPostponeMenu, setShowPostponeMenu] = useState(false);
@@ -445,6 +440,73 @@ const TaskItem: React.FC<TaskItemProps> = ({
   };
 
   /**
+   * Deschide modalul de editare a task-ului
+   */
+  const handleOpenEditModal = () => {
+    if (!isEditing) {
+      setShowEditModal(true);
+    }
+  };
+
+  /**
+   * Închide modalul de editare a task-ului
+   */
+  const handleCloseEditModal = () => {
+    setShowEditModal(false);
+  };
+
+  /**
+   * Actualizează task-ul din modal
+   */
+  const handleUpdateFromModal = (taskId: string, updates: Partial<Task>) => {
+    onUpdate(updates);
+  };
+
+  /**
+   * Referință pentru detectarea double tap
+   */
+  const lastTapRef = useRef<number>(0);
+  const doubleTapTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  /**
+   * Funcția pentru gestionarea double tap-ului
+   */
+  const handleTitlePress = (e: any) => {
+    const now = new Date().getTime();
+    const DOUBLE_PRESS_DELAY = 300; // 300ms între tap-uri
+    
+    if (lastTapRef.current && (now - lastTapRef.current) < DOUBLE_PRESS_DELAY) {
+      // Double tap detectat - editare titlu
+      e.stopPropagation(); // Prevenim propagarea tap-ului la card
+      setIsEditing(true);
+      lastTapRef.current = 0; // Resetăm timer-ul
+      
+      // Anulăm timeout-ul pentru single tap dacă există
+      if (doubleTapTimeoutRef.current) {
+        clearTimeout(doubleTapTimeoutRef.current);
+        doubleTapTimeoutRef.current = null;
+      }
+    } else {
+      // Primul tap - setăm timer-ul
+      lastTapRef.current = now;
+      
+      // Anulăm orice timeout existent
+      if (doubleTapTimeoutRef.current) {
+        clearTimeout(doubleTapTimeoutRef.current);
+      }
+      
+      // Setăm un nou timeout pentru single tap
+      doubleTapTimeoutRef.current = setTimeout(() => {
+        // Dacă nu a fost detectat un double tap, considerăm că este un single tap
+        if (lastTapRef.current !== 0) {
+          // Nu facem nimic aici, tap-ul simplu va fi gestionat de TouchableOpacity părinte
+          lastTapRef.current = 0;
+        }
+      }, DOUBLE_PRESS_DELAY);
+    }
+  };
+
+  /**
    * Renderizează acțiunile din dreapta (swipe stânga) pentru ștergere
    * 
    * @param progress Progresul animației de swipe (0-1)
@@ -654,125 +716,158 @@ const TaskItem: React.FC<TaskItemProps> = ({
               { transform: [{ scale: scaleAnim }] }
             ]}
           >
-            {/* Checkbox pentru marcarea sarcinii ca finalizată/nefinalizată */}
-            <TouchableOpacity
-              style={task.completed ? styles.completedCheckbox : styles.checkbox}
-              onPress={onToggle}
-              accessibilityRole="checkbox"
-              accessibilityState={{ checked: task.completed }}
-              accessibilityLabel={task.title || t('taskManagement.labels.untitledTask')}
+            {/* Wrapper TouchableOpacity pentru întregul card - deschide modalul de editare */}
+            <TouchableOpacity 
+              style={styles.taskContentContainer}
+              onPress={handleOpenEditModal}
+              activeOpacity={0.7}
+              accessibilityRole="button"
+              accessibilityLabel={t('taskManagement.accessibility.editTask') || 'Edit task'}
             >
-              <MaterialIcons
-                name={task.completed ? 'check-box' : 'check-box-outline-blank'}
-                size={task.completed ? 16 : 24}
-                color={ACCESSIBILITY.COLORS.TEXT.SECONDARY}
-              />
-            </TouchableOpacity>
+              <View style={styles.taskContent}>
+                {/* Checkbox pentru marcarea sarcinii ca finalizată/nefinalizată */}
+                <TouchableOpacity
+                  style={[
+                    task.completed ? styles.completedCheckbox : styles.checkbox,
+                    { zIndex: 2 } // Asigurăm că checkbox-ul primește tap-urile
+                  ]}
+                  onPress={(e) => {
+                    e.stopPropagation(); // Prevenim propagarea tap-ului la card
+                    onToggle();
+                  }}
+                  accessibilityRole="checkbox"
+                  accessibilityState={{ checked: task.completed }}
+                  accessibilityLabel={task.title || t('taskManagement.labels.untitledTask')}
+                >
+                  <MaterialIcons
+                    name={task.completed ? 'check-box' : 'check-box-outline-blank'}
+                    size={task.completed ? 16 : 24}
+                    color={ACCESSIBILITY.COLORS.TEXT.SECONDARY}
+                  />
+                </TouchableOpacity>
 
-            {!task.completed ? (
-              // Layout pentru task-uri active (necompletate)
-              <View style={styles.activeContentContainer}>
-                {/* Primul rând: Titlu și stea de prioritate */}
-                <View style={styles.titleRow}>
-                  {/* Afișează fie un input de editare, fie textul titlului */}
-                  {isEditing ? (
-                    <TextInput
-                      style={styles.input}
-                      value={title}
-                      onChangeText={setTitle}
-                      onBlur={handleSubmitEditing}
-                      onSubmitEditing={handleSubmitEditing}
-                      autoFocus
-                      accessibilityLabel={t('taskManagement.labels.editTask')}
-                    />
-                  ) : (
+                {!task.completed ? (
+                  // Layout pentru task-uri active (necompletate)
+                  <View style={styles.activeContentContainer}>
+                    {/* Primul rând: Titlu și stea de prioritate */}
+                    <View style={styles.titleRow}>
+                      {/* Afișează fie un input de editare, fie textul titlului */}
+                      {isEditing ? (
+                        <TextInput
+                          style={styles.input}
+                          value={title}
+                          onChangeText={setTitle}
+                          onBlur={handleSubmitEditing}
+                          onSubmitEditing={handleSubmitEditing}
+                          autoFocus
+                          selectTextOnFocus
+                          blurOnSubmit
+                        />
+                      ) : (
+                        <TouchableOpacity
+                          onPress={handleTitlePress}
+                          accessibilityRole="button"
+                          accessibilityLabel={t('taskManagement.accessibility.editTaskTitle') || 'Edit task title'}
+                          accessibilityHint={t('taskManagement.accessibility.doubleTapToEditTitle') || 'Double tap to edit title'}
+                        >
+                          <Text
+                            style={[
+                              styles.title,
+                              !task.title && styles.untitledTask,
+                              task.isPriority && styles.priorityTitle
+                            ]}
+                            numberOfLines={2}
+                            ellipsizeMode="tail"
+                          >
+                            {task.title || t('taskManagement.labels.untitledTask')}
+                          </Text>
+                        </TouchableOpacity>
+                      )}
+                      
+                      {/* Indicator de prioritate (stea) */}
+                      {!isEditing && (
+                        <TouchableOpacity
+                          style={styles.priorityButton}
+                          onPress={(e) => {
+                            e.stopPropagation(); // Prevenim propagarea tap-ului la card
+                            onUpdate({ isPriority: !task.isPriority });
+                          }}
+                          accessibilityRole="button"
+                          accessibilityLabel={
+                            task.isPriority
+                              ? t('taskManagement.accessibility.removePriority')
+                              : t('taskManagement.accessibility.addPriority')
+                          }
+                        >
+                          <MaterialIcons
+                            name={task.isPriority ? 'star' : 'star-outline'}
+                            size={20}
+                            color={task.isPriority 
+                              ? 'rgba(234, 88, 12, 0.9)' 
+                              : ACCESSIBILITY.COLORS.TEXT.SECONDARY}
+                          />
+                        </TouchableOpacity>
+                      )}
+                    </View>
+
+                    {/* Al doilea rând: Data/ora scadentă (opțional) */}
+                    {task.dueDate && (
+                      <View style={styles.dueDateContainer}>
+                        <MaterialIcons
+                          name="schedule"
+                          size={14}
+                          color={ACCESSIBILITY.COLORS.TEXT.SECONDARY}
+                          style={styles.dueDateIcon}
+                        />
+                        <Text style={styles.dueDate}>
+                          {formatDueDate()}
+                        </Text>
+                      </View>
+                    )}
+                  </View>
+                ) : (
+                  // Layout pentru task-uri completate
+                  <View style={styles.completedContentContainer}>
+                    {/* Afișează textul titlului */}
                     <TouchableOpacity
                       style={styles.titleContainer}
-                      onPress={() => setIsEditing(true)}
                       accessibilityRole="button"
-                      accessibilityLabel={t('taskManagement.labels.editTask')}
+                      accessibilityLabel={t('taskManagement.labels.viewTask')}
                     >
                       <Text style={[
-                        styles.title,
+                        styles.completedTitle,
                         !task.title && styles.untitledTask,
-                        task.isPriority && styles.priorityTitle
+                        task.isPriority && styles.priorityCompletedTitle
                       ]}>
                         {task.title || t('taskManagement.labels.untitledTask')}
                       </Text>
                     </TouchableOpacity>
-                  )}
 
-                  {/* Indicator de prioritate (stea) */}
-                  {!isEditing && (
-                    <TouchableOpacity
-                      style={styles.priorityIndicator}
-                      onPress={() => onUpdate({ isPriority: !task.isPriority })}
-                      accessibilityRole="button"
-                      accessibilityLabel={t(
-                        task.isPriority
-                          ? 'taskManagement.buttons.removePriority'
-                          : 'taskManagement.buttons.addPriority'
-                      )}
-                    >
-                      <MaterialIcons
-                        name={task.isPriority ? 'star' : 'star-outline'}
-                        size={20}
-                        color={task.isPriority 
-                          ? 'rgba(234, 88, 12, 0.9)' 
-                          : ACCESSIBILITY.COLORS.TEXT.SECONDARY}
-                      />
-                    </TouchableOpacity>
-                  )}
-                </View>
-
-                {/* Al doilea rând: Data/ora scadentă (opțional) */}
-                {task.dueDate && (
-                  <View style={styles.dueDateContainer}>
-                    <MaterialIcons
-                      name="schedule"
-                      size={14}
-                      color={ACCESSIBILITY.COLORS.TEXT.SECONDARY}
-                      style={styles.dueDateIcon}
-                    />
-                    <Text style={styles.dueDate}>
-                      {formatDueDate()}
-                    </Text>
+                    {/* Afișează data completării */}
+                    {task.completedAt && (
+                      <View style={styles.completionInfo}>
+                        <Text style={styles.completionDate}>
+                          {formatCompletionDate()}
+                        </Text>
+                      </View>
+                    )}
                   </View>
                 )}
               </View>
-            ) : (
-              // Layout pentru task-uri completate
-              <View style={styles.completedContentContainer}>
-                {/* Afișează textul titlului */}
-                <TouchableOpacity
-                  style={styles.titleContainer}
-                  accessibilityRole="button"
-                  accessibilityLabel={t('taskManagement.labels.viewTask')}
-                >
-                  <Text style={[
-                    styles.completedTitle,
-                    !task.title && styles.untitledTask,
-                    task.isPriority && styles.priorityCompletedTitle
-                  ]}>
-                    {task.title || t('taskManagement.labels.untitledTask')}
-                  </Text>
-                </TouchableOpacity>
-
-                {/* Afișează data completării */}
-                {task.completedAt && (
-                  <View style={styles.completionInfo}>
-                    <Text style={styles.completionDate}>
-                      {formatCompletionDate()}
-                    </Text>
-                  </View>
-                )}
-              </View>
-            )}
+            </TouchableOpacity>
           </Animated.View>
         </Swipeable>
       </Animated.View>
 
       {renderPostponeMenu()}
+
+      {/* Modalul de editare a task-ului */}
+      <TaskEditModal
+        visible={showEditModal}
+        task={task}
+        onClose={handleCloseEditModal}
+        onUpdate={handleUpdateFromModal}
+      />
     </View>
   );
 };
@@ -989,6 +1084,32 @@ const styles = StyleSheet.create({
     fontSize: ACCESSIBILITY.TYPOGRAPHY.SIZES.BASE,
     color: ACCESSIBILITY.COLORS.TEXT.PRIMARY,
     marginBottom: ACCESSIBILITY.SPACING.XS,
+  },
+  mainContent: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: ACCESSIBILITY.SPACING.SM,
+  },
+  taskContentContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    minHeight: ACCESSIBILITY.TOUCH_TARGET.MIN_HEIGHT,
+  },
+  taskContent: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  priorityButton: {
+    padding: ACCESSIBILITY.SPACING.XS,
+    borderRadius: ACCESSIBILITY.SPACING.XS,
+    minWidth: 44,
+    minHeight: 44,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
