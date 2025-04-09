@@ -56,10 +56,8 @@ const QUICK_OPTIONS: QuickOption[] = [
     getDate: () => {
       const tomorrow = new Date();
       tomorrow.setDate(tomorrow.getDate() + 1);
-      return { 
-        date: tomorrow,
-        time: { hours: 12, minutes: 0 }, // Ora implicită pentru "mâine" - prânz
-      };
+      tomorrow.setHours(9, 0, 0, 0); // Setăm ora implicită pentru mâine la 9:00
+      return { date: tomorrow };
     },
   },
   {
@@ -67,13 +65,39 @@ const QUICK_OPTIONS: QuickOption[] = [
     icon: 'date-range',
     titleKey: TASK_TRANSLATIONS.DATE_TIME_SELECTOR.QUICK_OPTIONS.NEXT_WEEK,
     getDate: () => {
-      const today = new Date();
       const nextWeek = new Date();
-      nextWeek.setDate(today.getDate() + 7);
-      return {
-        date: nextWeek,
-        time: { hours: 9, minutes: 0 }, // Ora implicită pentru "săptămâna viitoare" - 9:00
-      };
+      nextWeek.setDate(nextWeek.getDate() + 7);
+      nextWeek.setHours(9, 0, 0, 0); // Setăm ora implicită pentru săptămâna viitoare la 9:00
+      return { date: nextWeek };
+    },
+  },
+  {
+    id: 'nextWeekend',
+    icon: 'weekend',
+    titleKey: TASK_TRANSLATIONS.DATE_TIME_SELECTOR.QUICK_OPTIONS.NEXT_WEEKEND,
+    getDate: () => {
+      const today = new Date();
+      const dayOfWeek = today.getDay(); // 0 = duminică, 6 = sâmbătă
+      
+      // Calculăm câte zile trebuie să adăugăm pentru a ajunge la sâmbăta viitoare
+      const daysUntilWeekend = dayOfWeek === 6 ? 7 : 6 - dayOfWeek;
+      
+      const nextWeekend = new Date();
+      nextWeekend.setDate(today.getDate() + daysUntilWeekend);
+      nextWeekend.setHours(10, 0, 0, 0); // Setăm ora implicită pentru weekend la 10:00
+      
+      return { date: nextWeekend };
+    },
+  },
+  {
+    id: 'nextMonth',
+    icon: 'event-note',
+    titleKey: TASK_TRANSLATIONS.DATE_TIME_SELECTOR.QUICK_OPTIONS.NEXT_MONTH,
+    getDate: () => {
+      const nextMonth = new Date();
+      nextMonth.setMonth(nextMonth.getMonth() + 1);
+      nextMonth.setHours(9, 0, 0, 0); // Setăm ora implicită pentru luna viitoare la 9:00
+      return { date: nextMonth };
     },
   },
 ];

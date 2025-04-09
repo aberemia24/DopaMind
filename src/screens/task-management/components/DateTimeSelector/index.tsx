@@ -10,6 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { MaterialIcons } from '@expo/vector-icons';
 import { TASK_TRANSLATIONS } from '../../../../i18n/keys';
 import { getTimePeriodFromDate } from '../../../../utils/timeUtils';
+import type { TimePeriodKey } from '../../../../constants/taskTypes';
 
 interface DateTimeSelectorProps {
   dueDate?: Date | string;
@@ -46,10 +47,40 @@ export const DateTimeSelector: React.FC<DateTimeSelectorProps> = ({
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [modalVisible, setModalVisible] = useState(initialModalVisible);
 
+  /**
+   * Asigură că perioada este setată corect în funcție de data selectată
+   * @param date Data selectată
+   * @returns Perioada corectă bazată pe data selectată
+   */
+  const validatePeriodForDate = (date: Date): TimePeriodKey => {
+    // Verificăm dacă data este în viitor
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    const dateToCheck = new Date(date);
+    dateToCheck.setHours(0, 0, 0, 0);
+    
+    // Dacă data este în viitor, returnăm perioada FUTURE
+    if (dateToCheck.getTime() > today.getTime()) {
+      return 'FUTURE';
+    }
+    
+    // Altfel, determinăm perioada bazată pe ora din zi
+    return getTimePeriodFromDate(date);
+  };
+
   const handleDateSelect = (date: Date) => {
     setSelectedDate(date);
     setShowTimePicker(true);
-    onDateTimeChange({ dueDate: date });
+    
+    // Determinăm perioada corectă bazată pe data selectată
+    const period = validatePeriodForDate(date);
+    
+    // Actualizăm task-ul cu noua dată și perioada corespunzătoare
+    onDateTimeChange({ 
+      dueDate: date,
+      period: period
+    });
   };
 
   const handleTimeSelect = (time: { hours: number; minutes: number }) => {
@@ -59,7 +90,7 @@ export const DateTimeSelector: React.FC<DateTimeSelectorProps> = ({
       newDate.setMinutes(time.minutes);
       
       // Determinăm perioada corectă bazată pe ora selectată
-      const period = getTimePeriodFromDate(newDate);
+      const period = validatePeriodForDate(newDate);
       
       // Actualizăm task-ul cu noua dată și perioada corespunzătoare
       onDateTimeChange({ 
@@ -85,7 +116,7 @@ export const DateTimeSelector: React.FC<DateTimeSelectorProps> = ({
     }
     
     // Determinăm perioada corectă bazată pe ora selectată
-    const period = getTimePeriodFromDate(newDate);
+    const period = validatePeriodForDate(newDate);
     
     // Actualizăm starea locală
     setSelectedDate(newDate);

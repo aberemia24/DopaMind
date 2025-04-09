@@ -1,4 +1,4 @@
-import { getDocs, query, collection, where, addDoc, updateDoc, deleteDoc, doc, FieldValue, deleteField } from 'firebase/firestore';
+import { getDocs, query, collection, where, addDoc, updateDoc, deleteDoc, doc, FieldValue, deleteField, QueryDocumentSnapshot, DocumentData } from 'firebase/firestore';
 import { getFirebaseFirestore } from '../config/firebase';
 import type { TimePeriodKey } from '../constants/taskTypes';
 import { isDateInFuture, getTimePeriodFromDate } from '../utils/timeUtils';
@@ -237,25 +237,22 @@ const isFutureTask = (task: Task): boolean => {
   if (!task.dueDate) return false;
   
   try {
-    // Obținem data curentă și resetăm ora la 00:00:00
-    const today = new Date();
-    const todayDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    // Folosim aceeași logică ca în getTimePeriodFromDate
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     
-    // Resetăm ora pentru data de verificat la 00:00:00 pentru a compara doar datele
-    const taskDate = new Date(task.dueDate);
-    const checkDate = new Date(taskDate.getFullYear(), taskDate.getMonth(), taskDate.getDate());
+    // Asigurăm-ne că avem un obiect Date valid
+    const taskDateObj = task.dueDate instanceof Date ? task.dueDate : new Date(task.dueDate);
+    const taskDate = new Date(taskDateObj.getFullYear(), taskDateObj.getMonth(), taskDateObj.getDate());
     
     // Logging pentru debugging
     console.log(`isFutureTask: Task ${task.id} - ${task.title}`);
-    console.log(`isFutureTask: Data scadentă: ${taskDate.toISOString()}`);
-    console.log(`isFutureTask: Data scadentă (doar data): ${checkDate.toISOString()}`);
-    console.log(`isFutureTask: Data curentă: ${today.toISOString()}`);
-    console.log(`isFutureTask: Data curentă (doar data): ${todayDate.toISOString()}`);
-    console.log(`isFutureTask: Timestamp verificat: ${checkDate.getTime()}, Timestamp curent: ${todayDate.getTime()}`);
+    console.log(`isFutureTask: Comparing dates - Task date: ${taskDate.toISOString()}, Today: ${today.toISOString()}`);
+    console.log(`isFutureTask: Task timestamp: ${taskDate.getTime()}, Today timestamp: ${today.getTime()}`);
     
     // Comparăm datele folosind timestamp-uri
-    const isFuture = checkDate.getTime() > todayDate.getTime();
-    console.log(`isFutureTask: Este în viitor: ${isFuture}`);
+    const isFuture = taskDate.getTime() > today.getTime();
+    console.log(`isFutureTask: Is future: ${isFuture}`);
     
     return isFuture;
   } catch (error) {
@@ -288,12 +285,12 @@ export const fetchTasks = async (userId: string): Promise<TasksByPeriod> => {
     };
 
     // Procesăm fiecare task și îl adăugăm în categoria corespunzătoare
-    querySnapshot.forEach((doc) => {
+    querySnapshot.forEach((docSnapshot) => {
       try {
-        const validatedData = validateTaskData(doc.data());
+        const validatedData = validateTaskData(docSnapshot.data());
         const task: Task = {
           ...validatedData,
-          id: doc.id
+          id: docSnapshot.id
         };
         
         console.log(`Procesez task: ${task.id} - ${task.title}`);
@@ -307,20 +304,33 @@ export const fetchTasks = async (userId: string): Promise<TasksByPeriod> => {
           return; // Continuăm cu următorul task
         } 
         
-        // Apoi verificăm dacă task-ul are o dată în viitor
-        const isTaskInFuture = isFutureTask(task);
-        console.log(`Task ${task.id} este în viitor: ${isTaskInFuture}`);
+        // Verificăm dacă perioada este deja setată corect
+        const correctPeriod = getTimePeriodFromDate(task.dueDate);
+        console.log(`Task ${task.id} - perioada curentă: ${task.period}, perioada corectă: ${correctPeriod}`);
         
-        if (isTaskInFuture) {
-          console.log(`Task ${task.id} mutat în FUTURE: ${task.title}`);
+        // Dacă perioada nu este corectă, o actualizăm în baza de date
+        if (task.period !== correctPeriod) {
+          console.log(`Corectez perioada pentru task ${task.id} din ${task.period} în ${correctPeriod}`);
+          // Actualizăm task-ul local
+          task.period = correctPeriod;
+          
+          // Actualizăm și în baza de date (fără a aștepta completarea actualizării)
+          const taskRef = doc(db, TASKS_COLLECTION, task.id);
+          updateDoc(taskRef, { period: correctPeriod })
+            .then(() => console.log(`Perioada actualizată cu succes pentru task ${task.id}`))
+            .catch(err => console.error(`Eroare la actualizarea perioadei pentru task ${task.id}:`, err));
+        }
+        
+        // Adăugăm task-ul în categoria corespunzătoare bazată pe perioada corectă
+        if (correctPeriod === 'FUTURE') {
+          console.log(`Task ${task.id} adăugat în FUTURE`);
           result.FUTURE.push(task);
         } else {
-          // Dacă nu este completat și nu are o dată în viitor, îl punem în perioada corespunzătoare
-          console.log(`Task ${task.id} adăugat în ${task.period}`);
-          result[task.period].push(task);
+          console.log(`Task ${task.id} adăugat în ${correctPeriod}`);
+          result[correctPeriod].push(task);
         }
       } catch (error) {
-        console.error(`Error processing task ${doc.id}:`, error);
+        console.error(`Error processing task ${docSnapshot.id}:`, error);
         // Continuăm cu următorul task în caz de eroare
       }
     });

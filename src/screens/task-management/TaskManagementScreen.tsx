@@ -65,6 +65,89 @@ const TaskManagementScreen: React.FC = () => {
     }
   }, [isAuthenticated, isLoggingOut]);
 
+  // Adăugăm un helper pentru depanare
+  const logTasksInfo = useCallback(() => {
+    console.log('--- Tasks Info ---');
+    console.log(`MORNING: ${tasks.MORNING.length} tasks`);
+    console.log(`AFTERNOON: ${tasks.AFTERNOON.length} tasks`);
+    console.log(`EVENING: ${tasks.EVENING.length} tasks`);
+    console.log(`COMPLETED: ${tasks.COMPLETED.length} tasks`);
+    console.log(`FUTURE: ${tasks.FUTURE.length} tasks`);
+    
+    // Log detaliat pentru task-urile din FUTURE
+    console.log('FUTURE tasks details:');
+    tasks.FUTURE.forEach(task => {
+      console.log(`- Task ${task.id}: ${task.title}`);
+      console.log(`  Due date: ${task.dueDate instanceof Date ? task.dueDate.toISOString() : task.dueDate}`);
+      console.log(`  Period: ${task.period}`);
+    });
+    
+    // Verifică dacă există task-uri cu date viitoare care nu sunt în FUTURE
+    console.log('Tasks with future dates NOT in FUTURE category:');
+    [...tasks.MORNING, ...tasks.AFTERNOON, ...tasks.EVENING].forEach(task => {
+      if (task.dueDate) {
+        const dateObj = task.dueDate instanceof Date ? task.dueDate : new Date(task.dueDate);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        
+        const taskDate = new Date(dateObj);
+        taskDate.setHours(0, 0, 0, 0);
+        
+        if (taskDate.getTime() > today.getTime()) {
+          console.log(`- Task ${task.id}: ${task.title} in ${task.period}`);
+          console.log(`  Due date: ${dateObj.toISOString()}`);
+        }
+      }
+    });
+  }, [tasks]);
+
+  // Apelăm funcția de log când task-urile sunt încărcate
+  useEffect(() => {
+    if (!loading) {
+      logTasksInfo();
+    }
+  }, [tasks, loading, logTasksInfo]);
+
+  // Verifică și corectează distribuția taskurilor
+  const validateTaskDistribution = useCallback(() => {
+    if (loading) return;
+    
+    // Verificăm dacă există task-uri cu date viitoare care nu sunt în secțiunea FUTURE
+    const misplacedTasks = [...tasks.MORNING, ...tasks.AFTERNOON, ...tasks.EVENING].filter(task => {
+      if (!task.dueDate) return false;
+      
+      const dateObj = task.dueDate instanceof Date ? task.dueDate : new Date(task.dueDate);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      
+      const taskDate = new Date(dateObj);
+      taskDate.setHours(0, 0, 0, 0);
+      
+      return taskDate.getTime() > today.getTime();
+    });
+    
+    // Dacă există task-uri plasate greșit, le actualizăm
+    if (misplacedTasks.length > 0) {
+      console.log(`S-au găsit ${misplacedTasks.length} task-uri cu date viitoare plasate în secțiuni greșite`);
+      
+      // Actualizăm fiecare task
+      misplacedTasks.forEach(task => {
+        console.log(`Corectez perioada pentru task ${task.id} din ${task.period} în FUTURE`);
+        updateTask(task.id, { 
+          period: 'FUTURE',
+          updatedAt: Date.now()
+        }).catch(err => {
+          console.error(`Eroare la actualizarea perioadei pentru task ${task.id}:`, err);
+        });
+      });
+    }
+  }, [tasks, loading, updateTask]);
+  
+  // Verificăm distribuția taskurilor când se încarcă sau se modifică
+  useEffect(() => {
+    validateTaskDistribution();
+  }, [tasks, validateTaskDistribution]);
+
   useEffect(() => {
     // Această funcție va fi apelată la fiecare randare și la modificarea task-urilor
     // pentru a se asigura că zonele de drop sunt mereu actualizate

@@ -152,6 +152,13 @@ const TimeSection: React.FC<TimeSectionProps> = ({
           BORDER: 'rgba(0,0,0,0.2)',
           ICON: ACCESSIBILITY.COLORS.TEXT.SECONDARY
         };
+      case 'FUTURE':
+        return {
+          PRIMARY: ACCESSIBILITY.COLORS.INTERACTIVE.INFO_LIGHT,
+          SECONDARY: ACCESSIBILITY.COLORS.BACKGROUND.HIGHLIGHT_SECONDARY,
+          BORDER: ACCESSIBILITY.COLORS.INTERACTIVE.INFO,
+          ICON: ACCESSIBILITY.COLORS.INTERACTIVE.INFO
+        };
       default:
         return ACCESSIBILITY.COLORS.DAYTIME.MORNING; // Valoare implicită de siguranță
     }
